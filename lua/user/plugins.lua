@@ -15,14 +15,6 @@ if fn.empty(fn.glob(install_path)) > 0 then
 	vim.cmd([[packadd packer.nvim]])
 end
 
--- Autocommand that reloads neovim whenever you save the plugins.lua file
-vim.cmd([[
-  augroup packer_user_config
-    autocmd!
-    autocmd BufWritePost plugins.lua source <afile> | PackerSync
-  augroup end
-]])
-
 -- Use a protected call so we don't error out on first use
 local status_ok, packer = pcall(require, "packer")
 if not status_ok then
@@ -69,6 +61,22 @@ return packer.startup(function(use)
 	use("justinmk/vim-sneak")
 	use({ "numToStr/Comment.nvim" })
 	use("JoosepAlviste/nvim-ts-context-commentstring")
+	use({ "stevearc/oil.nvim" })
+	use({
+		"jose-elias-alvarez/typescript.nvim",
+		config = function()
+			require("typescript").setup({
+				disable_commands = false, -- prevent the plugin from creating Vim commands
+				debug = false, -- enable debug logging for commands
+				go_to_source_definition = {
+					fallback = true, -- fall back to standard LSP definition on failure
+				},
+				server = { -- pass options to lspconfig's setup method
+					-- on_attach = ...,
+				},
+			})
+		end,
+	})
 
 	-- Colorschemes
 	-- use 'morhetz/gruvbox'
@@ -103,19 +111,42 @@ return packer.startup(function(use)
 		"nvim-telescope/telescope-fzf-native.nvim",
 		run = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
 	})
-	-- use({
-	-- 	"nvim-telescope/telescope-frecency.nvim",
-	-- 	config = function()
-	-- 		require("telescope").load_extension("frecency")
-	-- 	end,
-	-- 	requires = { "kkharji/sqlite.lua" },
-	-- })
 
 	-- Treesitter
 	use({ "nvim-treesitter/nvim-treesitter" })
 
 	-- Copilot
 	use({ "github/copilot.vim" })
+	-- use({
+	-- 	"zbirenbaum/copilot.lua",
+	-- 	cmd = "Copilot",
+	-- 	event = "VimEnter",
+	-- 	config = function()
+	-- 		vim.defer_fn(function()
+	-- 			require("copilot").setup({
+	-- 				suggestion = {
+	-- 					auto_trigger = true,
+	-- 					auto_refresh = true,
+	-- 					keymap = {
+	-- 						accept = "<M-l>",
+	-- 						accept_word = false,
+	-- 						accept_line = false,
+	-- 						next = "<C-l>",
+	-- 						prev = "<C-h>",
+	-- 						dismiss = "<C-]>",
+	-- 					},
+	-- 				},
+	-- 			})
+	-- 		end, 100)
+	-- 	end,
+	-- })
+	-- use({
+	-- 	"zbirenbaum/copilot-cmp",
+	-- 	after = { "copilot.lua" },
+	-- 	config = function()
+	-- 		require("copilot_cmp").setup()
+	-- 	end,
+	-- })
 
 	-- DAP
 	use({ "mfussenegger/nvim-dap" })

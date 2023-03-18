@@ -30,7 +30,7 @@ if present then
 			scss = { prettier },
 			html = { prettier },
 			yaml = { prettier },
-			javascript = { prettier },
+			-- javascript = { prettier },
 			javascriptreact = { prettier },
 			typescript = { prettier },
 			typescriptreact = { prettier },
@@ -38,6 +38,14 @@ if present then
 			json = { prettier },
 			jsonc = { prettier },
 			rust = { rustfmt },
+			sql = {
+				function()
+					return {
+						exe = "cat " .. vim.fn.fnameescape(vim.api.nvim_buf_get_name(0)) .. " | sql-formatter-cli",
+						stdin = true,
+					}
+				end,
+			},
 			java = {
 				function()
 					return {

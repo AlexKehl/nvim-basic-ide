@@ -20,6 +20,7 @@ require("user.expandregion")
 require("user.sneak")
 require("user.luasnip")
 require("user.formatter")
+require("user.oil")
 
 require("fidget").setup({})
 

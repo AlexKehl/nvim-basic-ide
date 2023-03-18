@@ -104,10 +104,12 @@ cmp.setup({
 				-- path = "",
 				-- emoji = "",
 			})[entry.source.name]
+			vim_item.abbr = string.sub(vim_item.abbr, 1, 20)
 			return vim_item
 		end,
 	},
 	sources = {
+		-- { name = "copilot" },
 		{ name = "nvim_lsp", max_item_count = 30 }, -- tsserver likes to send back _everything_
 		{ name = "nvim_lua" },
 		{

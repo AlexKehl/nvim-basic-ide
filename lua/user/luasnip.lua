@@ -64,25 +64,45 @@ ls.add_snippets("all", {
 	}),
 })
 
+ls.add_snippets("typescript", {
+	s("exp", {
+		t('export * from "./'),
+		i(1),
+		t('";', "path to component"),
+		i(0),
+	}),
+
+	s("ex", {
+		t("export {"),
+		i(0),
+		t('} from "./'),
+		i(1),
+		t('"'),
+	}),
+})
+
 ls.add_snippets("typescriptreact", {
 	s("rfcp", {
-		t({ "", "export function " }),
+		t({ "interface Props {", "\t", "}", "\t" }),
+		t({ "", "export const " }),
 		i(1, "FunctionName"),
-		t("({ "),
-		i(2, "children"),
+		t(" = ({ "),
+		i(2, ""),
 		t(" }: "),
-		i(3, "Props"),
-		t({ "): JSX.Element {", "\t", "\t" }),
-		t({ "return (" }),
-		i(0, "<></>"),
-		t({ ");", "}" }),
+		i(0, "Props"),
+		t({ ") => {", "\t" }),
+		t({ "return (<>" }),
+		t({ "Component" }),
+		t({ "</>);", "}" }),
 	}),
 	s("rfc", {
-		t({ "", "export function " }),
+		t({ "", "export const " }),
 		i(1, "FunctionName"),
-		t({ "(): JSX.Element {", "\t", "\t" }),
+		t({ " = () => {", "\t" }),
 		t({ "return (" }),
-		i(0, "<></>"),
+		t({ "<>" }),
+		t({ "Component" }),
+		t({ "</>" }),
 		t({ ");", "}" }),
 	}),
 	s("im", {

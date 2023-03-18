@@ -78,6 +78,7 @@ keymap("n", "§", ":Telescope buffers<CR>", opts)
 keymap("n", "<C-n>", ":Telescope command_history<CR>", opts)
 keymap("n", "z", ":Telescope oldfiles<CR>", opts)
 keymap("n", "<C-q>", ":Telescope diagnostics<CR>", opts)
+keymap("n", "<C-c>", ":Telescope registers<CR>", opts)
 
 -- Git
 keymap("n", "<leader>gg", "<cmd>lua _LAZYGIT_TOGGLE()<CR>", opts)

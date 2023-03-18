@@ -52,7 +52,7 @@ M.setup = function()
 end
 
 local code_action_filter = function(code_action)
-	if string.find(code_action.command.title, "Add") then
+	if string.find(code_action.command.title, "Add") or string.find(code_action.command.title, "Update") then
 		return true
 	else
 		return false

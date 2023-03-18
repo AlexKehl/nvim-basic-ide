@@ -46,7 +46,7 @@ return {
 				},
 				{
 					fileMatch = {
-						"swagger.json",
+						"*.swagger.json",
 					},
 					url = "https://json.schemastore.org/swagger-2.0.json",
 				},
