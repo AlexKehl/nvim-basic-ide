@@ -22,6 +22,8 @@ telescope.setup({
 			height = 0.99,
 		},
 		sorting_strategy = "ascending",
+		sorter = require("telescope.sorters").get_fuzzy_file,
+		-- reverser = require("telescope.actions").cycle_history_next,
 	},
 	extensions = {
 		["ui-select"] = {

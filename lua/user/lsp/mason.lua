@@ -17,14 +17,19 @@ mason_lspconfig.setup_handlers({
 			capabilities = handlers.capabilities,
 		})
 	end,
-	["sumneko_lua"] = function()
-		local lua_opts = require("user.lsp.settings.sumneko_lua")
-		local extended_opts = vim.tbl_deep_extend("force", lua_opts, opts)
-		require("lspconfig")["sumneko_lua"].setup(extended_opts)
-	end,
+	-- ["sumneko_lua"] = function()
+	-- 	local lua_opts = require("user.lsp.settings.sumneko_lua")
+	-- 	local extended_opts = vim.tbl_deep_extend("force", lua_opts, opts)
+	-- 	require("lspconfig")["sumneko_lua"].setup(extended_opts)
+	-- end,
 	["jsonls"] = function()
 		local json_opts = require("user.lsp.settings.jsonls")
 		local extended_opts = vim.tbl_deep_extend("force", json_opts, opts)
 		require("lspconfig")["jsonls"].setup(extended_opts)
+	end,
+	["tsserver"] = function()
+		local ts_opts = require("user.lsp.settings.tsserver")
+		local extended_opts = vim.tbl_deep_extend("force", ts_opts, opts)
+		require("lspconfig")["tsserver"].setup(extended_opts)
 	end,
 })

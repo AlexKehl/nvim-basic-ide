@@ -109,8 +109,7 @@ cmp.setup({
 		end,
 	},
 	sources = {
-		-- { name = "copilot" },
-		{ name = "nvim_lsp", max_item_count = 30 }, -- tsserver likes to send back _everything_
+		{ name = "nvim_lsp" },
 		{ name = "nvim_lua" },
 		{
 			name = "buffer",
@@ -121,7 +120,6 @@ cmp.setup({
 			},
 		},
 		{ name = "path" },
-		{ name = "emmet_ls" },
 		{ name = "luasnip" },
 	},
 	confirm_opts = {

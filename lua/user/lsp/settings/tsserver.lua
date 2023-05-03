@@ -14,6 +14,8 @@ return {
 			description = "Organize Imports",
 		},
 	},
+	capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities()),
+	filetypes = { "javascript", "javascriptreact", "javascript.jsx", "typescript", "typescriptreact", "typescript.tsx" },
 	init_options = {
 		preferences = {
 			importModuleSpecifierPreference = "auto", --non-relative

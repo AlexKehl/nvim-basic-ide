@@ -62,21 +62,21 @@ return packer.startup(function(use)
 	use({ "numToStr/Comment.nvim" })
 	use("JoosepAlviste/nvim-ts-context-commentstring")
 	use({ "stevearc/oil.nvim" })
-	use({
-		"jose-elias-alvarez/typescript.nvim",
-		config = function()
-			require("typescript").setup({
-				disable_commands = false, -- prevent the plugin from creating Vim commands
-				debug = false, -- enable debug logging for commands
-				go_to_source_definition = {
-					fallback = true, -- fall back to standard LSP definition on failure
-				},
-				server = { -- pass options to lspconfig's setup method
-					-- on_attach = ...,
-				},
-			})
-		end,
-	})
+	-- use({
+	-- 	"jose-elias-alvarez/typescript.nvim",
+	-- 	config = function()
+	-- 		require("typescript").setup({
+	-- 			disable_commands = false, -- prevent the plugin from creating Vim commands
+	-- 			debug = false, -- enable debug logging for commands
+	-- 			go_to_source_definition = {
+	-- 				fallback = true, -- fall back to standard LSP definition on failure
+	-- 			},
+	-- 			server = { -- pass options to lspconfig's setup method
+	-- 				-- on_attach = ...,
+	-- 			},
+	-- 		})
+	-- 	end,
+	-- })
 
 	-- Colorschemes
 	-- use 'morhetz/gruvbox'
@@ -117,36 +117,6 @@ return packer.startup(function(use)
 
 	-- Copilot
 	use({ "github/copilot.vim" })
-	-- use({
-	-- 	"zbirenbaum/copilot.lua",
-	-- 	cmd = "Copilot",
-	-- 	event = "VimEnter",
-	-- 	config = function()
-	-- 		vim.defer_fn(function()
-	-- 			require("copilot").setup({
-	-- 				suggestion = {
-	-- 					auto_trigger = true,
-	-- 					auto_refresh = true,
-	-- 					keymap = {
-	-- 						accept = "<M-l>",
-	-- 						accept_word = false,
-	-- 						accept_line = false,
-	-- 						next = "<C-l>",
-	-- 						prev = "<C-h>",
-	-- 						dismiss = "<C-]>",
-	-- 					},
-	-- 				},
-	-- 			})
-	-- 		end, 100)
-	-- 	end,
-	-- })
-	-- use({
-	-- 	"zbirenbaum/copilot-cmp",
-	-- 	after = { "copilot.lua" },
-	-- 	config = function()
-	-- 		require("copilot_cmp").setup()
-	-- 	end,
-	-- })
 
 	-- DAP
 	use({ "mfussenegger/nvim-dap" })
