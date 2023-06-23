@@ -16,7 +16,7 @@ end
 dap_install.setup({})
 
 dap_install.config("python", {})
-dap_install.config("typescript", {})
+-- dap_install.config("typescript", {})
 -- add other configs here
 
 dapui.setup({
@@ -58,22 +58,22 @@ dap.adapters.chrome = {
 	args = { os.getenv("HOME") .. "/.local/share/nvim/dapinstall/chrome/vscode-chrome-debug/out/src/chromeDebug.js" },
 }
 
-dap.configurations.typescript = {
-	{
-		name = "Debug (Attach) - Remote",
-		type = "chrome",
-		request = "attach",
-		program = "${file}",
-		cwd = vim.fn.getcwd(),
-		sourceMaps = true,
-		--      reAttach = true,
-		trace = true,
-		protocol = "inspector",
-		hostName = "127.0.0.1",
-		port = 9229,
-		webRoot = "${workspaceFolder}",
-	},
-}
+-- dap.configurations.typescript = {
+-- 	{
+-- 		name = "Debug (Attach) - Remote",
+-- 		type = "chrome",
+-- 		request = "attach",
+-- 		program = "${file}",
+-- 		cwd = vim.fn.getcwd(),
+-- 		sourceMaps = true,
+-- 		--      reAttach = true,
+-- 		trace = true,
+-- 		protocol = "inspector",
+-- 		hostName = "127.0.0.1",
+-- 		port = 9229,
+-- 		webRoot = "${workspaceFolder}",
+-- 	},
+-- }
 
 -- dap.adapters.node2 = {
 -- 	type = "executable",

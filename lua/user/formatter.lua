@@ -28,7 +28,7 @@ if present then
 			css = { prettier },
 			less = { prettier },
 			scss = { prettier },
-			html = { prettier },
+			-- html = { prettier },
 			yaml = { prettier },
 			-- javascript = { prettier },
 			javascriptreact = { prettier },
@@ -75,7 +75,6 @@ if present then
 		},
 	})
 
-	-- 设置保存后自动格式化
 	local group = vim.api.nvim_create_augroup("FormatAutogroup", { clear = true })
 	vim.api.nvim_create_autocmd("BufWritePost", {
 		command = "FormatWrite",

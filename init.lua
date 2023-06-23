@@ -22,8 +22,6 @@ require("user.luasnip")
 require("user.formatter")
 require("user.oil")
 
-require("fidget").setup({})
-
 vim.cmd([[
 try
   set diffopt+=vertical

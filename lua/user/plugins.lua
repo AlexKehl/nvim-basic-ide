@@ -62,29 +62,19 @@ return packer.startup(function(use)
 	use({ "numToStr/Comment.nvim" })
 	use("JoosepAlviste/nvim-ts-context-commentstring")
 	use({ "stevearc/oil.nvim" })
-	-- use({
-	-- 	"jose-elias-alvarez/typescript.nvim",
-	-- 	config = function()
-	-- 		require("typescript").setup({
-	-- 			disable_commands = false, -- prevent the plugin from creating Vim commands
-	-- 			debug = false, -- enable debug logging for commands
-	-- 			go_to_source_definition = {
-	-- 				fallback = true, -- fall back to standard LSP definition on failure
-	-- 			},
-	-- 			server = { -- pass options to lspconfig's setup method
-	-- 				-- on_attach = ...,
-	-- 			},
-	-- 		})
-	-- 	end,
-	-- })
+
+	use({ "ThePrimeagen/git-worktree.nvim" })
+
+	-- Plantuml
+	use({
+		"weirongxu/plantuml-previewer.vim",
+		requires = { { "tyru/open-browser.vim" }, { "aklt/plantuml-syntax" } },
+	})
 
 	-- Colorschemes
 	-- use 'morhetz/gruvbox'
 	use({ "sainnhe/gruvbox-material" })
 	use("ellisonleao/gruvbox.nvim")
-
-	-- visual
-	use("j-hui/fidget.nvim")
 
 	-- cmp plugins
 	use({ "hrsh7th/nvim-cmp" }) -- The completion plugin
@@ -105,7 +95,7 @@ return packer.startup(function(use)
 	use({ "williamboman/mason-lspconfig.nvim" })
 
 	-- Telescope
-	use("nvim-telescope/telescope.nvim")
+	use({ "nvim-telescope/telescope.nvim", commit = "ebf93395e79e5d026e3867d9e5e158b2bbe1499c" })
 	use("nvim-telescope/telescope-ui-select.nvim")
 	use({
 		"nvim-telescope/telescope-fzf-native.nvim",

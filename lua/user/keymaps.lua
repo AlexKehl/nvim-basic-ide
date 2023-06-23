@@ -40,7 +40,9 @@ keymap("n", "<leader>w", "<cmd>w<CR>", opts)
 keymap("n", "<leader>q", "<cmd>q<CR>", opts)
 
 -- Ranger
-keymap("n", "<C-p>", "<cmd>RnvimrToggle<CR>", opts)
+-- keymap("n", "<C-p>", "<cmd>RnvimrToggle<CR>", opts)
+-- Oil
+keymap("n", "<C-p>", "<cmd>Oil --float<CR>", opts)
 
 -- Clear highlights
 keymap("n", "<leader><cr>", "<cmd>nohlsearch<CR>", opts)
@@ -79,6 +81,7 @@ keymap("n", "<C-n>", ":Telescope command_history<CR>", opts)
 keymap("n", "z", ":Telescope oldfiles<CR>", opts)
 keymap("n", "<C-q>", ":Telescope diagnostics<CR>", opts)
 keymap("n", "<C-c>", ":Telescope registers<CR>", opts)
+keymap("n", "<leader>gw", ":lua require('telescope').extensions.git_worktree.git_worktrees()<CR>", opts)
 
 -- Git
 keymap("n", "<leader>gg", "<cmd>lua _LAZYGIT_TOGGLE()<CR>", opts)

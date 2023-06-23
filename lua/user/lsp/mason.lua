@@ -32,4 +32,9 @@ mason_lspconfig.setup_handlers({
 		local extended_opts = vim.tbl_deep_extend("force", ts_opts, opts)
 		require("lspconfig")["tsserver"].setup(extended_opts)
 	end,
+	["pyright"] = function()
+		local pyright_opts = require("user.lsp.settings.pyright")
+		local extended_opts = vim.tbl_deep_extend("force", pyright_opts, opts)
+		require("lspconfig")["pyright"].setup(extended_opts)
+	end,
 })
