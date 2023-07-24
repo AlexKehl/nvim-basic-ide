@@ -37,4 +37,9 @@ mason_lspconfig.setup_handlers({
 		local extended_opts = vim.tbl_deep_extend("force", pyright_opts, opts)
 		require("lspconfig")["pyright"].setup(extended_opts)
 	end,
+	["rust_analyzer"] = function()
+		local rust_opts = require("user.lsp.settings.rust")
+		local extended_opts = vim.tbl_deep_extend("force", rust_opts, opts)
+		require("lspconfig")["rust_analyzer"].setup(extended_opts)
+	end,
 })

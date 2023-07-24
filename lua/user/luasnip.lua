@@ -35,7 +35,7 @@ vim.keymap.set("i", "<c-l>", function()
 	end
 end)
 
-vim.keymap.set("n", ",,s", "<cmd>source ~/.config/nvim/lua/configs/luasnip.lua<CR>")
+-- vim.keymap.set("n", ",,s", "<cmd>source ~/.config/nvim/lua/configs/luasnip.lua<CR>")
 
 local s = ls.s
 local fmt = require("luasnip.extras.fmt").fmt

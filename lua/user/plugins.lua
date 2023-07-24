@@ -63,7 +63,20 @@ return packer.startup(function(use)
 	use("JoosepAlviste/nvim-ts-context-commentstring")
 	use({ "stevearc/oil.nvim" })
 
+	use({
+		"tpope/vim-dadbod",
+		requires = {
+			"kristijanhusak/vim-dadbod-ui",
+			"kristijanhusak/vim-dadbod-completion",
+		},
+		config = function()
+			require("user.dadbod").setup()
+		end,
+		cmd = { "DBUIToggle", "DBUI", "DBUIAddConnection", "DBUIFindBuffer", "DBUIRenameBuffer", "DBUILastQueryInfo" },
+	})
+
 	use({ "ThePrimeagen/git-worktree.nvim" })
+	use({ "chomosuke/term-edit.nvim", tag = "v1.*" })
 
 	-- Plantuml
 	use({
@@ -95,7 +108,7 @@ return packer.startup(function(use)
 	use({ "williamboman/mason-lspconfig.nvim" })
 
 	-- Telescope
-	use({ "nvim-telescope/telescope.nvim", commit = "ebf93395e79e5d026e3867d9e5e158b2bbe1499c" })
+	use({ "nvim-telescope/telescope.nvim" })
 	use("nvim-telescope/telescope-ui-select.nvim")
 	use({
 		"nvim-telescope/telescope-fzf-native.nvim",

@@ -17,6 +17,14 @@ if present then
 		}
 	end
 
+	local ocamlformat = function()
+		return {
+			exe = "ocamlformat",
+			args = { "--enable-outside-detected-project", vim.fn.fnameescape(vim.api.nvim_buf_get_name(0)) },
+			stdin = true,
+		}
+	end
+
 	formatter.setup({
 		logging = false,
 		log_level = vim.log.levels.WARN,
@@ -38,10 +46,11 @@ if present then
 			json = { prettier },
 			jsonc = { prettier },
 			rust = { rustfmt },
+			ocaml = { ocamlformat },
 			sql = {
 				function()
 					return {
-						exe = "cat " .. vim.fn.fnameescape(vim.api.nvim_buf_get_name(0)) .. " | sql-formatter-cli",
+						exe = "cat " .. vim.fn.fnameescape(vim.api.nvim_buf_get_name(0)) .. " | sql-formatter",
 						stdin = true,
 					}
 				end,
