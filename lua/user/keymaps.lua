@@ -1,3 +1,5 @@
+-- local ts_repeat_move = require("nvim-treesitter.textobjects.repeatable_move")
+
 -- Shorten function name
 local keymap = vim.keymap.set
 
@@ -42,7 +44,7 @@ keymap("n", "<leader>q", "<cmd>q<CR>", opts)
 -- Ranger
 -- keymap("n", "<C-p>", "<cmd>RnvimrToggle<CR>", opts)
 -- Oil
-keymap("n", "<C-p>", "<cmd>Oil --float<CR>", opts)
+keymap("n", "<C-p>", "<cmd>Oil<CR>", opts)
 
 -- Clear highlights
 keymap("n", "<leader><cr>", "<cmd>nohlsearch<CR>", opts)
@@ -96,3 +98,19 @@ keymap("n", "<leader>dr", "<cmd>lua require'dap'.repl.toggle()<cr>", opts)
 keymap("n", "<leader>dl", "<cmd>lua require'dap'.run_last()<cr>", opts)
 keymap("n", "<leader>du", "<cmd>lua require'dapui'.toggle()<cr>", opts)
 keymap("n", "<leader>dt", "<cmd>lua require'dap'.terminate()<cr>", opts)
+
+-- TODO
+-- -- Repeat movement with ; and ,
+-- -- ensure ; goes forward and , goes backward regardless of the last direction
+-- vim.keymap.set({ "n", "x", "o" }, ";", ts_repeat_move.repeat_last_move_next)
+-- vim.keymap.set({ "n", "x", "o" }, ",", ts_repeat_move.repeat_last_move_previous)
+--
+-- -- vim way: ; goes to the direction you were moving.
+-- -- vim.keymap.set({ "n", "x", "o" }, ";", ts_repeat_move.repeat_last_move)
+-- -- vim.keymap.set({ "n", "x", "o" }, ",", ts_repeat_move.repeat_last_move_opposite)
+--
+-- -- Optionally, make builtin f, F, t, T also repeatable with ; and ,
+-- vim.keymap.set({ "n", "x", "o" }, "f", ts_repeat_move.builtin_f)
+-- vim.keymap.set({ "n", "x", "o" }, "F", ts_repeat_move.builtin_F)
+-- vim.keymap.set({ "n", "x", "o" }, "t", ts_repeat_move.builtin_t)
+-- vim.keymap.set({ "n", "x", "o" }, "T", ts_repeat_move.builtin_T)

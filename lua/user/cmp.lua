@@ -3,6 +3,9 @@ if not cmp_status_ok then
 	return
 end
 
+local compare = require("cmp.config.compare")
+local types = require("cmp.types")
+
 local snip_status_ok, luasnip = pcall(require, "luasnip")
 if not snip_status_ok then
 	return
@@ -42,6 +45,26 @@ local kind_icons = {
 	Operator = "",
 	TypeParameter = "",
 }
+
+local lsp_priority = {
+	["Function"] = 5,
+	["Method"] = 6,
+	-- add more if needed
+}
+
+local priority_sort = function(entry1, entry2)
+	local item1 = entry1:get_completion_item()
+	local item2 = entry2:get_completion_item()
+
+	local p1 = lsp_priority[item1.kind] or 0
+	local p2 = lsp_priority[item2.kind] or 0
+
+	if p1 ~= p2 then
+		return p1 > p2
+	end
+
+	return compare.offset(entry1, entry2) or compare.order(entry1, entry2)
+end
 
 cmp.setup({
 	snippet = {
@@ -133,4 +156,34 @@ cmp.setup({
 	experimental = {
 		ghost_text = false,
 	},
+	sorting = {
+		comparators = {
+			-- compare.offset,
+			-- compare.exact,
+			compare.score,
+			-- compare.recently_used,
+			-- compare.locality,
+			-- compare.kind,
+			-- compare.sort_text,
+			-- compare.length,
+			-- compare.order,
+		},
+	},
+	-- sorting = {
+	-- 	-- priority_weight = 1.0,
+	-- 	comparators = {
+	-- 		priority_sort,
+	-- 		-- compare.score_offset, -- not good at all
+	--
+	-- 		-- cmp.config.compare.locality,
+	-- 		-- cmp.config.compare.recently_used,
+	-- 		-- cmp.config.compare.score, -- based on :  score = score + ((#sources - (source_index - 1)) * sorting.priority_weight)
+	-- 		-- cmp.config.compare.offset,
+	-- 		-- cmp.config.compare.order,
+	--
+	-- 		-- compare.sort_text,
+	-- 		-- compare.exact,
+	-- 		-- compare.kind,
+	-- 	},
+	-- },
 })

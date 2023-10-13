@@ -2,9 +2,14 @@ local present, formatter = pcall(require, "formatter")
 
 if present then
 	local prettier = function()
+		local filepath = vim.fn.fnameescape(vim.api.nvim_buf_get_name(0))
+		-- Escape the braces
+		filepath = filepath:gsub("%(", "\\(")
+		filepath = filepath:gsub("%)", "\\)")
+
 		return {
-			exe = "cat " .. vim.fn.fnameescape(vim.api.nvim_buf_get_name(0)) .. " | prettierd ",
-			args = { vim.fn.fnameescape(vim.api.nvim_buf_get_name(0)) },
+			exe = "cat " .. filepath .. " | prettierd ",
+			args = { filepath },
 			stdin = true,
 		}
 	end
