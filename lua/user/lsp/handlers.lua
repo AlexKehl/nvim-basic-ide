@@ -51,29 +51,6 @@ M.setup = function()
 	})
 end
 
--- 	vim.lsp.handlers["textDocument/definition"] = function(_, _, result)
--- 		if result == nil or vim.tbl_isempty(result) then
--- 			print("No definitions found")
--- 			return
--- 		end
---
--- 		local file = io.open("/tmp/debug.txt", "w")
--- 		file:write(vim.inspect(result))
--- 		file:close()
---
--- 		if vim.tbl_islist(result) then
--- 			vim.lsp.util.jump_to_location(result[1], "utf_8")
---
--- 			if #result > 1 then
--- 				vim.lsp.util.set_qflist(vim.lsp.util.locations_to_items(result))
--- 				print(#result .. " definitions found")
--- 			end
--- 		else
--- 			vim.lsp.util.jump_to_location(result)
--- 		end
--- 	end
--- end
-
 local code_action_filter = function(code_action)
 	if string.find(code_action.command.title, "Add") or string.find(code_action.command.title, "Update") then
 		return true

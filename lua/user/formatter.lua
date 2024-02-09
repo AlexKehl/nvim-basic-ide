@@ -30,6 +30,22 @@ if present then
 		}
 	end
 
+	local shfmt = function()
+		return {
+			exe = "shfmt",
+			args = { "-i", "2", "-ci", "-s" },
+			stdin = true,
+		}
+	end
+
+	-- local htmlformat = function()
+	-- 	return {
+	-- 		exe = "tidy -i",
+	-- 		args = { vim.fn.fnameescape(vim.api.nvim_buf_get_name(0)) },
+	-- 		stdin = true,
+	-- 	}
+	-- end
+
 	formatter.setup({
 		logging = false,
 		log_level = vim.log.levels.WARN,
@@ -41,7 +57,7 @@ if present then
 			css = { prettier },
 			less = { prettier },
 			scss = { prettier },
-			-- html = { prettier },
+			-- html = { htmlformat },
 			yaml = { prettier },
 			-- javascript = { prettier },
 			javascriptreact = { prettier },
@@ -52,6 +68,7 @@ if present then
 			jsonc = { prettier },
 			rust = { rustfmt },
 			ocaml = { ocamlformat },
+			sh = { shfmt },
 			sql = {
 				function()
 					return {

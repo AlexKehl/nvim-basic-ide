@@ -33,50 +33,36 @@ packer.init({
 -- Install your plugins here
 return packer.startup(function(use)
 	-- My plugins here
-	use({ "wbthomason/packer.nvim" }) -- Have packer manage itself
-	use({ "nvim-lua/plenary.nvim" }) -- Useful lua functions used by lots of plugins
-	use({ "windwp/nvim-autopairs" }) -- Autopairs, integrates with both cmp and treesitter
-	use({ "kyazdani42/nvim-web-devicons" })
-	use({ "nvim-lualine/lualine.nvim" })
-	use({ "lewis6991/impatient.nvim" })
+	use("wbthomason/packer.nvim") -- Have packer manage itself
+	use("nvim-lua/plenary.nvim") -- Useful lua functions used by lots of plugins
+	use("windwp/nvim-autopairs") -- Autopairs, integrates with both cmp and treesitter
+	use("kyazdani42/nvim-web-devicons")
+	use("nvim-lualine/lualine.nvim")
 	use({
 		"kylechui/nvim-surround",
 		config = function()
 			require("nvim-surround").setup({})
 		end,
 	})
-	use({ "mhartington/formatter.nvim" })
+	use("mhartington/formatter.nvim")
 
-	use("tpope/vim-fugitive")
 	use("terryma/vim-expand-region")
 	use("tpope/vim-projectionist")
 	use("tpope/vim-unimpaired")
-	use("airblade/vim-gitgutter")
 	use("diepm/vim-rest-console")
-	use("dyng/ctrlsf.vim")
-	use("kevinhwang91/rnvimr")
 	use("chrisbra/Colorizer")
 	use("christoomey/vim-tmux-navigator")
 	use("ton/vim-bufsurf")
 	use("justinmk/vim-sneak")
-	use({ "numToStr/Comment.nvim" })
+	use("numToStr/Comment.nvim")
 	use("JoosepAlviste/nvim-ts-context-commentstring")
 	use({ "stevearc/oil.nvim" })
+	use({ "lukas-reineke/indent-blankline.nvim" })
 
-	use({
-		"tpope/vim-dadbod",
-		requires = {
-			"kristijanhusak/vim-dadbod-ui",
-			"kristijanhusak/vim-dadbod-completion",
-		},
-		config = function()
-			require("user.dadbod").setup()
-		end,
-		cmd = { "DBUIToggle", "DBUI", "DBUIAddConnection", "DBUIFindBuffer", "DBUIRenameBuffer", "DBUILastQueryInfo" },
-	})
-
-	use({ "ThePrimeagen/git-worktree.nvim" })
-	use({ "chomosuke/term-edit.nvim", tag = "v1.*" })
+	-- Git
+	use("ThePrimeagen/git-worktree.nvim")
+	use("lewis6991/gitsigns.nvim")
+	use("tpope/vim-fugitive")
 
 	-- Plantuml
 	use({
@@ -125,11 +111,6 @@ return packer.startup(function(use)
 
 	-- Copilot
 	use({ "github/copilot.vim" })
-
-	-- DAP
-	use({ "mfussenegger/nvim-dap" })
-	use({ "rcarriga/nvim-dap-ui" })
-	use({ "ravenxrz/DAPInstall.nvim" })
 
 	-- Automatically set up your configuration after cloning packer.nvim
 	-- Put this at the end after all plugins

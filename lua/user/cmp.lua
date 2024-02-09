@@ -156,19 +156,19 @@ cmp.setup({
 	experimental = {
 		ghost_text = false,
 	},
-	sorting = {
-		comparators = {
-			-- compare.offset,
-			-- compare.exact,
-			compare.score,
-			-- compare.recently_used,
-			-- compare.locality,
-			-- compare.kind,
-			-- compare.sort_text,
-			-- compare.length,
-			-- compare.order,
-		},
-	},
+	-- sorting = {
+	-- 	comparators = {
+	-- 		-- compare.offset,
+	-- 		-- compare.exact,
+	-- 		compare.score,
+	-- 		-- compare.recently_used,
+	-- 		-- compare.locality,
+	-- 		-- compare.kind,
+	-- 		-- compare.sort_text,
+	-- 		-- compare.length,
+	-- 		-- compare.order,
+	-- 	},
+	-- },
 	-- sorting = {
 	-- 	-- priority_weight = 1.0,
 	-- 	comparators = {

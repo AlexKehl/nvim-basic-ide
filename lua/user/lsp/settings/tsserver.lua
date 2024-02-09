@@ -18,8 +18,9 @@ return {
 	filetypes = { "javascript", "javascriptreact", "javascript.jsx", "typescript", "typescriptreact", "typescript.tsx" },
 	init_options = {
 		preferences = {
-			importModuleSpecifierPreference = "auto", --non-relative
-			maxTsServerMemory = "8192",
+			-- importModuleSpecifierPreference = "auto", --non-relative
+			-- maxTsServerMemory = "8192",
+			importModuleSpecifierPreference = "non-relative",
 		},
 	},
 }

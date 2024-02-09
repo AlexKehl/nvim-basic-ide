@@ -13,13 +13,13 @@ configs.setup({
 		enable = true,
 	},
 	indent = { enable = true, disable = { "python", "css" } },
-	context_commentstring = {
-		enable = true,
-		enable_autocmd = false,
-		config = {
-			typescript = { __default = "// %s", __multiline = "/* %s */" },
-		},
-	},
+	-- context_commentstring = {
+	-- 	enable = true,
+	-- 	enable_autocmd = false,
+	-- 	config = {
+	-- 		typescript = { __default = "// %s", __multiline = "/* %s */" },
+	-- 	},
+	-- },
 	textobjects = {
 		select = {
 			enable = true,
