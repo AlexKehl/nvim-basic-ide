@@ -85,11 +85,11 @@ keymap("n", "<C-q>", ":Telescope diagnostics<CR>", opts)
 keymap("n", "<C-c>", ":Telescope registers<CR>", opts)
 keymap("n", "<leader>gw", ":lua require('telescope').extensions.git_worktree.git_worktrees()<CR>", opts)
 
--- Git
-keymap("n", "<leader>gg", "<cmd>lua _LAZYGIT_TOGGLE()<CR>", opts)
-
 -- todo
-keymap("n", "<cr>", "<cmd>:e ~/.todo.txt<CR>", opts)
+keymap("n", "<leader>d", "<cmd>:e ~/.todo.txt<CR>", opts)
+
+-- music
+-- keymap("n", "<tab>", ":LilyPlayer<CR>", opts)
 
 -- TODO
 -- -- Repeat movement with ; and ,

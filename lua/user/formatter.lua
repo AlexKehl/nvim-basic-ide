@@ -40,9 +40,9 @@ if present then
 
 	-- local htmlformat = function()
 	-- 	return {
-	-- 		exe = "tidy -i",
-	-- 		args = { vim.fn.fnameescape(vim.api.nvim_buf_get_name(0)) },
-	-- 		stdin = true,
+	-- 		exe = "cat " .. filepath .. " | pup ",
+	-- 		-- args = { vim.fn.fnameescape(vim.api.nvim_buf_get_name(0)) },
+	-- 		-- stdin = true,
 	-- 	}
 	-- end
 
@@ -59,7 +59,7 @@ if present then
 			scss = { prettier },
 			-- html = { htmlformat },
 			yaml = { prettier },
-			-- javascript = { prettier },
+			javascript = { prettier },
 			javascriptreact = { prettier },
 			typescript = { prettier },
 			typescriptreact = { prettier },
@@ -106,10 +106,18 @@ if present then
 		},
 	})
 
-	local group = vim.api.nvim_create_augroup("FormatAutogroup", { clear = true })
-	vim.api.nvim_create_autocmd("BufWritePost", {
-		command = "FormatWrite",
-		group = group,
-		pattern = "*",
+	-- local group = vim.api.nvim_create_augroup("FormatAutogroup", { clear = true })
+	-- vim.api.nvim_create_autocmd("BufWritePost", {
+	-- 	command = "FormatWrite",
+	-- 	group = group,
+	-- 	pattern = "*",
+	-- })
+
+	local augroup = vim.api.nvim_create_augroup
+	local autocmd = vim.api.nvim_create_autocmd
+	augroup("__formatter__", { clear = true })
+	autocmd("BufWritePost", {
+		group = "__formatter__",
+		command = ":FormatWrite",
 	})
 end

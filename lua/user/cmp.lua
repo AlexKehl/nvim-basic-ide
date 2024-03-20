@@ -44,6 +44,8 @@ local kind_icons = {
 	Event = "",
 	Operator = "",
 	TypeParameter = "",
+	-- icons for vim-dadbod-completion
+	SQL = "",
 }
 
 local lsp_priority = {
@@ -64,6 +66,41 @@ local priority_sort = function(entry1, entry2)
 	end
 
 	return compare.offset(entry1, entry2) or compare.order(entry1, entry2)
+end
+
+local function log(msg)
+	local logFile = "/Users/alexanderkehl/nvim.log"
+	local file = io.open(logFile, "a")
+	if file then
+		file:write(msg .. "\n")
+		file:flush()
+		file:close()
+	else
+		error("Cannot open log file: " .. logFile)
+	end
+end
+
+local function tableToString(tbl, indent)
+	if not indent then
+		indent = 0
+	end
+	if type(tbl) ~= "table" then
+		return tostring(tbl)
+	end
+	local str = ""
+	local padding = string.rep(" ", indent)
+	str = str .. "{\n"
+	for k, v in pairs(tbl) do
+		local key = tostring(k)
+		str = str .. padding .. "  [" .. key .. "] = "
+		if type(v) == "table" then
+			str = str .. tableToString(v, indent + 4) .. ",\n"
+		else
+			str = str .. tostring(v) .. ",\n"
+		end
+	end
+	str = str .. padding .. "}"
+	return str
 end
 
 cmp.setup({
@@ -117,13 +154,24 @@ cmp.setup({
 	}),
 	formatting = {
 		fields = { "kind", "abbr", "menu" },
+		-- format = function(entry, vim_item)
+		-- 	-- This concats the icons with the label of the item kind
+		-- 	vim_item.kind = string.format("%s %s %s", kind_icons[vim_item.kind], vim_item.kind, vim_item.menu)
+		-- 	return vim_item
+		-- end,
 		format = function(entry, vim_item)
-			vim_item.kind = kind_icons[vim_item.kind]
+			if vim_item.menu == "[DB]" then
+				vim_item.kind = kind_icons["SQL"]
+			else
+				vim_item.kind = kind_icons[vim_item.kind]
+			end
+
 			vim_item.menu = ({
 				nvim_lsp = "",
 				nvim_lua = "",
 				luasnip = "",
 				buffer = "",
+				vim_dadbod_completion = "",
 				-- path = "",
 				-- emoji = "",
 			})[entry.source.name]
@@ -132,8 +180,8 @@ cmp.setup({
 		end,
 	},
 	sources = {
-		{ name = "nvim_lsp" },
-		{ name = "nvim_lua" },
+		{ name = "nvim_lsp", priority = 1000 },
+		{ name = "nvim_lua", priority = 1000 },
 		{
 			name = "buffer",
 			option = {
@@ -141,9 +189,11 @@ cmp.setup({
 					return vim.api.nvim_list_bufs()
 				end,
 			},
+			priority = 500,
 		},
-		{ name = "path" },
-		{ name = "luasnip" },
+		{ name = "path", priority = 250 },
+		{ name = "luasnip", priority = 400 },
+		{ name = "vim-dadbod-completion", priority = 700 },
 	},
 	confirm_opts = {
 		behavior = cmp.ConfirmBehavior.Replace,

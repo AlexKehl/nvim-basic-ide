@@ -101,6 +101,16 @@ return packer.startup(function(use)
 		run = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
 	})
 
+	-- SQL
+	use({
+		"kristijanhusak/vim-dadbod-ui",
+		requires = "tpope/vim-dadbod",
+	})
+	use("kristijanhusak/vim-dadbod-completion")
+
+	-- music
+	use("martineausimon/nvim-lilypond-suite")
+
 	-- Treesitter
 	use({ "nvim-treesitter/nvim-treesitter" })
 	use({

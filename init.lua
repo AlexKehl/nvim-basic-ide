@@ -17,6 +17,8 @@ require("user.sneak")
 require("user.luasnip")
 require("user.formatter")
 require("user.oil")
+require("user.dadbod")
+require("user.lilypond")
 
 vim.cmd([[
 try
