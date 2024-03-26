@@ -82,11 +82,14 @@ keymap("n", "§", ":Telescope buffers<CR>", opts)
 keymap("n", "<C-n>", ":Telescope command_history<CR>", opts)
 keymap("n", "z", ":Telescope oldfiles<CR>", opts)
 keymap("n", "<C-q>", ":Telescope diagnostics<CR>", opts)
-keymap("n", "<C-c>", ":Telescope registers<CR>", opts)
+keymap("n", "<C-c>", ":Telescope current_buffer_fuzzy_find<CR>", opts)
 keymap("n", "<leader>gw", ":lua require('telescope').extensions.git_worktree.git_worktrees()<CR>", opts)
 
 -- todo
 keymap("n", "<leader>d", "<cmd>:e ~/.todo.txt<CR>", opts)
+
+-- format
+keymap("n", "<CR>", ":FormatWrite<CR>", opts)
 
 -- music
 -- keymap("n", "<tab>", ":LilyPlayer<CR>", opts)
