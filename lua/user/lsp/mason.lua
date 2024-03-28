@@ -10,28 +10,6 @@ local opts = {
 	capabilities = handlers.capabilities,
 }
 
--- require("lspconfig").sqls.setup({
--- 	on_attach = function(client, bufnr)
--- 		require("sqls").on_attach(client, bufnr)
--- 	end,
--- 	cmd = { "/Users/alexanderkehl/go/bin/sqls" },
--- 	settings = {
--- 		sqls = {
--- 			connections = {
--- 				{
--- 					driver = "postgresql",
--- 					dataSourceName = "host=127.0.0.1 port=5432 user=admin password=mysecretpassword dbname=steam_api sslmode=disable",
--- 				},
--- 			},
---       sshConfig = {
---         host = "my-ssh-host",
---         port = 22,
---         user
---       }
--- 		},
--- 	},
--- })
-
 mason_lspconfig.setup_handlers({
 	function(server_name)
 		require("lspconfig")[server_name].setup({
@@ -39,11 +17,6 @@ mason_lspconfig.setup_handlers({
 			capabilities = handlers.capabilities,
 		})
 	end,
-	-- ["sumneko_lua"] = function()
-	-- 	local lua_opts = require("user.lsp.settings.sumneko_lua")
-	-- 	local extended_opts = vim.tbl_deep_extend("force", lua_opts, opts)
-	-- 	require("lspconfig")["sumneko_lua"].setup(extended_opts)
-	-- end,
 	["jsonls"] = function()
 		local json_opts = require("user.lsp.settings.jsonls")
 		local extended_opts = vim.tbl_deep_extend("force", json_opts, opts)

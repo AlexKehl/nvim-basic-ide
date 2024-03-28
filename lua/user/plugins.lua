@@ -1,142 +1,117 @@
-local fn = vim.fn
+local lsp_config = require("user.lsp")
+local cmp_config = require("user.cmp")
 
--- Automatically install packer
-local install_path = fn.stdpath("data") .. "/site/pack/packer/start/packer.nvim"
-if fn.empty(fn.glob(install_path)) > 0 then
-	PACKER_BOOTSTRAP = fn.system({
-		"git",
-		"clone",
-		"--depth",
-		"1",
-		"https://github.com/wbthomason/packer.nvim",
-		install_path,
-	})
-	print("Installing packer close and reopen Neovim...")
-	vim.cmd([[packadd packer.nvim]])
-end
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.loop.fs_stat(lazypath) then
+	local lazyrepo = "https://github.com/folke/lazy.nvim.git"
+	vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
+end ---@diagnostic disable-next-line: undefined-field
+vim.opt.rtp:prepend(lazypath)
 
--- Use a protected call so we don't error out on first use
-local status_ok, packer = pcall(require, "packer")
-if not status_ok then
-	return
-end
-
--- Have packer use a popup window
-packer.init({
-	display = {
-		open_fn = function()
-			return require("packer.util").float({ border = "rounded" })
+require("lazy").setup({
+	"sainnhe/gruvbox-material",
+	"nvim-lua/plenary.nvim",
+	"nvim-lualine/lualine.nvim",
+	{ "kylechui/nvim-surround", opts = {} },
+	"mhartington/formatter.nvim",
+	"terryma/vim-expand-region",
+	"tpope/vim-projectionist",
+	"tpope/vim-unimpaired",
+	"chrisbra/Colorizer",
+	"christoomey/vim-tmux-navigator",
+	{
+		"justinmk/vim-sneak",
+		init = function()
+			vim.cmd([[
+        let g:sneak#label = 1
+        let g:sneak#use_ic_scs = 1
+        let g:sneak#f_reset = 1
+        let g:sneak#t_reset = 1
+      ]])
 		end,
 	},
-})
-
--- Install your plugins here
-return packer.startup(function(use)
-	-- My plugins here
-	use("wbthomason/packer.nvim") -- Have packer manage itself
-	use("nvim-lua/plenary.nvim") -- Useful lua functions used by lots of plugins
-	-- use("windwp/nvim-autopairs") -- Autopairs, integrates with both cmp and treesitter
-	use("kyazdani42/nvim-web-devicons")
-	use("nvim-lualine/lualine.nvim")
-	use({
-		"kylechui/nvim-surround",
-		config = function()
-			require("nvim-surround").setup({})
-		end,
-	})
-	use("mhartington/formatter.nvim")
-
-	use("terryma/vim-expand-region")
-	use("tpope/vim-projectionist")
-	use("tpope/vim-unimpaired")
-	use("chrisbra/Colorizer")
-	use("christoomey/vim-tmux-navigator")
-	use("justinmk/vim-sneak")
-	use("numToStr/Comment.nvim")
-	-- use("JoosepAlviste/nvim-ts-context-commentstring")
-	use({ "stevearc/oil.nvim" })
-	use({ "lukas-reineke/indent-blankline.nvim" })
-
+	-- {
+	-- 	"ggandor/leap.nvim",
+	-- 	opts = {},
+	-- 	init = function()
+	-- 		require("leap").create_default_mappings()
+	-- 	end,
+	-- },
+	"numToStr/Comment.nvim",
+	"stevearc/oil.nvim",
+	{
+		"lukas-reineke/indent-blankline.nvim",
+		main = "ibl",
+		opts = { scope = { enabled = false } },
+	},
 	-- Git
-	use("ThePrimeagen/git-worktree.nvim")
-	use("lewis6991/gitsigns.nvim")
-	use("tpope/vim-fugitive")
+	"ThePrimeagen/git-worktree.nvim",
+	"lewis6991/gitsigns.nvim",
+	"tpope/vim-fugitive",
 
-	-- Colorschemes
-	-- use 'morhetz/gruvbox'
-	use({ "sainnhe/gruvbox-material" })
+	{ -- LSP Configuration & Plugins
+		"neovim/nvim-lspconfig",
+		dependencies = {
+			-- Automatically install LSPs and related tools to stdpath for Neovim
+			"williamboman/mason.nvim",
+			"williamboman/mason-lspconfig.nvim",
+			"WhoIsSethDaniel/mason-tool-installer.nvim",
+		},
+		config = lsp_config,
+	},
 
-	-- cmp plugins
-	use({ "hrsh7th/nvim-cmp" }) -- The completion plugin
-	use({ "hrsh7th/cmp-buffer" }) -- buffer completions
-	use({ "hrsh7th/cmp-path" }) -- path completions
-	use({ "saadparwaiz1/cmp_luasnip", ft = { "typescript", "javascript" } }) -- snippet completions
-	use({ "hrsh7th/cmp-nvim-lsp", ft = { "typescript", "javascript", "sql", "sh", "lua", "python" } })
-	use({ "hrsh7th/cmp-nvim-lua", ft = { "lua" } })
-
-	-- snippets
-	use({ "L3MON4D3/LuaSnip", ft = { "typescript", "javascript" } }) --snippet engine
-	use({ "rafamadriz/friendly-snippets", ft = { "typescript", "javascript" } }) -- a bunch of snippets to use
-
-	-- LSP
-	use({ "neovim/nvim-lspconfig", ft = { "typescript", "javascript", "sql", "sh", "lua" } }) -- enable LSP
-	use({ "williamboman/mason.nvim", cmd = { "Mason" } })
-	use({ "williamboman/mason-lspconfig.nvim", cmd = { "Mason" } })
+	{ -- Autocompletion
+		"hrsh7th/nvim-cmp",
+		event = "InsertEnter",
+		config = cmp_config,
+	},
+	"L3MON4D3/LuaSnip",
+	"saadparwaiz1/cmp_luasnip",
+	"hrsh7th/cmp-buffer",
+	"hrsh7th/cmp-nvim-lsp",
+	"hrsh7th/cmp-path",
 
 	-- Telescope
-	use({ "nvim-telescope/telescope.nvim" })
-	use("nvim-telescope/telescope-ui-select.nvim")
-	use({
-		"nvim-telescope/telescope-fzf-native.nvim",
-		run = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
-	})
-
-	-- ChatGPT
-	use({
-		"jackMort/ChatGPT.nvim",
-		requires = {
-			"MunifTanjim/nui.nvim",
+	{
+		"nvim-telescope/telescope.nvim",
+		event = "VimEnter",
+		tag = "0.1.4",
+		dependencies = {
 			"nvim-lua/plenary.nvim",
-			"folke/trouble.nvim",
-			"nvim-telescope/telescope.nvim",
+			{
+				"nvim-telescope/telescope-fzf-native.nvim",
+				build = "make",
+				cond = function()
+					return vim.fn.executable("make") == 1
+				end,
+			},
+			{ "nvim-telescope/telescope-ui-select.nvim" },
+			{ "nvim-tree/nvim-web-devicons", enabled = vim.g.have_nerd_font },
 		},
-	})
+	},
 
-	use({
+	{
 		"samjwill/nvim-unception",
-		setup = function()
-			-- Optional settings go here!
-			-- e.g.) vim.g.unception_open_buffer_in_new_tab = true
-		end,
-    cmd = { "term" },
-	})
+		init = function() end,
+	},
 
 	-- SQL
-	use({
+	{
 		"kristijanhusak/vim-dadbod-ui",
-		requires = "tpope/vim-dadbod",
-    cmd = { "DBUI" },
-	})
-	use("kristijanhusak/vim-dadbod-completion", { cmd = { "DBUI" } })
+		dependencies = { "tpope/vim-dadbod" },
+	},
+	"kristijanhusak/vim-dadbod-completion",
 
 	-- music
-	use("martineausimon/nvim-lilypond-suite")
+	"martineausimon/nvim-lilypond-suite",
 
 	-- Treesitter
-	use({ "nvim-treesitter/nvim-treesitter", ft = { "typescript", "javascript", "sql", "sh", "lua", "python" } })
-	use({
+	"nvim-treesitter/nvim-treesitter",
+	{
 		"nvim-treesitter/nvim-treesitter-textobjects",
-		after = "nvim-treesitter",
-		requires = "nvim-treesitter/nvim-treesitter",
-    ft = { "typescript", "javascript", "sql", "sh", "lua", "python" },
-	})
+		dependencies = { "nvim-treesitter/nvim-treesitter" },
+	},
 
 	-- Copilot
-	use({ "github/copilot.vim" })
-
-	-- Automatically set up your configuration after cloning packer.nvim
-	-- Put this at the end after all plugins
-	if PACKER_BOOTSTRAP then
-		require("packer").sync()
-	end
-end)
+	"github/copilot.vim",
+})

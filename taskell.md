@@ -1,9 +1,10 @@
 ## To Do
 
-- Fix react props passing autocompletion
+- Json errors lsp when schema enabled
 
 ## Doing
 
 
 ## Done
 
+- Fix react props passing autocompletion
