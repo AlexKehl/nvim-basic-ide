@@ -19,6 +19,7 @@ require("user.formatter")
 require("user.oil")
 require("user.dadbod")
 require("user.lilypond")
+require("user.chatgpt")
 
 vim.cmd([[
 try
@@ -62,7 +63,7 @@ vnoremap <silent> <leader>r :call VisualSelection('replace', '')<CR>
 vnoremap <silent> <leader>v :call VisualSelection('search', '')<CR>
 
 if has('nvim')
-  tnoremap <Esc> <C-\><C-n>
+  tnoremap <Tab> <C-\><C-n>
   tnoremap <M-[> <Esc>
   tnoremap <C-v><Esc> <Esc>
 endif

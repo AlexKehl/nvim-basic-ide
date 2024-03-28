@@ -35,7 +35,7 @@ return packer.startup(function(use)
 	-- My plugins here
 	use("wbthomason/packer.nvim") -- Have packer manage itself
 	use("nvim-lua/plenary.nvim") -- Useful lua functions used by lots of plugins
-	use("windwp/nvim-autopairs") -- Autopairs, integrates with both cmp and treesitter
+	-- use("windwp/nvim-autopairs") -- Autopairs, integrates with both cmp and treesitter
 	use("kyazdani42/nvim-web-devicons")
 	use("nvim-lualine/lualine.nvim")
 	use({
@@ -49,13 +49,11 @@ return packer.startup(function(use)
 	use("terryma/vim-expand-region")
 	use("tpope/vim-projectionist")
 	use("tpope/vim-unimpaired")
-	use("diepm/vim-rest-console")
 	use("chrisbra/Colorizer")
 	use("christoomey/vim-tmux-navigator")
-	use("ton/vim-bufsurf")
 	use("justinmk/vim-sneak")
 	use("numToStr/Comment.nvim")
-	use("JoosepAlviste/nvim-ts-context-commentstring")
+	-- use("JoosepAlviste/nvim-ts-context-commentstring")
 	use({ "stevearc/oil.nvim" })
 	use({ "lukas-reineke/indent-blankline.nvim" })
 
@@ -64,34 +62,26 @@ return packer.startup(function(use)
 	use("lewis6991/gitsigns.nvim")
 	use("tpope/vim-fugitive")
 
-	-- Plantuml
-	use({
-		"weirongxu/plantuml-previewer.vim",
-		requires = { { "tyru/open-browser.vim" }, { "aklt/plantuml-syntax" } },
-	})
-
 	-- Colorschemes
 	-- use 'morhetz/gruvbox'
 	use({ "sainnhe/gruvbox-material" })
-	use("ellisonleao/gruvbox.nvim")
 
 	-- cmp plugins
 	use({ "hrsh7th/nvim-cmp" }) -- The completion plugin
 	use({ "hrsh7th/cmp-buffer" }) -- buffer completions
 	use({ "hrsh7th/cmp-path" }) -- path completions
-	use({ "saadparwaiz1/cmp_luasnip" }) -- snippet completions
-	use({ "hrsh7th/cmp-nvim-lsp" })
-	use({ "hrsh7th/cmp-nvim-lua" })
+	use({ "saadparwaiz1/cmp_luasnip", ft = { "typescript", "javascript" } }) -- snippet completions
+	use({ "hrsh7th/cmp-nvim-lsp", ft = { "typescript", "javascript", "sql", "sh", "lua", "python" } })
+	use({ "hrsh7th/cmp-nvim-lua", ft = { "lua" } })
 
 	-- snippets
-	use({ "L3MON4D3/LuaSnip" }) --snippet engine
-	use({ "rafamadriz/friendly-snippets" }) -- a bunch of snippets to use
+	use({ "L3MON4D3/LuaSnip", ft = { "typescript", "javascript" } }) --snippet engine
+	use({ "rafamadriz/friendly-snippets", ft = { "typescript", "javascript" } }) -- a bunch of snippets to use
 
 	-- LSP
-	use({ "neovim/nvim-lspconfig" }) -- enable LSP
-	-- use({ "williamboman/nvim-lsp-installer" }) -- simple to use language server installer
-	use({ "williamboman/mason.nvim" })
-	use({ "williamboman/mason-lspconfig.nvim" })
+	use({ "neovim/nvim-lspconfig", ft = { "typescript", "javascript", "sql", "sh", "lua" } }) -- enable LSP
+	use({ "williamboman/mason.nvim", cmd = { "Mason" } })
+	use({ "williamboman/mason-lspconfig.nvim", cmd = { "Mason" } })
 
 	-- Telescope
 	use({ "nvim-telescope/telescope.nvim" })
@@ -101,22 +91,44 @@ return packer.startup(function(use)
 		run = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
 	})
 
+	-- ChatGPT
+	use({
+		"jackMort/ChatGPT.nvim",
+		requires = {
+			"MunifTanjim/nui.nvim",
+			"nvim-lua/plenary.nvim",
+			"folke/trouble.nvim",
+			"nvim-telescope/telescope.nvim",
+		},
+	})
+
+	use({
+		"samjwill/nvim-unception",
+		setup = function()
+			-- Optional settings go here!
+			-- e.g.) vim.g.unception_open_buffer_in_new_tab = true
+		end,
+    cmd = { "term" },
+	})
+
 	-- SQL
 	use({
 		"kristijanhusak/vim-dadbod-ui",
 		requires = "tpope/vim-dadbod",
+    cmd = { "DBUI" },
 	})
-	use("kristijanhusak/vim-dadbod-completion")
+	use("kristijanhusak/vim-dadbod-completion", { cmd = { "DBUI" } })
 
 	-- music
 	use("martineausimon/nvim-lilypond-suite")
 
 	-- Treesitter
-	use({ "nvim-treesitter/nvim-treesitter" })
+	use({ "nvim-treesitter/nvim-treesitter", ft = { "typescript", "javascript", "sql", "sh", "lua", "python" } })
 	use({
 		"nvim-treesitter/nvim-treesitter-textobjects",
 		after = "nvim-treesitter",
 		requires = "nvim-treesitter/nvim-treesitter",
+    ft = { "typescript", "javascript", "sql", "sh", "lua", "python" },
 	})
 
 	-- Copilot
