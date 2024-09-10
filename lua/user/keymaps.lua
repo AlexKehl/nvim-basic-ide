@@ -1,5 +1,3 @@
--- local ts_repeat_move = require("nvim-treesitter.textobjects.repeatable_move")
-
 -- Shorten function name
 local keymap = vim.keymap.set
 
@@ -74,15 +72,40 @@ keymap("n", "§", ":Telescope buffers<CR>", opts)
 keymap("n", "<C-n>", ":Telescope command_history<CR>", opts)
 keymap("n", "z", ":Telescope oldfiles<CR>", opts)
 keymap("n", "<C-q>", ":Telescope diagnostics<CR>", opts)
-keymap("n", "<C-c>", ":Telescope current_buffer_fuzzy_find<CR>", opts)
 keymap("n", "<leader>gw", ":lua require('telescope').extensions.git_worktree.git_worktrees()<CR>", opts)
 
 -- todo
 keymap("n", "<leader>d", "<cmd>:e ~/.todo.txt<CR>", opts)
 
 -- format
-keymap("n", "<CR>", ":FormatWrite<CR>", opts)
+-- keymap("n", "<CR>", ":FormatWrite<CR>", opts)
+
+-- Markdown
+keymap("n", "<leader>md", ":MarkdownPreviewToggle<CR>", opts)
+
+local function format()
+	local filepath = vim.api.nvim_buf_get_name(0)
+	if not (filepath == "") then
+		vim.cmd([[ FormatWrite ]])
+	else
+		vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<CR>", true, false, true), "n", true)
+	end
+end
+
+keymap("n", "<CR>", format, opts)
 
 -- music
 -- keymap("n", "<tab>", ":LilyPlayer<CR>", opts)
 
+-- Neotest
+keymap("n", "<leader>no", ":lua require('neotest').output.open({ enter = true })<CR>", opts)
+keymap("n", "<leader>nw", ":lua require('neotest').watch.toggle()<CR>", opts)
+keymap("n", "<leader>ns", ":lua require('neotest').summary.toggle()<CR>", opts)
+keymap("n", "<leader>np", ":lua require('neotest').output_panel.toggle()<CR>", opts)
+keymap("n", "<leader>nc", ":lua require('neotest').output_panel.clear()<CR>", opts)
+
+-- Substitute
+vim.keymap.set("n", "m", ":lua require('substitute').operator()<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "mm", ":lua require('substitute').line()<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "M", ":lua require('substitute').eol()<CR>", { noremap = true, silent = true })
+vim.keymap.set("x", "m", ":lua require('substitute').visual()<CR>", { noremap = true, silent = true })

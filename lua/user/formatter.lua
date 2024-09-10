@@ -38,6 +38,14 @@ if present then
 		}
 	end
 
+	local cformat = function()
+		return {
+			exe = "clang-format",
+			args = { vim.fn.fnameescape(vim.api.nvim_buf_get_name(0)) },
+			stdin = true,
+		}
+	end
+
 	-- local htmlformat = function()
 	-- 	return {
 	-- 		exe = "cat " .. filepath .. " | pup ",
@@ -103,6 +111,8 @@ if present then
 					}
 				end,
 			},
+			c = { cformat },
+      arduino = { cformat },
 		},
 	})
 end

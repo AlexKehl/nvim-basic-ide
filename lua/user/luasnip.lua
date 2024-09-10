@@ -79,6 +79,26 @@ ls.add_snippets("typescript", {
 		i(1),
 		t('"'),
 	}),
+
+	s("describe", {
+		t("describe("),
+		i(1),
+		t(", () => {"),
+		t({ "", "" }),
+		t({ "\tit(" }),
+		i(2),
+		t(", () => {", "\t"),
+		t({ "", "" }),
+		t({ "\t});", "});" }),
+	}),
+
+	s("it", {
+		t({ "it(" }),
+		i(1),
+		t(", () => {", "\t"),
+		t({ "", "" }),
+		t({ "});" }),
+	}),
 })
 
 ls.add_snippets("typescriptreact", {

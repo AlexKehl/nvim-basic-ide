@@ -16,7 +16,6 @@ require("lazy").setup({
 	"mhartington/formatter.nvim",
 	"terryma/vim-expand-region",
 	"tpope/vim-projectionist",
-	"tpope/vim-unimpaired",
 	"chrisbra/Colorizer",
 	"christoomey/vim-tmux-navigator",
 	{
@@ -30,13 +29,6 @@ require("lazy").setup({
       ]])
 		end,
 	},
-	-- {
-	-- 	"ggandor/leap.nvim",
-	-- 	opts = {},
-	-- 	init = function()
-	-- 		require("leap").create_default_mappings()
-	-- 	end,
-	-- },
 	"numToStr/Comment.nvim",
 	"stevearc/oil.nvim",
 	{
@@ -75,7 +67,6 @@ require("lazy").setup({
 	{
 		"nvim-telescope/telescope.nvim",
 		event = "VimEnter",
-		tag = "0.1.4",
 		dependencies = {
 			"nvim-lua/plenary.nvim",
 			{
@@ -89,12 +80,14 @@ require("lazy").setup({
 			{ "nvim-tree/nvim-web-devicons", enabled = vim.g.have_nerd_font },
 		},
 	},
-
 	{
-		"samjwill/nvim-unception",
-		init = function() end,
+		"gbprod/substitute.nvim",
+		opts = {
+			-- your configuration comes here
+			-- or leave it empty to use the default settings
+			-- refer to the configuration section below
+		},
 	},
-
 	-- SQL
 	{
 		"kristijanhusak/vim-dadbod-ui",
@@ -112,6 +105,20 @@ require("lazy").setup({
 		dependencies = { "nvim-treesitter/nvim-treesitter" },
 	},
 
+	-- Markdown
+	{
+		"iamcco/markdown-preview.nvim",
+		cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+		ft = { "markdown" },
+		build = function()
+			vim.fn["mkdp#util#install"]()
+		end,
+	},
+
 	-- Copilot
 	"github/copilot.vim",
+
+	-- DAP
+	{ "mfussenegger/nvim-dap" },
+	{ "rcarriga/nvim-dap-ui", dependencies = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" } },
 })
