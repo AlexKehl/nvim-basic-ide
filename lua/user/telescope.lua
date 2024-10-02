@@ -1,7 +1,14 @@
+local pickers = require("telescope.pickers")
+local finders = require("telescope.finders")
+local conf = require("telescope.config").values
+local make_entry = require("telescope.make_entry")
+
 local status_ok, telescope = pcall(require, "telescope")
 if not status_ok then
 	return
 end
+
+local M = {}
 
 local actions = require("telescope.actions")
 
@@ -48,4 +55,19 @@ telescope.setup({
 })
 telescope.load_extension("ui-select")
 telescope.load_extension("fzf")
-telescope.load_extension("git_worktree")
+
+M.custom_references_picker = function(items)
+	pickers
+		.new({}, {
+			prompt_title = "LSP References",
+			finder = finders.new_table({
+				results = items,
+				entry_maker = make_entry.gen_from_quickfix({show_line = false}),
+			}),
+			previewer = conf.grep_previewer({}),
+			sorter = conf.generic_sorter({}),
+		})
+		:find()
+end
+
+return M

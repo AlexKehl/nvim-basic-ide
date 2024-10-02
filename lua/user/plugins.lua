@@ -18,6 +18,7 @@ require("lazy").setup({
 	"tpope/vim-projectionist",
 	"chrisbra/Colorizer",
 	"christoomey/vim-tmux-navigator",
+  "ton/vim-bufsurf",
 	{
 		"justinmk/vim-sneak",
 		init = function()
@@ -36,8 +37,6 @@ require("lazy").setup({
 		main = "ibl",
 		opts = { scope = { enabled = false } },
 	},
-	-- Git
-	"ThePrimeagen/git-worktree.nvim",
 	"lewis6991/gitsigns.nvim",
 	"tpope/vim-fugitive",
 
@@ -83,9 +82,9 @@ require("lazy").setup({
 	{
 		"gbprod/substitute.nvim",
 		opts = {
-			-- your configuration comes here
-			-- or leave it empty to use the default settings
-			-- refer to the configuration section below
+			highlight_substituted_text = {
+				enabled = false,
+			},
 		},
 	},
 	-- SQL
@@ -121,4 +120,5 @@ require("lazy").setup({
 	-- DAP
 	{ "mfussenegger/nvim-dap" },
 	{ "rcarriga/nvim-dap-ui", dependencies = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" } },
+	-- lazy.nvim
 })

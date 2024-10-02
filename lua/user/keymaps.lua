@@ -15,6 +15,10 @@ keymap("n", "<C-j>", "<C-w>j", opts)
 keymap("n", "<C-k>", "<C-w>k", opts)
 keymap("n", "<C-l>", "<C-w>l", opts)
 
+-- QuickFix window
+keymap("n", "]q", "<cmd>cnext<CR>", opts)
+keymap("n", "[q", "<cmd>cprev<CR>", opts)
+
 -- Tabs
 keymap("n", "<leader>1", "<cmd>tabn 1<CR>", opts)
 keymap("n", "<leader>2", "<cmd>tabn 2<CR>", opts)
@@ -72,7 +76,6 @@ keymap("n", "§", ":Telescope buffers<CR>", opts)
 keymap("n", "<C-n>", ":Telescope command_history<CR>", opts)
 keymap("n", "z", ":Telescope oldfiles<CR>", opts)
 keymap("n", "<C-q>", ":Telescope diagnostics<CR>", opts)
-keymap("n", "<leader>gw", ":lua require('telescope').extensions.git_worktree.git_worktrees()<CR>", opts)
 
 -- todo
 keymap("n", "<leader>d", "<cmd>:e ~/.todo.txt<CR>", opts)
@@ -103,6 +106,14 @@ keymap("n", "<leader>nw", ":lua require('neotest').watch.toggle()<CR>", opts)
 keymap("n", "<leader>ns", ":lua require('neotest').summary.toggle()<CR>", opts)
 keymap("n", "<leader>np", ":lua require('neotest').output_panel.toggle()<CR>", opts)
 keymap("n", "<leader>nc", ":lua require('neotest').output_panel.clear()<CR>", opts)
+
+-- Text objects for whitespace
+keymap("n", "da ", "F df ", opts)
+keymap("n", "di ", "T dt ", opts)
+keymap("n", "ca ", "F cf ", opts)
+keymap("n", "ci ", "T ct ", opts)
+
+keymap("n", "<leader>el", "<cmd>EslintFixAll<CR>", opts)
 
 -- Substitute
 vim.keymap.set("n", "m", ":lua require('substitute').operator()<CR>", { noremap = true, silent = true })

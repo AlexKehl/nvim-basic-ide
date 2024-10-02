@@ -1,3 +1,6 @@
+local filter_references_with_treesitter = require("user.treesitter").filter_references_with_treesitter
+local custom_references_picker = require("user.telescope").custom_references_picker
+
 local M = {}
 
 local status_cmp_ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
@@ -59,6 +62,31 @@ local code_action_filter = function(code_action)
 	end
 end
 
+local function custom_lsp_references_with_treesitter()
+	vim.lsp.buf.references(nil, {
+		on_list = function(options)
+			local filtered_references = filter_references_with_treesitter(options.items)
+
+			if #filtered_references == 0 then
+				vim.print("No references found")
+				return
+			end
+
+			if #filtered_references == 1 then
+				local reference = filtered_references[1]
+				vim.lsp.util.jump_to_location({
+					uri = reference.user_data.uri,
+					range = reference.user_data.range,
+				})
+				return
+			end
+
+			options.items = filtered_references
+			custom_references_picker(filtered_references)
+		end,
+	})
+end
+
 local function lsp_keymaps(bufnr)
 	local opts = { noremap = true, silent = true }
 	local keymap = vim.api.nvim_buf_set_keymap
@@ -67,7 +95,7 @@ local function lsp_keymaps(bufnr)
 	keymap(bufnr, "n", "gd", ":Telescope lsp_definitions show_line=false<CR>", opts)
 	keymap(bufnr, "n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>", opts)
 	keymap(bufnr, "n", "gi", ":Telescope lsp_implementations show_line=false<CR>", opts)
-	keymap(bufnr, "n", "gr", ":Telescope lsp_references show_line=false<CR>", opts)
+	vim.keymap.set("n", "gr", custom_lsp_references_with_treesitter, opts)
 	keymap(bufnr, "n", "gl", "<cmd>lua vim.diagnostic.open_float()<CR>", opts)
 	keymap(bufnr, "n", "<leader>lf", "<cmd>lua vim.lsp.buf.formatting()<cr>", opts)
 	keymap(bufnr, "n", "<leader>li", "<cmd>LspInfo<cr>", opts)
