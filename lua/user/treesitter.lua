@@ -56,7 +56,7 @@ configs.setup({
 				["af"] = "@function.outer",
 				["if"] = "@function.inner",
 				["id"] = "@conditional.inner",
-				["ad"] = "@conditional.outer",
+				["ad"] = "@conditional.outer"
 			},
 		},
 		move = {

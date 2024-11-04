@@ -114,6 +114,36 @@ keymap("n", "ca ", "F cf ", opts)
 keymap("n", "ci ", "T ct ", opts)
 
 keymap("n", "<leader>el", "<cmd>EslintFixAll<CR>", opts)
+keymap("n", "<leader>or", "<cmd>OrganizeImports<CR>", opts)
+
+local function load_files_to_quickfix()
+	vim.print("Starting tsc...")
+
+	local files_string = vim.fn.system("tsc --noEmit | ggrep -Po 'src.+\\.tsx?' | sort | uniq")
+
+	local files = vim.split(files_string, "\n")
+
+	local filtered_files = vim.tbl_filter(function(file)
+		return file ~= ""
+	end, files)
+	vim.print(vim.inspect(filtered_files))
+
+	if #filtered_files == 0 then
+		vim.print("No errors found")
+		return
+	end
+
+	local qflist = {}
+	for _, file in ipairs(filtered_files) do
+		table.insert(qflist, { filename = file })
+	end
+
+	vim.fn.setqflist(qflist)
+
+	vim.cmd("copen")
+end
+
+vim.keymap.set("n", "<leader>ch", "<cmd>TSCOpen<CR>", opts)
 
 -- Substitute
 vim.keymap.set("n", "m", ":lua require('substitute').operator()<CR>", { noremap = true, silent = true })

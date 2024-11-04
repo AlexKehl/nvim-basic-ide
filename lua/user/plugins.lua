@@ -18,7 +18,6 @@ require("lazy").setup({
 	"tpope/vim-projectionist",
 	"chrisbra/Colorizer",
 	"christoomey/vim-tmux-navigator",
-  "ton/vim-bufsurf",
 	{
 		"justinmk/vim-sneak",
 		init = function()
@@ -96,6 +95,18 @@ require("lazy").setup({
 
 	-- music
 	"martineausimon/nvim-lilypond-suite",
+
+	{
+		"dmmulroy/tsc.nvim",
+		opts = {
+			auto_start_watch_mode = true,
+			auto_open_qflist = false,
+			flags = { watch = true },
+			enable_progress_notifications = false,
+			enable_error_notifications = false,
+			pretty_errors = false,
+		},
+	},
 
 	-- Treesitter
 	"nvim-treesitter/nvim-treesitter",

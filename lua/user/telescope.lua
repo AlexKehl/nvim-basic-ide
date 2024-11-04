@@ -2,6 +2,8 @@ local pickers = require("telescope.pickers")
 local finders = require("telescope.finders")
 local conf = require("telescope.config").values
 local make_entry = require("telescope.make_entry")
+local actions = require("telescope.actions")
+local action_state = require("telescope.actions.state")
 
 local status_ok, telescope = pcall(require, "telescope")
 if not status_ok then
@@ -10,7 +12,20 @@ end
 
 local M = {}
 
-local actions = require("telescope.actions")
+local function fzf_multi_select(prompt_bufnr)
+	print("fzf_multi_select")
+	local picker = action_state.get_current_picker(prompt_bufnr)
+	local num_selections = #picker:get_multi_selection()
+
+	if num_selections > 1 then
+		-- actions.file_edit throws - context of picker seems to change
+		--actions.file_edit(prompt_bufnr)
+		actions.send_selected_to_qflist(prompt_bufnr)
+		actions.open_qflist()
+	else
+		actions.file_edit(prompt_bufnr)
+	end
+end
 
 telescope.setup({
 	defaults = {
@@ -22,6 +37,14 @@ telescope.setup({
 				["<C-j>"] = actions.move_selection_next,
 				["<C-k>"] = actions.move_selection_previous,
 				["<C-d>"] = actions.delete_buffer,
+				["<C-w>"] = fzf_multi_select,
+				["<tab>"] = actions.toggle_selection + actions.move_selection_next,
+				["<s-tab>"] = actions.toggle_selection + actions.move_selection_previous,
+			},
+			n = {
+				["<tab>"] = actions.toggle_selection + actions.move_selection_next,
+				["<s-tab>"] = actions.toggle_selection + actions.move_selection_previous,
+				["<C-w>"] = fzf_multi_select,
 			},
 		},
 		layout_config = {
@@ -53,6 +76,7 @@ telescope.setup({
 		},
 	},
 })
+
 telescope.load_extension("ui-select")
 telescope.load_extension("fzf")
 
@@ -62,7 +86,7 @@ M.custom_references_picker = function(items)
 			prompt_title = "LSP References",
 			finder = finders.new_table({
 				results = items,
-				entry_maker = make_entry.gen_from_quickfix({show_line = false}),
+				entry_maker = make_entry.gen_from_quickfix({ show_line = false }),
 			}),
 			previewer = conf.grep_previewer({}),
 			sorter = conf.generic_sorter({}),
