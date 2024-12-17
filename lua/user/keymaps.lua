@@ -52,9 +52,6 @@ keymap("i", "kj", "<ESC>", opts)
 keymap("v", "<", "<gv", opts)
 keymap("v", ">", ">gv", opts)
 
--- QuickFix
-keymap("n", "<leader>cl", "<cmd>ccl<CR>", opts)
-
 -- Plugins --
 keymap("n", "<Right>", "<cmd>BufSurfForward<CR>", opts)
 keymap("n", "<Left>", "<cmd>BufSurfBack<CR>", opts)
@@ -79,9 +76,6 @@ keymap("n", "<C-q>", ":Telescope diagnostics<CR>", opts)
 
 -- todo
 keymap("n", "<leader>d", "<cmd>:e ~/.todo.txt<CR>", opts)
-
--- format
--- keymap("n", "<CR>", ":FormatWrite<CR>", opts)
 
 -- Markdown
 keymap("n", "<leader>md", ":MarkdownPreviewToggle<CR>", opts)
@@ -116,34 +110,29 @@ keymap("n", "ci ", "T ct ", opts)
 keymap("n", "<leader>el", "<cmd>EslintFixAll<CR>", opts)
 keymap("n", "<leader>or", "<cmd>OrganizeImports<CR>", opts)
 
-local function load_files_to_quickfix()
-	vim.print("Starting tsc...")
+keymap("n", "<leader>jq", "?%<CR>x:norm v%gJ<CR>V:!jq<CR>", opts)
 
-	local files_string = vim.fn.system("tsc --noEmit | ggrep -Po 'src.+\\.tsx?' | sort | uniq")
+-- copilot
+-- vim.keymap.set("i", "<C-]>", ":lua require('copilot.suggestion').accept()<CR>", { noremap = true, silent = true })
 
-	local files = vim.split(files_string, "\n")
+-- copilot chat
+keymap("n", "<leader>cc", "<cmd>CopilotChatToggle<CR>", opts)
+keymap("v", "<leader>cc", "<cmd>CopilotChatToggle<CR>", opts)
+keymap("n", "<leader>ct", "<cmd>CopilotChatTests<CR>", opts)
+keymap("v", "<leader>ct", "<cmd>CopilotChatTests<CR>", opts)
 
-	local filtered_files = vim.tbl_filter(function(file)
-		return file ~= ""
-	end, files)
-	vim.print(vim.inspect(filtered_files))
+keymap("n", "<leader>cp", "<cmd>Copilot panel<CR>", opts)
+keymap("n", "<leader>cr", ":lua require('copilot.panel').refresh()<CR>", opts)
 
-	if #filtered_files == 0 then
-		vim.print("No errors found")
-		return
-	end
+vim.keymap.set("n", "<leader>ch", function()
+	vim.cmd("TSC")
+	vim.cmd("TSCOpen")
+end, opts)
 
-	local qflist = {}
-	for _, file in ipairs(filtered_files) do
-		table.insert(qflist, { filename = file })
-	end
-
-	vim.fn.setqflist(qflist)
-
-	vim.cmd("copen")
-end
-
-vim.keymap.set("n", "<leader>ch", "<cmd>TSCOpen<CR>", opts)
+vim.keymap.set("n", "<leader>cl", function()
+	vim.cmd("silent! TSCStop")
+	vim.cmd("ccl")
+end, opts)
 
 -- Substitute
 vim.keymap.set("n", "m", ":lua require('substitute').operator()<CR>", { noremap = true, silent = true })

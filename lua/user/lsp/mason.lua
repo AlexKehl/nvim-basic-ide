@@ -37,4 +37,19 @@ mason_lspconfig.setup_handlers({
 		local extended_opts = vim.tbl_deep_extend("force", rust_opts, opts)
 		require("lspconfig")["rust_analyzer"].setup(extended_opts)
 	end,
+	["elixirls"] = function()
+    local elixir_opts = {
+      cmd = { "elixir-ls" },
+      filetypes = { "elixir" },
+      root_dir = require("lspconfig.util").root_pattern("mix.exs", ".git"),
+      settings = {
+        elixirLS = {
+          dialyzerEnabled = true,
+          dialyzerFormat = "dialyxir_long",
+        },
+      },
+    }
+		local extended_opts = vim.tbl_deep_extend("force", elixir_opts, opts)
+		require("lspconfig")["elixirls"].setup(extended_opts)
+	end,
 })

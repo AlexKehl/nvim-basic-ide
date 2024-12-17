@@ -11,7 +11,7 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
 	"sainnhe/gruvbox-material",
 	"nvim-lua/plenary.nvim",
-	"nvim-lualine/lualine.nvim",
+	-- "nvim-lualine/lualine.nvim",
 	{ "kylechui/nvim-surround", opts = {} },
 	"mhartington/formatter.nvim",
 	"terryma/vim-expand-region",
@@ -99,12 +99,69 @@ require("lazy").setup({
 	{
 		"dmmulroy/tsc.nvim",
 		opts = {
-			auto_start_watch_mode = true,
 			auto_open_qflist = false,
-			flags = { watch = true },
+			flags = { watch = true, noEmit = true },
 			enable_progress_notifications = false,
 			enable_error_notifications = false,
 			pretty_errors = false,
+		},
+	},
+
+	{
+		"zbirenbaum/copilot.lua",
+		opts = {
+			panel = {
+				enabled = true,
+				auto_refresh = false,
+				keymap = {
+					jump_prev = "[[",
+					jump_next = "]]",
+					accept = "<CR>",
+					refresh = "gr",
+				},
+				layout = {
+					position = "right", -- | top | left | right | horizontal | vertical
+					ratio = 0.4,
+				},
+			},
+			suggestion = {
+				enabled = true,
+				auto_trigger = true,
+				hide_during_completion = true,
+				debounce = 75,
+				keymap = {
+					accept = "<C-]>",
+					dismiss = false,
+				},
+			},
+			copilot_node_command = "node", -- Node.js version must be > 18.x
+			server_opts_overrides = {
+				settings = {
+					advanced = {
+						listCount = 3, -- #completions for panel
+					},
+				},
+			},
+		},
+	},
+
+	{
+		{
+			"CopilotC-Nvim/CopilotChat.nvim",
+			dependencies = {
+				{ "zbirenbaum/copilot.lua" },
+				{ "nvim-lua/plenary.nvim" },
+			},
+			build = "make tiktoken",
+			opts = {
+				model = "claude-3.5-sonnet",
+				mappings = {
+					reset = {
+						normal = "",
+						insert = "",
+					},
+				},
+			},
 		},
 	},
 
@@ -124,9 +181,6 @@ require("lazy").setup({
 			vim.fn["mkdp#util#install"]()
 		end,
 	},
-
-	-- Copilot
-	"github/copilot.vim",
 
 	-- DAP
 	{ "mfussenegger/nvim-dap" },

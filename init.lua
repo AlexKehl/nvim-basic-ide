@@ -86,11 +86,4 @@ vim.cmd([[
   autocmd BufLeave */src/types/*.ts                         normal! mY
   autocmd BufLeave *.e2e.ts                                 normal! mE
   augroup END
-
-  imap <silent><script><expr> <C-K> copilot#Accept("\<CR>")
-  imap <C-L> <Plug>(copilot-next)
-  imap <C-H> <Plug>(copilot-previous)
-  let g:copilot_no_tab_map = v:true
-
-  " set lazyredraw
 ]])

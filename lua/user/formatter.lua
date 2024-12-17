@@ -30,6 +30,27 @@ if present then
 		}
 	end
 
+	local elixirformat = function()
+		local filepath = vim.fn.fnameescape(vim.api.nvim_buf_get_name(0))
+		-- Escape the braces
+		filepath = filepath:gsub("%(", "\\(")
+		filepath = filepath:gsub("%)", "\\)")
+
+		return {
+			exe = "cat " .. filepath .. " | mix format -",
+			stdin = true,
+		}
+	end
+
+	local gleamformat = function()
+		local filepath = vim.fn.fnameescape(vim.api.nvim_buf_get_name(0))
+		-- Escape the braces
+		filepath = filepath:gsub("%(", "\\(")
+		filepath = filepath:gsub("%)", "\\)")
+
+		return { exe = "gleam format" }
+	end
+
 	local shfmt = function()
 		return {
 			exe = "shfmt",
@@ -72,8 +93,10 @@ if present then
 			typescript = { prettier },
 			typescriptreact = { prettier },
 			markdown = { prettier },
+			elixir = { elixirformat },
 			json = { prettier },
 			jsonc = { prettier },
+			gleam = { gleamformat },
 			rust = { rustfmt },
 			ocaml = { ocamlformat },
 			sh = { shfmt },
@@ -112,7 +135,7 @@ if present then
 				end,
 			},
 			c = { cformat },
-      arduino = { cformat },
+			arduino = { cformat },
 		},
 	})
 end

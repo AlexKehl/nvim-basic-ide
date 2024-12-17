@@ -120,7 +120,31 @@ M.on_attach = function(client, bufnr)
 		client.server_capabilities.document_formatting = false
 	end
 
+	if client.name == "gleam" then
+		client.server_capabilities.documentFormattingProvider = true
+	end
+
 	lsp_keymaps(bufnr)
+
+	local status_ok, illuminate = pcall(require, "illuminate")
+	if not status_ok then
+		return
+	end
+	illuminate.on_attach(client)
 end
+
+-- gotta have lspconfig imported with you pmanager, I reckon
+local lspconfig_status_ok, lspconfig = pcall(require, "lspconfig")
+if not lspconfig_status_ok then
+	return
+end
+
+lspconfig.gleam.setup({
+	cmd = { "gleam", "lsp" },
+	filetypes = { "gleam" },
+	root_dir = lspconfig.util.root_pattern("gleam.toml", ".git"),
+	on_attach = M.on_attach,
+	capabilities = M.capabilities,
+})
 
 return M

@@ -25,6 +25,7 @@ vim.opt.tabstop = 2 -- insert 2 spaces for a tab
 vim.opt.cursorline = true -- highlight the current line
 vim.opt.number = true -- set numbered lines
 vim.opt.laststatus = 3
+vim.opt.statusline = [[ %f %y %m %r %=%l,%c %P]]
 vim.opt.showcmd = false
 vim.opt.ruler = false
 vim.opt.numberwidth = 4 -- set number column width to 2 {default 4}

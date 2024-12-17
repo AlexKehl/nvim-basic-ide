@@ -64,6 +64,17 @@ ls.add_snippets("all", {
 	}),
 })
 
+
+ls.add_snippets("gleam", {
+	ls.s("fn", {
+		ls.text_node("fn("),
+    ls.insert_node(1),
+    ls.text_node(") {"),
+    ls.insert_node(0),
+    ls.text_node("}"),
+	}),
+})
+
 ls.add_snippets("typescript", {
 	s("exp", {
 		t('export * from "./'),
@@ -102,19 +113,6 @@ ls.add_snippets("typescript", {
 })
 
 ls.add_snippets("typescriptreact", {
-	s("rfcp", {
-		t({ "interface Props {", "\t", "}", "\t" }),
-		t({ "", "export const " }),
-		i(1, "FunctionName"),
-		t(" = ({ "),
-		i(2, ""),
-		t(" }: "),
-		i(0, "Props"),
-		t({ ") => {", "\t" }),
-		t({ "return (<>" }),
-		t({ "Component" }),
-		t({ "</>);", "}" }),
-	}),
 	s("rfc", {
 		t({ "", "export const " }),
 		i(1, "FunctionName"),
@@ -124,82 +122,5 @@ ls.add_snippets("typescriptreact", {
 		t({ "Component" }),
 		t({ "</>" }),
 		t({ ");", "}" }),
-	}),
-	s("im", {
-		t("import { "),
-		i(1),
-		t(' } from "'),
-		i(2),
-		t({ '";', "" }),
-		i(0),
-	}),
-	s("imd", {
-		t("import "),
-		i(1),
-		t(' from "'),
-		i(2),
-		t({ '";', "" }),
-		i(0),
-	}),
-	s("ima", {
-		t("import "),
-		i(1),
-		t(" as "),
-		i(2),
-		t(' from "'),
-		i(3),
-		t({ '";', "" }),
-		i(0),
-	}),
-	s("in", {
-		t("interface "),
-		i(1, "InterfaceName"),
-		t(" {"),
-		t("\t"),
-		i(0),
-		t({ "", "}" }),
-	}),
-	s("ue", {
-		t({ "useEffect(() => {", "\t" }),
-		i(1),
-		t({ "", "\treturn () => {", "\t" }),
-		i(2),
-		t({ "", "\t}", "}, [" }),
-		i(3),
-		t({ "]);", "" }),
-		i(0),
-	}),
-	s("us", {
-		t("const ["),
-		i(1),
-		t(" , set"),
-		f(capitalize, 1),
-		t("] = useState("),
-		i(2),
-		t(");"),
-		i(0),
-	}),
-	s("log", {
-		t('console.log("'),
-		i(1, "variable name"),
-		t('", '),
-		rep(1),
-		t(");"),
-		i(0),
-	}),
-	s("exp", {
-		t('export * from "./'),
-		i(1),
-		t('";', "path to component"),
-		i(0),
-	}),
-	s("nf", {
-		t({ "const " }),
-		i(1, "FunctionName"),
-		t(" = ("),
-		i(2, "params"),
-		t(") => {"),
-		i(0),
-		t("}"),
 	}),
 })
