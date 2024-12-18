@@ -50,16 +50,59 @@ require("lazy").setup({
 		config = lsp_config,
 	},
 
-	{ -- Autocompletion
-		"hrsh7th/nvim-cmp",
-		event = "InsertEnter",
-		config = cmp_config,
-	},
+	-- Autocompletion
 	"L3MON4D3/LuaSnip",
-	"saadparwaiz1/cmp_luasnip",
-	"hrsh7th/cmp-buffer",
-	"hrsh7th/cmp-nvim-lsp",
-	"hrsh7th/cmp-path",
+	{
+		"saghen/blink.cmp",
+		lazy = false, -- lazy loading handled internally
+		-- use a release tag to download pre-built binaries
+		version = "v0.*",
+
+		opts = {
+			keymap = {
+				preset = "default",
+				["<S-Tab>"] = { "select_prev", "fallback" },
+				["<Tab>"] = { "select_next", "fallback" },
+				["<CR>"] = { "accept", "fallback" },
+				["<C-e>"] = { "show", "fallback" },
+
+				-- optionally, define different keymaps for cmdline
+				-- cmdline = {
+				--   preset = 'super-tab'
+				-- }
+			},
+			completion = {
+				list = {
+					max_items = 200,
+					selection = "auto_insert",
+				},
+			},
+
+			appearance = {
+				-- Sets the fallback highlight groups to nvim-cmp's highlight groups
+				-- Useful for when your theme doesn't support blink.cmp
+				-- will be removed in a future release
+				use_nvim_cmp_as_default = true,
+				-- Set to 'mono' for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
+				-- Adjusts spacing to ensure icons are aligned
+				nerd_font_variant = "mono",
+			},
+
+			-- default list of enabled providers defined so that you can extend it
+			-- elsewhere in your config, without redefining it, via `opts_extend`
+			sources = {
+				default = { "lsp", "path", "buffer" },
+				-- optionally disable cmdline completions
+				-- cmdline = {},
+			},
+
+			-- experimental signature help support
+			-- signature = { enabled = true }
+		},
+		-- allows extending the providers array elsewhere in your config
+		-- without having to redefine it
+		opts_extend = { "sources.default" },
+	},
 
 	-- Telescope
 	{
