@@ -15,6 +15,8 @@ require("user.oil")
 require("user.dadbod")
 require("user.lilypond")
 require("user.dap")
+require("user.fzf-lua")
+require("user.blink")
 
 local substitute = require("substitute")
 
@@ -86,4 +88,9 @@ vim.cmd([[
   autocmd BufLeave */src/types/*.ts                         normal! mY
   autocmd BufLeave *.e2e.ts                                 normal! mE
   augroup END
+
+  imap <silent><script><expr> <C-K> copilot#Accept("\<CR>")
+  imap <C-L> <Plug>(copilot-next)
+  imap <C-H> <Plug>(copilot-previous)
+  let g:copilot_no_tab_map = v:true
 ]])

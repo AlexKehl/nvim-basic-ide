@@ -112,9 +112,6 @@ keymap("n", "<leader>or", "<cmd>OrganizeImports<CR>", opts)
 
 keymap("n", "<leader>jq", "?%<CR>x:norm v%gJ<CR>V:!jq<CR>", opts)
 
--- copilot
--- vim.keymap.set("i", "<C-]>", ":lua require('copilot.suggestion').accept()<CR>", { noremap = true, silent = true })
-
 -- copilot chat
 keymap("n", "<leader>cc", "<cmd>CopilotChatToggle<CR>", opts)
 keymap("v", "<leader>cc", "<cmd>CopilotChatToggle<CR>", opts)

@@ -1,5 +1,4 @@
 local lsp_config = require("user.lsp")
-local cmp_config = require("user.cmp")
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
@@ -50,58 +49,20 @@ require("lazy").setup({
 		config = lsp_config,
 	},
 
-	-- Autocompletion
 	"L3MON4D3/LuaSnip",
+
+	-- Autocompletion
 	{
 		"saghen/blink.cmp",
-		lazy = false, -- lazy loading handled internally
-		-- use a release tag to download pre-built binaries
+		lazy = false,
 		version = "v0.*",
-
-		opts = {
-			keymap = {
-				preset = "default",
-				["<S-Tab>"] = { "select_prev", "fallback" },
-				["<Tab>"] = { "select_next", "fallback" },
-				["<CR>"] = { "accept", "fallback" },
-				["<C-e>"] = { "show", "fallback" },
-
-				-- optionally, define different keymaps for cmdline
-				-- cmdline = {
-				--   preset = 'super-tab'
-				-- }
-			},
-			completion = {
-				list = {
-					max_items = 200,
-					selection = "auto_insert",
-				},
-			},
-
-			appearance = {
-				-- Sets the fallback highlight groups to nvim-cmp's highlight groups
-				-- Useful for when your theme doesn't support blink.cmp
-				-- will be removed in a future release
-				use_nvim_cmp_as_default = true,
-				-- Set to 'mono' for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
-				-- Adjusts spacing to ensure icons are aligned
-				nerd_font_variant = "mono",
-			},
-
-			-- default list of enabled providers defined so that you can extend it
-			-- elsewhere in your config, without redefining it, via `opts_extend`
-			sources = {
-				default = { "lsp", "path", "buffer" },
-				-- optionally disable cmdline completions
-				-- cmdline = {},
-			},
-
-			-- experimental signature help support
-			-- signature = { enabled = true }
-		},
-		-- allows extending the providers array elsewhere in your config
-		-- without having to redefine it
 		opts_extend = { "sources.default" },
+	},
+
+  -- Fzf
+	{
+		"ibhagwan/fzf-lua",
+		dependencies = { "nvim-tree/nvim-web-devicons" },
 	},
 
 	-- Telescope
@@ -150,44 +111,8 @@ require("lazy").setup({
 		},
 	},
 
-	{
-		"zbirenbaum/copilot.lua",
-		opts = {
-			panel = {
-				enabled = true,
-				auto_refresh = false,
-				keymap = {
-					jump_prev = "[[",
-					jump_next = "]]",
-					accept = "<CR>",
-					refresh = "gr",
-				},
-				layout = {
-					position = "right", -- | top | left | right | horizontal | vertical
-					ratio = 0.4,
-				},
-			},
-			suggestion = {
-				enabled = true,
-				auto_trigger = true,
-				hide_during_completion = true,
-				debounce = 75,
-				keymap = {
-					accept = "<C-]>",
-					dismiss = false,
-				},
-			},
-			copilot_node_command = "node", -- Node.js version must be > 18.x
-			server_opts_overrides = {
-				settings = {
-					advanced = {
-						listCount = 3, -- #completions for panel
-					},
-				},
-			},
-		},
-	},
-
+  -- Copilot
+  "github/copilot.vim",
 	{
 		{
 			"CopilotC-Nvim/CopilotChat.nvim",
