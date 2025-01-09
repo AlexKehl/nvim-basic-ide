@@ -14,7 +14,7 @@ require("blink.cmp").setup({
 	completion = {
 		list = {
 			max_items = 200,
-			selection = "auto_insert",
+			selection = { auto_insert = true, preselect = false },
 		},
 
 		documentation = {
@@ -60,9 +60,7 @@ require("blink.cmp").setup({
 	-- default list of enabled providers defined so that you can extend it
 	-- elsewhere in your config, without redefining it, via `opts_extend`
 	sources = {
-		completion = {
-			enabled_providers = { "lsp", "path", "buffer", "dadbod" },
-		},
+		default = { "lsp", "path", "buffer", "dadbod" },
 		providers = {
 			lsp = {
 				name = "LSP",

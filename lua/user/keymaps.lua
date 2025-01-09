@@ -136,3 +136,7 @@ vim.keymap.set("n", "m", ":lua require('substitute').operator()<CR>", { noremap 
 vim.keymap.set("n", "mm", ":lua require('substitute').line()<CR>", { noremap = true, silent = true })
 vim.keymap.set("n", "M", ":lua require('substitute').eol()<CR>", { noremap = true, silent = true })
 vim.keymap.set("x", "m", ":lua require('substitute').visual()<CR>", { noremap = true, silent = true })
+
+vim.keymap.set('n', '<leader>bb', 'vip:!zsh<CR>', opts)
+vim.keymap.set('n', '<leader>bj', 'vip:!zsh | jq<CR>', opts)
+vim.keymap.set('n', '<leader>jj', 'vip:!jq<CR>', opts)

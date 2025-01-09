@@ -15,7 +15,6 @@ require("user.oil")
 require("user.dadbod")
 require("user.lilypond")
 require("user.dap")
-require("user.fzf-lua")
 require("user.blink")
 
 local substitute = require("substitute")

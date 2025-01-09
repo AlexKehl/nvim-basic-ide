@@ -55,14 +55,7 @@ require("lazy").setup({
 	{
 		"saghen/blink.cmp",
 		lazy = false,
-		version = "v0.*",
 		opts_extend = { "sources.default" },
-	},
-
-  -- Fzf
-	{
-		"ibhagwan/fzf-lua",
-		dependencies = { "nvim-tree/nvim-web-devicons" },
 	},
 
 	-- Telescope
@@ -111,8 +104,8 @@ require("lazy").setup({
 		},
 	},
 
-  -- Copilot
-  "github/copilot.vim",
+	-- Copilot
+	"github/copilot.vim",
 	{
 		{
 			"CopilotC-Nvim/CopilotChat.nvim",
