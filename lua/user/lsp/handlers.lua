@@ -73,6 +73,14 @@ local function custom_lsp_references_with_treesitter()
 	})
 end
 
+local code_action_filter = function(code_action)
+	if string.find(code_action.command.title, "Add") or string.find(code_action.command.title, "Update") then
+		return true
+	else
+		return false
+	end
+end
+
 local function lsp_keymaps(bufnr)
 	local opts = { noremap = true, silent = true }
 	local keymap = vim.api.nvim_buf_set_keymap
@@ -86,7 +94,13 @@ local function lsp_keymaps(bufnr)
 	keymap(bufnr, "n", "<leader>lf", "<cmd>lua vim.lsp.buf.formatting()<cr>", opts)
 	keymap(bufnr, "n", "<leader>li", "<cmd>LspInfo<cr>", opts)
 	keymap(bufnr, "n", "<leader>lI", "<cmd>LspInstallInfo<cr>", opts)
-	keymap(bufnr, "n", "<leader>f", "<cmd>lua vim.lsp.buf.code_action()<cr>", opts)
+	vim.keymap.set("n", "<leader>f", function()
+		if vim.bo.filetype == "typescript" or vim.bo.filetype == "typescriptreact" then
+			vim.lsp.buf.code_action({ filter = code_action_filter })
+		else
+			vim.lsp.buf.code_action()
+		end
+	end, opts)
 	keymap(bufnr, "n", "<leader>F", "<cmd>lua vim.lsp.buf.code_action()<cr>", opts)
 	keymap(bufnr, "n", "]g", "<cmd>lua vim.diagnostic.goto_next({buffer=0})<cr>", opts)
 	keymap(bufnr, "n", "[g", "<cmd>lua vim.diagnostic.goto_prev({buffer=0})<cr>", opts)
@@ -109,12 +123,6 @@ M.on_attach = function(client, bufnr)
 	end
 
 	lsp_keymaps(bufnr)
-
-	local status_ok, illuminate = pcall(require, "illuminate")
-	if not status_ok then
-		return
-	end
-	illuminate.on_attach(client)
 end
 
 -- gotta have lspconfig imported with you pmanager, I reckon

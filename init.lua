@@ -92,4 +92,6 @@ vim.cmd([[
   imap <C-L> <Plug>(copilot-next)
   imap <C-H> <Plug>(copilot-previous)
   let g:copilot_no_tab_map = v:true
+
+  let g:conjure#mapping#prefix = " "
 ]])

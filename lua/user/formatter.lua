@@ -51,6 +51,15 @@ if present then
 		return { exe = "gleam format" }
 	end
 
+	local clojureformat = function()
+		local filepath = vim.fn.fnameescape(vim.api.nvim_buf_get_name(0))
+		-- Escape the braces
+		filepath = filepath:gsub("%(", "\\(")
+		filepath = filepath:gsub("%)", "\\)")
+
+		return { exe = "cat " .. filepath .. " | cljstyle pipe", stdin = true }
+	end
+
 	local shfmt = function()
 		return {
 			exe = "shfmt",
@@ -97,6 +106,7 @@ if present then
 			json = { prettier },
 			jsonc = { prettier },
 			gleam = { gleamformat },
+			clojure = { clojureformat },
 			rust = { rustfmt },
 			ocaml = { ocamlformat },
 			sh = { shfmt },

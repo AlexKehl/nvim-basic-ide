@@ -98,8 +98,8 @@ require("lazy").setup({
 		opts = {
 			auto_open_qflist = false,
 			flags = { watch = true, noEmit = true },
-			enable_progress_notifications = false,
-			enable_error_notifications = false,
+			enable_progress_notifications = true,
+			enable_error_notifications = true,
 			pretty_errors = false,
 		},
 	},
@@ -124,6 +124,16 @@ require("lazy").setup({
 				},
 			},
 		},
+	},
+
+	{ "Olical/conjure" },
+	-- { "guns/vim-sexp" },
+	-- { "tpope/vim-sexp-mappings-for-regular-people" },
+	{
+		"julienvincent/nvim-paredit",
+		config = function()
+			require("nvim-paredit").setup()
+		end,
 	},
 
 	-- Treesitter

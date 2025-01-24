@@ -7,6 +7,7 @@ local opts = { silent = true }
 --Remap space as leader key
 keymap("", "<Space>", "<Nop>", opts)
 vim.g.mapleader = " "
+vim.g.maplocalleader = " "
 
 -- Normal --
 -- Better window navigation
@@ -114,6 +115,7 @@ keymap("n", "<leader>jq", "?%<CR>x:norm v%gJ<CR>V:!jq<CR>", opts)
 
 -- copilot chat
 keymap("n", "<leader>cc", "<cmd>CopilotChatToggle<CR>", opts)
+keymap("n", "<M-c>", "<cmd>CopilotChatToggle<CR>", opts)
 keymap("v", "<leader>cc", "<cmd>CopilotChatToggle<CR>", opts)
 keymap("n", "<leader>ct", "<cmd>CopilotChatTests<CR>", opts)
 keymap("v", "<leader>ct", "<cmd>CopilotChatTests<CR>", opts)
@@ -137,6 +139,13 @@ vim.keymap.set("n", "mm", ":lua require('substitute').line()<CR>", { noremap = t
 vim.keymap.set("n", "M", ":lua require('substitute').eol()<CR>", { noremap = true, silent = true })
 vim.keymap.set("x", "m", ":lua require('substitute').visual()<CR>", { noremap = true, silent = true })
 
-vim.keymap.set('n', '<leader>bb', 'vip:!zsh<CR>', opts)
-vim.keymap.set('n', '<leader>bj', 'vip:!zsh | jq<CR>', opts)
-vim.keymap.set('n', '<leader>jj', 'vip:!jq<CR>', opts)
+vim.keymap.set("n", "<leader>bb", "vip:!zsh<CR>", opts)
+vim.keymap.set("n", "<leader>bj", "vip:!zsh | jq<CR>", opts)
+vim.keymap.set("n", "<leader>jj", "vip:!jq<CR>", opts)
+
+vim.cmd([[
+  let g:conjure#mapping#eval_visual = "e"
+]])
+
+vim.keymap.set("v", "v", "<Plug>(expand_region_expand)", {})
+vim.keymap.set("v", "<C-v>", "<Plug>(expand_region_shrink)", {})

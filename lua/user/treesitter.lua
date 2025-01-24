@@ -56,7 +56,7 @@ configs.setup({
 				["af"] = "@function.outer",
 				["if"] = "@function.inner",
 				["id"] = "@conditional.inner",
-				["ad"] = "@conditional.outer"
+				["ad"] = "@conditional.outer",
 			},
 		},
 		move = {
@@ -90,11 +90,11 @@ local function is_import_statement(node)
 end
 
 local function is_current_node(buf, node)
-  if buf ~= vim.fn.bufnr() then
-    return false
-  end
+	if buf ~= vim.fn.bufnr() then
+		return false
+	end
 
-  return node:start() == ts_utils.get_node_at_cursor():start()
+	return node:start() == ts_utils.get_node_at_cursor():start()
 end
 
 M.filter_references_with_treesitter = function(references)
@@ -116,9 +116,9 @@ M.filter_references_with_treesitter = function(references)
 			lang = "typescript",
 		})
 
-    if (is_current_node(buf, node)) then
-      goto continue
-    end
+		if is_current_node(buf, node) then
+			goto continue
+		end
 
 		if not node or not is_import_statement(node) then
 			table.insert(filtered_references, reference)

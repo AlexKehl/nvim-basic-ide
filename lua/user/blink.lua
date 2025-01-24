@@ -16,7 +16,11 @@ require("blink.cmp").setup({
 			max_items = 200,
 			selection = { auto_insert = true, preselect = false },
 		},
-
+		menu = {
+			auto_show = function(ctx)
+				return ctx.mode ~= "cmdline" or not vim.tbl_contains({ "/", "?" }, vim.fn.getcmdtype())
+			end,
+		},
 		documentation = {
 			-- Controls whether the documentation window will automatically show when selecting a completion item
 			auto_show = true,
