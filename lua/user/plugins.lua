@@ -1,4 +1,6 @@
 local lsp_config = require("user.lsp")
+local paredit = require("user.paredit")
+local paredit = require("user.conjure")
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
@@ -126,14 +128,10 @@ require("lazy").setup({
 		},
 	},
 
-	{ "Olical/conjure" },
-	-- { "guns/vim-sexp" },
-	-- { "tpope/vim-sexp-mappings-for-regular-people" },
+	{ "Olical/conjure", config = conjure },
 	{
 		"julienvincent/nvim-paredit",
-		config = function()
-			require("nvim-paredit").setup()
-		end,
+		config = paredit,
 	},
 
 	-- Treesitter

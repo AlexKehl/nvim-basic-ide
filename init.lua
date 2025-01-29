@@ -16,6 +16,8 @@ require("user.dadbod")
 require("user.lilypond")
 require("user.dap")
 require("user.blink")
+require("user.paredit")
+require("user.conjure")
 
 local substitute = require("substitute")
 
@@ -66,8 +68,6 @@ vim.cmd([[
   tnoremap <C-v><Esc> <Esc>
   endif
 
-  nmap \ gcc 
-
   " Set marks for last open filetype
   nnoremap <leader>gj 'J
   nnoremap <leader>gs 'S
@@ -92,6 +92,4 @@ vim.cmd([[
   imap <C-L> <Plug>(copilot-next)
   imap <C-H> <Plug>(copilot-previous)
   let g:copilot_no_tab_map = v:true
-
-  let g:conjure#mapping#prefix = " "
 ]])

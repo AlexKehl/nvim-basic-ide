@@ -52,12 +52,7 @@ if present then
 	end
 
 	local clojureformat = function()
-		local filepath = vim.fn.fnameescape(vim.api.nvim_buf_get_name(0))
-		-- Escape the braces
-		filepath = filepath:gsub("%(", "\\(")
-		filepath = filepath:gsub("%)", "\\)")
-
-		return { exe = "cat " .. filepath .. " | cljstyle pipe", stdin = true }
+    vim.lsp.buf.format()
 	end
 
 	local shfmt = function()

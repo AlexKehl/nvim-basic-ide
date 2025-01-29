@@ -56,7 +56,7 @@ keymap("v", ">", ">gv", opts)
 -- Plugins --
 keymap("n", "<Right>", "<cmd>BufSurfForward<CR>", opts)
 keymap("n", "<Left>", "<cmd>BufSurfBack<CR>", opts)
-keymap("n", "\\", "gcc", opts)
+keymap("n", "\\", "<Plug>(comment_toggle_linewise_current)", opts)
 keymap("n", "<leader>a", "<cmd>A<CR>", opts)
 keymap("n", "<leader>b", "<cmd>Git blame<CR>", opts)
 keymap("n", "<leader>l", "<cmd>diffget //3<CR>", opts)
@@ -143,9 +143,7 @@ vim.keymap.set("n", "<leader>bb", "vip:!zsh<CR>", opts)
 vim.keymap.set("n", "<leader>bj", "vip:!zsh | jq<CR>", opts)
 vim.keymap.set("n", "<leader>jj", "vip:!jq<CR>", opts)
 
-vim.cmd([[
-  let g:conjure#mapping#eval_visual = "e"
-]])
-
 vim.keymap.set("v", "v", "<Plug>(expand_region_expand)", {})
 vim.keymap.set("v", "<C-v>", "<Plug>(expand_region_shrink)", {})
+
+vim.keymap.set("n", "<leader>,", "A)<ESC><cmd>silent! ConjureEvalCurrentForm<CR><cmd>silent! normal! x0w<CR>", opts)
