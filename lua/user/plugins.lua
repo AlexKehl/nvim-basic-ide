@@ -1,6 +1,7 @@
 local lsp_config = require("user.lsp")
 local paredit = require("user.paredit")
 local conjure = require("user.conjure")
+local cmp_config = require("user.cmp")
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
@@ -53,13 +54,16 @@ require("lazy").setup({
 
 	"L3MON4D3/LuaSnip",
 
-	-- Autocompletion
-	{
-		"saghen/blink.cmp",
-		lazy = false,
-		opts_extend = { "sources.default" },
-		version = "*",
+	{ -- Autocompletion
+		"hrsh7th/nvim-cmp",
+		event = "InsertEnter",
+		config = cmp_config,
 	},
+	"L3MON4D3/LuaSnip",
+	"saadparwaiz1/cmp_luasnip",
+	"hrsh7th/cmp-buffer",
+	"hrsh7th/cmp-nvim-lsp",
+	"hrsh7th/cmp-path",
 
 	-- Telescope
 	{
