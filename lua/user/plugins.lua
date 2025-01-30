@@ -1,6 +1,6 @@
 local lsp_config = require("user.lsp")
 local paredit = require("user.paredit")
-local paredit = require("user.conjure")
+local conjure = require("user.conjure")
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
@@ -58,6 +58,7 @@ require("lazy").setup({
 		"saghen/blink.cmp",
 		lazy = false,
 		opts_extend = { "sources.default" },
+		version = "*",
 	},
 
 	-- Telescope
@@ -128,7 +129,12 @@ require("lazy").setup({
 		},
 	},
 
-	{ "Olical/conjure", config = conjure },
+	{
+		"Olical/conjure",
+		ft = { "clojure" },
+		lazy = true,
+		init = conjure,
+	},
 	{
 		"julienvincent/nvim-paredit",
 		config = paredit,

@@ -16,8 +16,6 @@ require("user.dadbod")
 require("user.lilypond")
 require("user.dap")
 require("user.blink")
-require("user.paredit")
-require("user.conjure")
 
 local substitute = require("substitute")
 

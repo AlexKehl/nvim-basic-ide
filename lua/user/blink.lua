@@ -18,7 +18,8 @@ require("blink.cmp").setup({
 		},
 		menu = {
 			auto_show = function(ctx)
-				return ctx.mode ~= "cmdline" or not vim.tbl_contains({ "/", "?" }, vim.fn.getcmdtype())
+				-- return ctx.mode ~= "cmdline" or not vim.tbl_contains({ "/", "?" }, vim.fn.getcmdtype())
+        return ctx.mode ~= "cmdline"
 			end,
 		},
 		documentation = {
@@ -87,7 +88,4 @@ require("blink.cmp").setup({
 			},
 		},
 	},
-
-	-- experimental signature help support
-	-- signature = { enabled = true }
 })

@@ -51,8 +51,8 @@ if present then
 		return { exe = "gleam format" }
 	end
 
-	local clojureformat = function()
-    vim.lsp.buf.format()
+	local lspformat = function()
+		vim.lsp.buf.format()
 	end
 
 	local shfmt = function()
@@ -71,14 +71,6 @@ if present then
 		}
 	end
 
-	-- local htmlformat = function()
-	-- 	return {
-	-- 		exe = "cat " .. filepath .. " | pup ",
-	-- 		-- args = { vim.fn.fnameescape(vim.api.nvim_buf_get_name(0)) },
-	-- 		-- stdin = true,
-	-- 	}
-	-- end
-
 	formatter.setup({
 		logging = false,
 		log_level = vim.log.levels.WARN,
@@ -90,7 +82,7 @@ if present then
 			css = { prettier },
 			less = { prettier },
 			scss = { prettier },
-			-- html = { htmlformat },
+			html = { lspformat },
 			yaml = { prettier },
 			javascript = { prettier },
 			javascriptreact = { prettier },
@@ -101,7 +93,7 @@ if present then
 			json = { prettier },
 			jsonc = { prettier },
 			gleam = { gleamformat },
-			clojure = { clojureformat },
+			clojure = { lspformat },
 			rust = { rustfmt },
 			ocaml = { ocamlformat },
 			sh = { shfmt },

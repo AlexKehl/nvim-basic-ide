@@ -147,3 +147,18 @@ vim.keymap.set("v", "v", "<Plug>(expand_region_expand)", {})
 vim.keymap.set("v", "<C-v>", "<Plug>(expand_region_shrink)", {})
 
 vim.keymap.set("n", "<leader>,", "A)<ESC><cmd>silent! ConjureEvalCurrentForm<CR><cmd>silent! normal! x0w<CR>", opts)
+
+local function eval_clojure_tests()
+	if not (vim.bo.filetype == "clojure") then
+		return
+	end
+	local file_name = vim.api.nvim_buf_get_name(0)
+
+	if string.find(file_name, "_test") then
+		return vim.cmd("ConjureCljRunCurrentNsTests")
+	end
+
+	vim.cmd("ConjureCljRunAlternateNsTest")
+end
+
+vim.keymap.set("n", "<C-t>", eval_clojure_tests, {})
