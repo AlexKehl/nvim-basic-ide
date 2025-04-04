@@ -1,5 +1,4 @@
 local lsp_config = require("user.lsp")
-local paredit = require("user.paredit")
 local conjure = require("user.conjure")
 local cmp_config = require("user.cmp")
 
@@ -37,6 +36,7 @@ require("lazy").setup({
 		"lukas-reineke/indent-blankline.nvim",
 		main = "ibl",
 		opts = { scope = { enabled = false } },
+		ft = { "typescript", "javascript", "typescriptreact", "javascriptreact" },
 	},
 	"lewis6991/gitsigns.nvim",
 	"tpope/vim-fugitive",
@@ -111,7 +111,6 @@ require("lazy").setup({
 		},
 	},
 
-	-- Copilot
 	"github/copilot.vim",
 	{
 		{
@@ -122,7 +121,7 @@ require("lazy").setup({
 			},
 			build = "make tiktoken",
 			opts = {
-				model = "claude-3.5-sonnet",
+				model = "claude-3.7-sonnet",
 				mappings = {
 					reset = {
 						normal = "",
@@ -135,13 +134,94 @@ require("lazy").setup({
 
 	{
 		"Olical/conjure",
-		ft = { "clojure" },
+		ft = { "clojure", "fennel" },
 		lazy = true,
 		init = conjure,
 	},
+	{ "guns/vim-sexp" },
+	{ "tpope/vim-sexp-mappings-for-regular-people" },
+	{ "HiPhish/rainbow-delimiters.nvim", ft = { "clojure" } },
+	{ "eraserhd/parinfer-rust", build = "cargo build --release" },
+  {"guns/vim-clojure-static"},
+
+	{ "brianhuster/live-preview.nvim" },
+
 	{
-		"julienvincent/nvim-paredit",
-		config = paredit,
+		"hat0uma/csvview.nvim",
+		---@module "csvview"
+		---@type CsvView.Options
+		opts = {
+			parser = {
+				comments = { "#", "//" },
+				delimiter = {
+					default = ";",
+					-- ft = {
+					--   tsv = "\t",
+					-- },
+				},
+			},
+			keymaps = {
+				-- Text objects for selecting fields
+				textobject_field_inner = { "if", mode = { "o", "x" } },
+				textobject_field_outer = { "af", mode = { "o", "x" } },
+				-- Excel-like navigation:
+				-- Use <Tab> and <S-Tab> to move horizontally between fields.
+				-- Use <Enter> and <S-Enter> to move vertically between rows and place the cursor at the end of the field.
+				-- Note: In terminals, you may need to enable CSI-u mode to use <S-Tab> and <S-Enter>.
+				jump_next_field_start = { "W", mode = { "n", "v" } },
+				jump_prev_field_start = { "B", mode = { "n", "v" } },
+				jump_next_field_end = { "<Tab>", mode = { "n", "v" } },
+				jump_prev_field_end = { "<S-Tab>", mode = { "n", "v" } },
+				jump_next_row = { "<Enter>", mode = { "n", "v" } },
+				jump_prev_row = { "<S-Enter>", mode = { "n", "v" } },
+			},
+		},
+		cmd = { "CsvViewEnable", "CsvViewDisable", "CsvViewToggle", "CsvViewDelimiter" },
+	},
+
+	{
+		"andrewferrier/debugprint.nvim",
+		opts = {
+			keymaps = {
+				normal = {
+					plain_below = "<leader>ej",
+					plain_above = "<leader>ek",
+					variable_below = "<leader>ew",
+					-- variable_above = "g?V",
+					variable_below_alwaysprompt = "",
+					variable_above_alwaysprompt = "",
+					textobj_below = "<leader>ee",
+					textobj_above = "g?O",
+					toggle_comment_debug_prints = "",
+					delete_debug_prints = "<leader>ed",
+				},
+				insert = {
+					plain = "<C-G>p",
+					variable = "<C-G>v",
+				},
+				visual = {
+					variable_below = "<leader>e",
+					variable_above = "g?V",
+				},
+			},
+			commands = {
+				toggle_comment_debug_prints = "ToggleCommentDebugPrints",
+				delete_debug_prints = "DeleteDebugPrints",
+				reset_debug_prints_counter = "ResetDebugPrintsCounter",
+			},
+			-- … Other options
+		},
+
+		-- opts = { … },
+
+		dependencies = {
+			"echasnovski/mini.nvim", -- Needed for :ToggleCommentDebugPrints(NeoVim 0.9 only)
+			-- and line highlighting (optional)
+		},
+
+		lazy = false, -- Required to make line highlighting work before debugprint is first used
+		version = "*", -- Remove if you DON'T want to use the stable version
+		ft = { "typescript", "typescriptreact", "javascript", "javascriptreact" },
 	},
 
 	-- Treesitter
@@ -159,10 +239,12 @@ require("lazy").setup({
 		build = function()
 			vim.fn["mkdp#util#install"]()
 		end,
-	},
 
-	-- DAP
-	{ "mfussenegger/nvim-dap" },
-	{ "rcarriga/nvim-dap-ui", dependencies = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" } },
-	-- lazy.nvim
+		init = function()
+			vim.g.mkdp_theme = "light" -- or 'light'
+			-- Optional: use GitHub's markdown styling
+			-- vim.g.mkdp_markdown_css =
+			-- 	"https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown.min.css"
+		end,
+	},
 })

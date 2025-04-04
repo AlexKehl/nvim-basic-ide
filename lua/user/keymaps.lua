@@ -32,8 +32,22 @@ keymap("n", "<leader>8", "<cmd>tabn 8<CR>", opts)
 keymap("n", "<leader>9", "<cmd>tabn 9<CR>", opts)
 keymap("n", "<leader>t", "<cmd>tabnew<CR>", opts)
 
+local function eval_on_save()
+	if not (vim.bo.filetype == "clojure") then
+		return vim.cmd("w")
+	end
+
+	vim.cmd("w")
+	vim.cmd("ConjureEvalBuf")
+end
+
+keymap("n", "<leader>eg", [[:ConjureEval (user/reset)<CR>]], opts)
+keymap("n", "<leader>et", "<cmd>ConjureCljRunCurrentTest<CR>", opts)
+keymap("n", "<leader>ea", [[:ConjureEval (user/run-all-tests)<CR>]], opts)
+
 -- Quick file operations
-keymap("n", "<leader>w", "<cmd>w<CR>", opts)
+keymap("n", "<leader>w", eval_on_save, opts)
+
 keymap("n", "<leader>q", "<cmd>q<CR>", opts)
 
 -- Ranger
@@ -54,13 +68,11 @@ keymap("v", "<", "<gv", opts)
 keymap("v", ">", ">gv", opts)
 
 -- Plugins --
-keymap("n", "<Right>", "<cmd>BufSurfForward<CR>", opts)
-keymap("n", "<Left>", "<cmd>BufSurfBack<CR>", opts)
 keymap("n", "\\", "<Plug>(comment_toggle_linewise_current)", opts)
 keymap("n", "<leader>a", "<cmd>A<CR>", opts)
 keymap("n", "<leader>b", "<cmd>Git blame<CR>", opts)
-keymap("n", "<leader>l", "<cmd>diffget //3<CR>", opts)
-keymap("n", "<leader>h", "<cmd>diffget //2<CR>", opts)
+keymap("n", "<leader>ll", "<cmd>diffget //3<CR>", opts)
+keymap("n", "<leader>lh", "<cmd>diffget //2<CR>", opts)
 -- keymap("n", "<leader>1", "<cmd>diffget<CR>", opts)
 
 -- Misc
@@ -95,6 +107,9 @@ keymap("n", "<CR>", format, opts)
 -- music
 -- keymap("n", "<tab>", ":LilyPlayer<CR>", opts)
 
+-- in terminal mode map esc <C-\><C-n> to exit terminal mode
+keymap("t", "<Esc>", "<C-\\><C-n>", opts)
+
 -- Neotest
 keymap("n", "<leader>no", ":lua require('neotest').output.open({ enter = true })<CR>", opts)
 keymap("n", "<leader>nw", ":lua require('neotest').watch.toggle()<CR>", opts)
@@ -109,7 +124,6 @@ keymap("n", "ca ", "F cf ", opts)
 keymap("n", "ci ", "T ct ", opts)
 
 keymap("n", "<leader>el", "<cmd>EslintFixAll<CR>", opts)
-keymap("n", "<leader>or", "<cmd>OrganizeImports<CR>", opts)
 
 keymap("n", "<leader>jq", "?%<CR>x:norm v%gJ<CR>V:!jq<CR>", opts)
 
@@ -162,3 +176,7 @@ local function eval_clojure_tests()
 end
 
 vim.keymap.set("n", "<C-t>", eval_clojure_tests, {})
+
+vim.keymap.set("i", "<C-o>", "()<Esc>i", opts)
+
+vim.keymap.set("n", "<leader>;", "<Plug>(sexp_round_head_wrap_element)", opts)

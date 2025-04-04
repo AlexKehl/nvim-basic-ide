@@ -8,11 +8,9 @@ end
 local M = {}
 
 configs.setup({
-	ensure_installed = { "tsx", "lua", "rust", "typescript", "javascript" },
+	ensure_installed = { "tsx", "lua", "rust", "typescript", "javascript"},
 	ignore_install = { "" }, -- List of parsers to ignore installing
-	autopairs = {
-		enable = true,
-	},
+  rainbow = { enable = true },
 	indent = { enable = true, disable = { "python", "css" } },
 	-- context_commentstring = {
 	-- 	enable = true,
@@ -25,7 +23,7 @@ configs.setup({
 		enable = true,
 
 		disable = function(_, buf)
-			local max_filesize = 100 * 1024 -- 100 KB
+			local max_filesize = 50 * 1024 -- 100 KB
 			local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
 			if ok and stats and stats.size > max_filesize then
 				return true

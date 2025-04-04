@@ -15,6 +15,6 @@ vim.g.expand_region_text_objects = {
 	["a'"] = 0,
 }
 
-vim.g.expand_region_text_objects_clojure = {
-	["ab"] = 1,
-}
+-- vim.g.expand_region_text_objects_clojure = {
+-- 	["ab"] = 1,
+-- }

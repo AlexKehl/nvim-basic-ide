@@ -14,7 +14,6 @@ require("user.formatter")
 require("user.oil")
 require("user.dadbod")
 require("user.lilypond")
-require("user.dap")
 
 local substitute = require("substitute")
 
@@ -73,20 +72,27 @@ vim.cmd([[
   nnoremap <leader>gh 'H
   nnoremap <leader>gy 'Y
   nnoremap <leader>ge 'E
+  nnoremap <leader>gc 'C
+  nnoremap <leader>gv 'V
 
   augroup VIMRC
   autocmd!
-  autocmd BufLeave *.json                                   normal! mS
-  autocmd BufLeave */src/*.js,*/src/*.ts                    normal! mJ
-  autocmd BufLeave *.test.js,*.test.ts,*.test.tsx,*.spec.ts normal! mT             
-  autocmd BufLeave */src/*.jsx,*/src/*.tsx                  normal! mX        
-  autocmd BufLeave *.html                                   normal! mH
-  autocmd BufLeave */src/types/*.ts                         normal! mY
-  autocmd BufLeave *.e2e.ts                                 normal! mE
+  autocmd BufLeave *.json                                       normal! mS
+  autocmd BufLeave */src/*.js,*/src/*.ts                        normal! mJ
+  autocmd BufLeave *.test.js,*.test.ts,*.test.tsx,*_test.clj,*_test.cljs    normal! mT             
+  autocmd BufLeave */src/*.jsx,*/src/*.tsx                      normal! mX        
+  autocmd BufLeave *.html                                       normal! mH
+  autocmd BufLeave */src/types/*.ts                             normal! mY
+  autocmd BufLeave *.e2e.ts,*spec.ts,*spec.js                   normal! mE
+  autocmd BufLeave *.clj,*cljs                                        normal! mC
+  autocmd BufLeave *.csv                                        normal! mV
   augroup END
 
   imap <silent><script><expr> <C-K> copilot#Accept("\<CR>")
-  imap <C-L> <Plug>(copilot-next)
-  imap <C-H> <Plug>(copilot-previous)
   let g:copilot_no_tab_map = v:true
+
+" Disable <localleader>w mapping in vim-sexp
+let g:sexp_mappings = {
+    \ 'sexp_wrap_element': '',
+    \ }
 ]])

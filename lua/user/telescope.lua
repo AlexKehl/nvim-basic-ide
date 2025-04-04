@@ -95,4 +95,3 @@ M.custom_references_picker = function(items)
 end
 
 return M
-

@@ -71,6 +71,15 @@ if present then
 		}
 	end
 
+	local clojureformat = function()
+		local filepath = vim.fn.fnameescape(vim.api.nvim_buf_get_name(0))
+		-- Escape the braces
+		filepath = filepath:gsub("%(", "\\(")
+		filepath = filepath:gsub("%)", "\\)")
+
+		return { exe = "/opt/homebrew/bin/zprint -w" }
+	end
+
 	formatter.setup({
 		logging = false,
 		log_level = vim.log.levels.WARN,
@@ -82,7 +91,7 @@ if present then
 			css = { prettier },
 			less = { prettier },
 			scss = { prettier },
-			html = { lspformat },
+			html = { prettier },
 			yaml = { prettier },
 			javascript = { prettier },
 			javascriptreact = { prettier },
@@ -93,7 +102,7 @@ if present then
 			json = { prettier },
 			jsonc = { prettier },
 			gleam = { gleamformat },
-			clojure = { lspformat },
+			clojure = { clojureformat },
 			rust = { rustfmt },
 			ocaml = { ocamlformat },
 			sh = { shfmt },
