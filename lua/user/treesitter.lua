@@ -8,9 +8,9 @@ end
 local M = {}
 
 configs.setup({
-	ensure_installed = { "tsx", "lua", "rust", "typescript", "javascript"},
+	ensure_installed = { "tsx", "lua", "rust", "typescript", "javascript", "clojure" },
 	ignore_install = { "" }, -- List of parsers to ignore installing
-  rainbow = { enable = true },
+	rainbow = { enable = true },
 	indent = { enable = true, disable = { "python", "css" } },
 	-- context_commentstring = {
 	-- 	enable = true,
@@ -29,6 +29,11 @@ configs.setup({
 				return true
 			end
 		end,
+
+		custom_captures = {
+			["keyword.special"] = "Special",
+			["namespace"] = "Include",
+		},
 
 		-- Setting this to true will run `:h syntax` and tree-sitter at the same time.
 		-- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).

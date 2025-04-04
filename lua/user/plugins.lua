@@ -142,8 +142,11 @@ require("lazy").setup({
 	{ "tpope/vim-sexp-mappings-for-regular-people" },
 	{ "HiPhish/rainbow-delimiters.nvim", ft = { "clojure" } },
 	{ "eraserhd/parinfer-rust", build = "cargo build --release" },
-  {"guns/vim-clojure-static"},
-
+  {'raystubbs/nvim-cljfmt-indents',
+    config = function()
+      require('nvim-cljfmt-indents').setup()
+    end
+  },
 	{ "brianhuster/live-preview.nvim" },
 
 	{

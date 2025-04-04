@@ -55,13 +55,14 @@ vim.api.nvim_create_autocmd("FileType", {
 		vim.keymap.set("n", "<Right>", "<Plug>(sexp_flow_to_next_open)", keymap_opts)
 		vim.keymap.set("n", "<Left>", "<Plug>(sexp_flow_to_prev_open)", keymap_opts)
 
-		vim.cmd("syntax on")
-		vim.cmd("filetype plugin indent on")
-
 		-- vim.bo.indentexpr = "nvim_treesitter#indent()"
 		-- vim.bo.indentexpr = "" -- clear legacy indent function
-		-- vim.bo.autoindent = true
-		-- vim.bo.smartindent = false
+    vim.bo.indentexpr = "GetCljfmtIndent()"
+		vim.opt.autoindent = true
+		vim.bo.cindent = false
+		-- vim.opt.smartindent = true
+
+		-- vim.opt.smartindent = false
 		-- vim.bo.cindent = false
 		-- vim.bo.lisp = true
 		--
