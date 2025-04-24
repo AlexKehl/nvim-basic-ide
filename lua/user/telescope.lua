@@ -13,7 +13,6 @@ end
 local M = {}
 
 local function fzf_multi_select(prompt_bufnr)
-	print("fzf_multi_select")
 	local picker = action_state.get_current_picker(prompt_bufnr)
 	local num_selections = #picker:get_multi_selection()
 

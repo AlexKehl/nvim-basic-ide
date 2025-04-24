@@ -37,7 +37,7 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 vim.api.nvim_create_autocmd("FileType", {
-	pattern = { "clojure", "scheme", "lisp", "racket", "fennel" },
+	pattern = { "clojure", "scheme", "lisp", "racket", "fennel"},
 	desc = "Remove some keymaps from vim-sexp",
 	callback = function()
 		vim.cmd("nunmap <buffer> <LocalLeader>w")
@@ -52,14 +52,23 @@ vim.api.nvim_create_autocmd("FileType", {
 		vim.cmd("iunmap <buffer> {")
 		vim.cmd("iunmap <buffer> }")
 
-		vim.keymap.set("n", "<Right>", "<Plug>(sexp_flow_to_next_open)", keymap_opts)
-		vim.keymap.set("n", "<Left>", "<Plug>(sexp_flow_to_prev_open)", keymap_opts)
+		vim.keymap.set("n", "<Left>", "<Plug>(sexp_emit_tail_element)", keymap_opts)
+		vim.keymap.set("n", "<Right>", "<Plug>(sexp_capture_next_element)", keymap_opts)
+
+		vim.keymap.set("n", "<S-Right>", "<Plug>(sexp_emit_head_element)", keymap_opts)
+		vim.keymap.set("n", "<S-Left>", "<Plug>(sexp_capture_prev_element)", keymap_opts)
+
+		vim.keymap.set("n", "<Tab>", "<cmd>ParinferToggle<CR>", keymap_opts)
+
+		-- vim.keymap.set("i", "<C-l>", "<Plug>(parinfer-tab)", keymap_opts)
+		-- vim.keymap.set("i", "<C-h>", "<Plug>(parinfer-backtab)", keymap_opts)
 
 		-- vim.bo.indentexpr = "nvim_treesitter#indent()"
 		-- vim.bo.indentexpr = "" -- clear legacy indent function
-    vim.bo.indentexpr = "GetCljfmtIndent()"
-		vim.opt.autoindent = true
-		vim.bo.cindent = false
+		-- vim.bo.indentexpr = "GetCljfmtIndent()"
+		-- vim.bo.indentexpr = ""
+		-- vim.opt.autoindent = true
+		-- vim.bo.cindent = false
 		-- vim.opt.smartindent = true
 
 		-- vim.opt.smartindent = false

@@ -27,6 +27,11 @@ mason_lspconfig.setup_handlers({
 		local extended_opts = vim.tbl_deep_extend("force", ts_opts, opts)
 		require("lspconfig")["ts_ls"].setup(extended_opts)
 	end,
+	["clojure_lsp"] = function()
+		local clojure_opts = require("user.lsp.settings.clojure_lsp")
+		local extended_opts = vim.tbl_deep_extend("force", clojure_opts, opts)
+		require("lspconfig")["clojure_lsp"].setup(extended_opts)
+	end,
 	["pyright"] = function()
 		local pyright_opts = require("user.lsp.settings.pyright")
 		local extended_opts = vim.tbl_deep_extend("force", pyright_opts, opts)

@@ -60,6 +60,10 @@ configs.setup({
 				["if"] = "@function.inner",
 				["id"] = "@conditional.inner",
 				["ad"] = "@conditional.outer",
+				["av"] = "@assignment.outer",
+				["iv"] = "@assignment.inner",
+				["ar"] = "@return.outer",
+				["ir"] = "@return.inner",
 			},
 		},
 		move = {
@@ -102,6 +106,7 @@ end
 
 M.filter_references_with_treesitter = function(references)
 	local filtered_references = {}
+
 	for _, reference in ipairs(references) do
 		local escaped_path = vim.uri_to_fname(reference.user_data.uri)
 		local buf = vim.fn.bufnr(escaped_path)
@@ -116,7 +121,7 @@ M.filter_references_with_treesitter = function(references)
 				reference.user_data.range.start.line,
 				reference.user_data.range.start.character,
 			},
-			lang = "typescript",
+			-- lang = vim.bo.filetype,
 		})
 
 		if is_current_node(buf, node) then

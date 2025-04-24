@@ -10,6 +10,15 @@ end ---@diagnostic disable-next-line: undefined-field
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
+	{
+		dir = "~/.config/nvim/lua/nvim-parinfer",
+		name = "nvim-parinfer",
+		ft = { "clojure", "fennel"},
+		config = function()
+			require("nvim-parinfer").setup()
+		end,
+	},
+
 	"sainnhe/gruvbox-material",
 	"nvim-lua/plenary.nvim",
 	-- "nvim-lualine/lualine.nvim",
@@ -121,7 +130,7 @@ require("lazy").setup({
 			},
 			build = "make tiktoken",
 			opts = {
-				model = "claude-3.7-sonnet",
+				model = "claude-3.5-sonnet",
 				mappings = {
 					reset = {
 						normal = "",
@@ -138,15 +147,22 @@ require("lazy").setup({
 		lazy = true,
 		init = conjure,
 	},
-	{ "guns/vim-sexp" },
+	{ "Olical/nfnl" },
+	{
+		"guns/vim-sexp",
+		init = function()
+			vim.cmd([[ let g:sexp_filetypes = 'clojure,fennel' ]])
+		end,
+	},
 	{ "tpope/vim-sexp-mappings-for-regular-people" },
-	{ "HiPhish/rainbow-delimiters.nvim", ft = { "clojure" } },
-	{ "eraserhd/parinfer-rust", build = "cargo build --release" },
-  {'raystubbs/nvim-cljfmt-indents',
-    config = function()
-      require('nvim-cljfmt-indents').setup()
-    end
-  },
+	{ "HiPhish/rainbow-delimiters.nvim", ft = { "clojure", "fennel" } },
+	-- { "gpanders/nvim-parinfer" },
+	-- {
+	-- 	"raystubbs/nvim-cljfmt-indents",
+	-- 	config = function()
+	-- 		require("nvim-cljfmt-indents").setup()
+	-- 	end,
+	-- },
 	{ "brianhuster/live-preview.nvim" },
 
 	{
@@ -234,20 +250,86 @@ require("lazy").setup({
 		dependencies = { "nvim-treesitter/nvim-treesitter" },
 	},
 
+	{
+		"yetone/avante.nvim",
+		event = "VeryLazy",
+		version = false, -- Never set this value to "*"! Never!
+		opts = {
+			-- add any opts here
+			-- for example
+			provider = "copilot",
+			copilot = {
+				-- endpoint = "https://api.github.com",
+				model = "claude-3.5-sonnet",
+				-- temperature = 0,
+				-- max_tokens = 4096,
+			},
+			-- claude = {
+			-- 	endpoint = "https://api.anthropic.com",
+			-- 	model = "claude-3-5-sonnet-20241022",
+			-- 	temperature = 0,
+			-- 	max_tokens = 4096,
+			-- },
+		}, -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
+		build = "make",
+		-- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
+		dependencies = {
+			"nvim-treesitter/nvim-treesitter",
+			"stevearc/dressing.nvim",
+			"nvim-lua/plenary.nvim",
+			"MunifTanjim/nui.nvim",
+			--- The below dependencies are optional,
+			-- "echasnovski/mini.pick", -- for file_selector provider mini.pick
+			"nvim-telescope/telescope.nvim", -- for file_selector provider telescope
+			"hrsh7th/nvim-cmp", -- autocompletion for avante commands and mentions
+			"zbirenbaum/copilot.lua", -- for providers='copilot'
+			{
+				-- support for image pasting
+				"HakonHarnes/img-clip.nvim",
+				event = "VeryLazy",
+				opts = {
+					-- recommended settings
+					default = {
+						embed_image_as_base64 = false,
+						prompt_for_file_name = false,
+						drag_and_drop = {
+							insert_mode = true,
+						},
+						-- required for Windows users
+						use_absolute_path = true,
+					},
+				},
+			},
+			{
+				-- Make sure to set this up properly if you have lazy=true
+				"MeanderingProgrammer/render-markdown.nvim",
+				opts = {
+					file_types = { "markdown", "Avante" },
+				},
+				ft = { "markdown", "Avante" },
+			},
+		},
+	},
+
 	-- Markdown
 	{
+		-- Install markdown preview, use npx if available.
 		"iamcco/markdown-preview.nvim",
 		cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
 		ft = { "markdown" },
-		build = function()
-			vim.fn["mkdp#util#install"]()
+		build = function(plugin)
+			if vim.fn.executable("npx") then
+				vim.cmd("!cd " .. plugin.dir .. " && cd app && npx --yes yarn install")
+			else
+				vim.cmd([[Lazy load markdown-preview.nvim]])
+				vim.fn["mkdp#util#install"]()
+			end
 		end,
-
 		init = function()
+			if vim.fn.executable("npx") then
+				vim.g.mkdp_filetypes = { "markdown" }
+			end
 			vim.g.mkdp_theme = "light" -- or 'light'
-			-- Optional: use GitHub's markdown styling
-			-- vim.g.mkdp_markdown_css =
-			-- 	"https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown.min.css"
 		end,
 	},
 })

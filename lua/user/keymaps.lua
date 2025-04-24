@@ -33,17 +33,38 @@ keymap("n", "<leader>9", "<cmd>tabn 9<CR>", opts)
 keymap("n", "<leader>t", "<cmd>tabnew<CR>", opts)
 
 local function eval_on_save()
-	if not (vim.bo.filetype == "clojure") then
-		return vim.cmd("w")
+	if vim.bo.filetype == "clojure" then
+		vim.cmd("w")
+		vim.cmd("ConjureEvalBuf")
+		return
 	end
-
-	vim.cmd("w")
-	vim.cmd("ConjureEvalBuf")
+	if vim.bo.filetype == "fennel" then
+		vim.cmd("w")
+		vim.cmd("ConjureEvalBuf")
+		vim.cmd("Lazy reload nvim-parinfer")
+		return
+	end
+	return vim.cmd("w")
 end
 
 keymap("n", "<leader>eg", [[:ConjureEval (user/reset)<CR>]], opts)
 keymap("n", "<leader>et", "<cmd>ConjureCljRunCurrentTest<CR>", opts)
 keymap("n", "<leader>ea", [[:ConjureEval (user/run-all-tests)<CR>]], opts)
+keymap("n", "<leader>eu", [[:ConjureEval (user/unmap-defs)<CR>]], opts)
+-- keymap("n", "<leader>mt", "<cmd>mark T<CR>", opts)
+keymap("n", "<leader>mt", function()
+	vim.cmd("mark T")
+	print("Mark set")
+end, opts)
+-- keymap("n", "<leader>mm", "<leader>emT", opts)
+
+keymap("n", "<C-y>", function()
+	eval = require("conjure.eval")
+	marked_form = eval["marked-form"]
+	vim.schedule(function()
+		marked_form("T")
+	end)
+end, opts)
 
 -- Quick file operations
 keymap("n", "<leader>w", eval_on_save, opts)
@@ -96,7 +117,7 @@ keymap("n", "<leader>md", ":MarkdownPreviewToggle<CR>", opts)
 local function format()
 	local filepath = vim.api.nvim_buf_get_name(0)
 	if not (filepath == "") then
-		vim.cmd([[ FormatWrite ]])
+		vim.cmd([[ FormatWrite]])
 	else
 		vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<CR>", true, false, true), "n", true)
 	end
@@ -178,5 +199,18 @@ end
 vim.keymap.set("n", "<C-t>", eval_clojure_tests, {})
 
 vim.keymap.set("i", "<C-o>", "()<Esc>i", opts)
+vim.keymap.set("i", "<C-]>", "[]<Esc>i", opts)
+vim.keymap.set("i", "<C-h>", "{}<Esc>i", opts)
+vim.keymap.set("i", "<C-u>", '""<Esc>i', opts)
 
+-- <LocalLeader>W                          *<Plug>(sexp_round_head_wrap_element)*
+-- <LocalLeader>w                          *<Plug>(sexp_round_tail_wrap_element)*
+vim.keymap.set("n", "<leader>:", "<Plug>(sexp_round_tail_wrap_element)", opts)
 vim.keymap.set("n", "<leader>;", "<Plug>(sexp_round_head_wrap_element)", opts)
+vim.keymap.set("n", "<leader>es", "<Plug>(sexp_move_to_prev_top_element) fna*<Esc><cmd>ConjureEvalRootForm<CR>x0", opts)
+
+-- remove default nvim keymaps. These cause lag when using normal gr keybinding
+vim.keymap.del("n", "gri")
+vim.keymap.del("n", "grr")
+vim.keymap.del("n", "gra")
+vim.keymap.del("n", "grn")

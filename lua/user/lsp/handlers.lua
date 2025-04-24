@@ -8,28 +8,20 @@ if not status_cmp_ok then
 	return
 end
 
-
 M.capabilities = vim.lsp.protocol.make_client_capabilities()
 M.capabilities.textDocument.completion.completionItem.snippetSupport = true
 M.capabilities = cmp_nvim_lsp.default_capabilities(M.capabilities)
 
 M.setup = function()
-	local signs = {
-
-		{ name = "DiagnosticSignError", text = "" },
-		{ name = "DiagnosticSignWarn", text = "" },
-		{ name = "DiagnosticSignHint", text = "" },
-		{ name = "DiagnosticSignInfo", text = "" },
-	}
-
-	for _, sign in ipairs(signs) do
-		vim.fn.sign_define(sign.name, { texthl = sign.name, text = sign.text, numhl = "" })
-	end
-
-	local config = {
+	vim.diagnostic.config({
 		virtual_text = false, -- disable virtual text
 		signs = {
-			active = signs, -- show signs
+			text = {
+				[vim.diagnostic.severity.ERROR] = "",
+				[vim.diagnostic.severity.WARN] = "",
+				[vim.diagnostic.severity.INFO] = "",
+				[vim.diagnostic.severity.HINT] = "󰌵",
+			},
 		},
 		update_in_insert = true,
 		underline = false,
@@ -42,9 +34,7 @@ M.setup = function()
 			header = "",
 			prefix = "",
 		},
-	}
-
-	vim.diagnostic.config(config)
+	})
 
 	vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
 		border = "rounded",
@@ -67,15 +57,71 @@ local function custom_lsp_references_with_treesitter()
 
 			if #filtered_references == 1 then
 				local reference = filtered_references[1]
-				vim.lsp.util.jump_to_location({
+
+				vim.lsp.util.show_document({
 					uri = reference.user_data.uri,
 					range = reference.user_data.range,
-				})
+				}, "utf-8")
 				return
 			end
 
 			options.items = filtered_references
 			custom_references_picker(filtered_references)
+		end,
+	})
+end
+
+local function filter_test_references(references)
+	local filtered_references = {}
+
+	for _, reference in ipairs(references) do
+		local escaped_path = vim.uri_to_fname(reference.user_data.uri)
+		local buf = vim.fn.bufnr(escaped_path)
+
+		if buf == -1 then
+			goto continue
+		end
+
+		if not string.find(escaped_path, "test") then
+			goto continue
+		end
+
+		local node = vim.treesitter.get_node({
+			bufnr = buf,
+			pos = {
+				reference.user_data.range.start.line,
+				reference.user_data.range.start.character,
+			},
+			-- lang = vim.bo.filetype,
+		})
+
+		table.insert(filtered_references, reference)
+
+		::continue::
+	end
+
+	return filtered_references
+end
+
+local function go_to_test()
+	vim.lsp.buf.references(nil, {
+		on_list = function(options)
+			local filtered_references = filter_test_references(options.items)
+
+			if #filtered_references == 0 then
+				vim.print("No references found")
+				return
+			end
+
+			local first = filtered_references[1]
+
+			local reference = filtered_references[1]
+
+			vim.lsp.util.show_document({
+				uri = reference.user_data.uri,
+				range = reference.user_data.range,
+			}, "utf-8")
+			return
 		end,
 	})
 end
@@ -112,6 +158,7 @@ local function lsp_keymaps(bufnr)
 	keymap(bufnr, "n", "]g", "<cmd>lua vim.diagnostic.goto_next({buffer=0})<cr>", opts)
 	keymap(bufnr, "n", "[g", "<cmd>lua vim.diagnostic.goto_prev({buffer=0})<cr>", opts)
 	keymap(bufnr, "n", "<leader>rn", "<cmd>lua vim.lsp.buf.rename()<cr>", opts)
+	vim.keymap.set("n", "gt", go_to_test, opts)
 	-- keymap(bufnr, "n", "<leader>ls", "<cmd>lua vim.lsp.buf.signature_help()<CR>", opts)
 	-- keymap(bufnr, "n", "<leader>lq", "<cmd>lua vim.diagnostic.setloclist()<CR>", opts)
 end
@@ -145,5 +192,7 @@ lspconfig.gleam.setup({
 	on_attach = M.on_attach,
 	capabilities = M.capabilities,
 })
+
+lspconfig.fennel_ls.setup({})
 
 return M

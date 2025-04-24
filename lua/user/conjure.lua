@@ -11,4 +11,5 @@ return function()
 	vim.g["conjure#mapping#eval_word"] = "ew"
 	vim.g["conjure#mapping#eval_buf"] = "eb"
 	vim.g["conjure#mapping#eval_file"] = "ef"
+	vim.g["conjure#mapping#eval_marked_form"] = "em"
 end

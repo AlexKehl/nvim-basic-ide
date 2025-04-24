@@ -80,6 +80,15 @@ if present then
 		return { exe = "/opt/homebrew/bin/zprint -w" }
 	end
 
+	local fennelformat = function()
+		local filepath = vim.fn.fnameescape(vim.api.nvim_buf_get_name(0))
+		-- Escape the braces
+		filepath = filepath:gsub("%(", "\\(")
+		filepath = filepath:gsub("%)", "\\)")
+
+		return { exe = "fnlfmt --fix" }
+	end
+
 	formatter.setup({
 		logging = false,
 		log_level = vim.log.levels.WARN,
@@ -103,6 +112,7 @@ if present then
 			jsonc = { prettier },
 			gleam = { gleamformat },
 			clojure = { clojureformat },
+			fennel = { fennelformat },
 			rust = { rustfmt },
 			ocaml = { ocamlformat },
 			sh = { shfmt },
