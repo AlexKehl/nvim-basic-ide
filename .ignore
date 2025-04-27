@@ -1,0 +1,3 @@
+*.rs
+lua/parinfer-rust/src/*
+lua/parinfer-rust/doc/*

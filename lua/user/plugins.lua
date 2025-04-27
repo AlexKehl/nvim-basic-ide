@@ -1,24 +1,29 @@
 local lsp_config = require("user.lsp")
 local conjure = require("user.conjure")
 local cmp_config = require("user.cmp")
+local avante_config = require("user.avante")
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
 	local lazyrepo = "https://github.com/folke/lazy.nvim.git"
 	vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
-end ---@diagnostic disable-next-line: undefined-field
+end 
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
 	{
-		dir = "~/.config/nvim/lua/nvim-parinfer",
-		name = "nvim-parinfer",
-		ft = { "clojure", "fennel"},
+		dir = "~/.config/nvim/lua/parinfer-rust",
+		name = "parinfer-rust",
+		ft = { "clojure", "fennel" },
+		build = "cargo build --release",
 		config = function()
-			require("nvim-parinfer").setup()
+			require("parinfer-rust").setup()
 		end,
 	},
-
+	{
+		"nvim-lualine/lualine.nvim",
+		dependencies = { "nvim-tree/nvim-web-devicons" },
+	},
 	"sainnhe/gruvbox-material",
 	"nvim-lua/plenary.nvim",
 	-- "nvim-lualine/lualine.nvim",
@@ -121,25 +126,6 @@ require("lazy").setup({
 	},
 
 	"github/copilot.vim",
-	{
-		{
-			"CopilotC-Nvim/CopilotChat.nvim",
-			dependencies = {
-				{ "zbirenbaum/copilot.lua" },
-				{ "nvim-lua/plenary.nvim" },
-			},
-			build = "make tiktoken",
-			opts = {
-				model = "claude-3.5-sonnet",
-				mappings = {
-					reset = {
-						normal = "",
-						insert = "",
-					},
-				},
-			},
-		},
-	},
 
 	{
 		"Olical/conjure",
@@ -151,18 +137,15 @@ require("lazy").setup({
 	{
 		"guns/vim-sexp",
 		init = function()
-			vim.cmd([[ let g:sexp_filetypes = 'clojure,fennel' ]])
+			vim.cmd([[ 
+      let g:sexp_filetypes = 'clojure,fennel' 
+      " call s:vim_sexp_mappings()
+      ]])
 		end,
 	},
 	{ "tpope/vim-sexp-mappings-for-regular-people" },
 	{ "HiPhish/rainbow-delimiters.nvim", ft = { "clojure", "fennel" } },
-	-- { "gpanders/nvim-parinfer" },
-	-- {
-	-- 	"raystubbs/nvim-cljfmt-indents",
-	-- 	config = function()
-	-- 		require("nvim-cljfmt-indents").setup()
-	-- 	end,
-	-- },
+	-- { "eraserhd/parinfer-rust", build = "cargo build --release" },
 	{ "brianhuster/live-preview.nvim" },
 
 	{
@@ -248,29 +231,14 @@ require("lazy").setup({
 	{
 		"nvim-treesitter/nvim-treesitter-textobjects",
 		dependencies = { "nvim-treesitter/nvim-treesitter" },
+		ft = { "typescript", "javascript", "typescriptreact", "javascriptreact" },
 	},
 
 	{
 		"yetone/avante.nvim",
 		event = "VeryLazy",
-		version = false, -- Never set this value to "*"! Never!
-		opts = {
-			-- add any opts here
-			-- for example
-			provider = "copilot",
-			copilot = {
-				-- endpoint = "https://api.github.com",
-				model = "claude-3.5-sonnet",
-				-- temperature = 0,
-				-- max_tokens = 4096,
-			},
-			-- claude = {
-			-- 	endpoint = "https://api.anthropic.com",
-			-- 	model = "claude-3-5-sonnet-20241022",
-			-- 	temperature = 0,
-			-- 	max_tokens = 4096,
-			-- },
-		}, -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
+		version = false,
+		opts = avante_config,
 		build = "make",
 		-- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
 		dependencies = {

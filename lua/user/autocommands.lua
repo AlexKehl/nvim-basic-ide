@@ -60,14 +60,9 @@ vim.api.nvim_create_autocmd("FileType", {
 
 		vim.keymap.set("n", "<Tab>", "<cmd>ParinferToggle<CR>", keymap_opts)
 
-		-- vim.keymap.set("i", "<C-l>", "<Plug>(parinfer-tab)", keymap_opts)
-		-- vim.keymap.set("i", "<C-h>", "<Plug>(parinfer-backtab)", keymap_opts)
-
-		-- vim.bo.indentexpr = "nvim_treesitter#indent()"
-		-- vim.bo.indentexpr = "" -- clear legacy indent function
-		-- vim.bo.indentexpr = "GetCljfmtIndent()"
-		-- vim.bo.indentexpr = ""
-		-- vim.opt.autoindent = true
+		vim.bo.indentexpr = ""
+		vim.opt.indentexpr = ""
+		vim.opt.autoindent = true
 		-- vim.bo.cindent = false
 		-- vim.opt.smartindent = true
 

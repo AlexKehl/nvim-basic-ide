@@ -41,7 +41,7 @@ local function eval_on_save()
 	if vim.bo.filetype == "fennel" then
 		vim.cmd("w")
 		vim.cmd("ConjureEvalBuf")
-		vim.cmd("Lazy reload nvim-parinfer")
+		-- vim.cmd("Lazy reload nvim-parinfer")
 		return
 	end
 	return vim.cmd("w")
@@ -149,11 +149,13 @@ keymap("n", "<leader>el", "<cmd>EslintFixAll<CR>", opts)
 keymap("n", "<leader>jq", "?%<CR>x:norm v%gJ<CR>V:!jq<CR>", opts)
 
 -- copilot chat
-keymap("n", "<leader>cc", "<cmd>CopilotChatToggle<CR>", opts)
-keymap("n", "<M-c>", "<cmd>CopilotChatToggle<CR>", opts)
-keymap("v", "<leader>cc", "<cmd>CopilotChatToggle<CR>", opts)
-keymap("n", "<leader>ct", "<cmd>CopilotChatTests<CR>", opts)
-keymap("v", "<leader>ct", "<cmd>CopilotChatTests<CR>", opts)
+-- keymap("n", "<leader>cc", "<cmd>CopilotChatToggle<CR>", opts)
+-- keymap("n", "<M-c>", "<cmd>CopilotChatToggle<CR>", opts)
+-- keymap("v", "<leader>cc", "<cmd>CopilotChatToggle<CR>", opts)
+-- keymap("n", "<leader>ct", "<cmd>CopilotChatTests<CR>", opts)
+-- keymap("v", "<leader>ct", "<cmd>CopilotChatTests<CR>", opts)
+
+keymap("n", "<leader>cc", "<cmd>AvanteAsk<CR>", opts)
 
 keymap("n", "<leader>cp", "<cmd>Copilot panel<CR>", opts)
 keymap("n", "<leader>cr", ":lua require('copilot.panel').refresh()<CR>", opts)
@@ -200,7 +202,7 @@ vim.keymap.set("n", "<C-t>", eval_clojure_tests, {})
 
 vim.keymap.set("i", "<C-o>", "()<Esc>i", opts)
 vim.keymap.set("i", "<C-]>", "[]<Esc>i", opts)
-vim.keymap.set("i", "<C-h>", "{}<Esc>i", opts)
+vim.keymap.set("i", "<C-y>", "{}<Esc>i", opts)
 vim.keymap.set("i", "<C-u>", '""<Esc>i', opts)
 
 -- <LocalLeader>W                          *<Plug>(sexp_round_head_wrap_element)*

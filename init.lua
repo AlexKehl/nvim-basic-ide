@@ -14,6 +14,7 @@ require("user.formatter")
 require("user.oil")
 require("user.dadbod")
 require("user.lilypond")
+require("user.projectionist").setup()
 
 local substitute = require("substitute")
 
