@@ -1,218 +1,177 @@
--- Shorten function name
-local keymap = vim.keymap.set
-
--- Silent keymap option
-local opts = { silent = true }
-
---Remap space as leader key
-keymap("", "<Space>", "<Nop>", opts)
+-- [nfnl] fnl/user/keymaps.fnl
+local opts = {silent = true}
+vim.keymap.set("", "<Space>", "<Nop>", opts)
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
-
--- Normal --
--- Better window navigation
-keymap("n", "<C-h>", "<C-w>h", opts)
-keymap("n", "<C-j>", "<C-w>j", opts)
-keymap("n", "<C-k>", "<C-w>k", opts)
-keymap("n", "<C-l>", "<C-w>l", opts)
-
--- QuickFix window
-keymap("n", "]q", "<cmd>cnext<CR>", opts)
-keymap("n", "[q", "<cmd>cprev<CR>", opts)
-
--- Tabs
-keymap("n", "<leader>1", "<cmd>tabn 1<CR>", opts)
-keymap("n", "<leader>2", "<cmd>tabn 2<CR>", opts)
-keymap("n", "<leader>3", "<cmd>tabn 3<CR>", opts)
-keymap("n", "<leader>4", "<cmd>tabn 4<CR>", opts)
-keymap("n", "<leader>5", "<cmd>tabn 5<CR>", opts)
-keymap("n", "<leader>6", "<cmd>tabn 6<CR>", opts)
-keymap("n", "<leader>7", "<cmd>tabn 7<CR>", opts)
-keymap("n", "<leader>8", "<cmd>tabn 8<CR>", opts)
-keymap("n", "<leader>9", "<cmd>tabn 9<CR>", opts)
-keymap("n", "<leader>t", "<cmd>tabnew<CR>", opts)
-
+vim.keymap.set("n", "<C-h>", "<C-w>h", opts)
+vim.keymap.set("n", "<C-j>", "<C-w>j", opts)
+vim.keymap.set("n", "<C-k>", "<C-w>k", opts)
+vim.keymap.set("n", "<C-l>", "<C-w>l", opts)
+vim.keymap.set("n", "]q", "<cmd>cnext<CR>", opts)
+vim.keymap.set("n", "[q", "<cmd>cprev<CR>", opts)
+vim.keymap.set("n", "<leader>1", "<cmd>tabn 1<CR>", opts)
+vim.keymap.set("n", "<leader>2", "<cmd>tabn 2<CR>", opts)
+vim.keymap.set("n", "<leader>3", "<cmd>tabn 3<CR>", opts)
+vim.keymap.set("n", "<leader>4", "<cmd>tabn 4<CR>", opts)
+vim.keymap.set("n", "<leader>5", "<cmd>tabn 5<CR>", opts)
+vim.keymap.set("n", "<leader>6", "<cmd>tabn 6<CR>", opts)
+vim.keymap.set("n", "<leader>7", "<cmd>tabn 7<CR>", opts)
+vim.keymap.set("n", "<leader>8", "<cmd>tabn 8<CR>", opts)
+vim.keymap.set("n", "<leader>9", "<cmd>tabn 9<CR>", opts)
+vim.keymap.set("n", "<leader>t", "<cmd>tabn t<CR>", opts)
 local function eval_on_save()
-	if vim.bo.filetype == "clojure" then
-		vim.cmd("w")
-		vim.cmd("ConjureEvalBuf")
-		return
-	end
-	if vim.bo.filetype == "fennel" then
-		vim.cmd("w")
-		vim.cmd("ConjureEvalBuf")
-		-- vim.cmd("Lazy reload nvim-parinfer")
-		return
-	end
-	return vim.cmd("w")
+  if ((vim.bo.filetype == "clojure") or (vim.bo.filetype == "fennel")) then
+    vim.cmd("w")
+    return vim.cmd("ConjureEvalBuf")
+  else
+    return vim.cmd("w")
+  end
 end
-
-keymap("n", "<leader>eg", [[:ConjureEval (user/reset)<CR>]], opts)
-keymap("n", "<leader>et", "<cmd>ConjureCljRunCurrentTest<CR>", opts)
-keymap("n", "<leader>ea", [[:ConjureEval (user/run-all-tests)<CR>]], opts)
-keymap("n", "<leader>eu", [[:ConjureEval (user/unmap-defs)<CR>]], opts)
--- keymap("n", "<leader>mt", "<cmd>mark T<CR>", opts)
-keymap("n", "<leader>mt", function()
-	vim.cmd("mark T")
-	print("Mark set")
-end, opts)
--- keymap("n", "<leader>mm", "<leader>emT", opts)
-
-keymap("n", "<C-y>", function()
-	eval = require("conjure.eval")
-	marked_form = eval["marked-form"]
-	vim.schedule(function()
-		marked_form("T")
-	end)
-end, opts)
-
--- Quick file operations
-keymap("n", "<leader>w", eval_on_save, opts)
-
-keymap("n", "<leader>q", "<cmd>q<CR>", opts)
-
--- Ranger
--- keymap("n", "<C-p>", "<cmd>RnvimrToggle<CR>", opts)
--- Oil
-keymap("n", "<C-p>", "<cmd>Oil<CR>", opts)
-
--- Clear highlights
-keymap("n", "<leader><cr>", "<cmd>nohlsearch<CR>", opts)
-
--- Insert --
--- Press jk fast to enter
-keymap("i", "kj", "<ESC>", opts)
-
--- Visual --
--- Stay in indent mode
-keymap("v", "<", "<gv", opts)
-keymap("v", ">", ">gv", opts)
-
--- Plugins --
-keymap("n", "\\", "<Plug>(comment_toggle_linewise_current)", opts)
-keymap("n", "<leader>a", "<cmd>A<CR>", opts)
-keymap("n", "<leader>b", "<cmd>Git blame<CR>", opts)
-keymap("n", "<leader>ll", "<cmd>diffget //3<CR>", opts)
-keymap("n", "<leader>lh", "<cmd>diffget //2<CR>", opts)
--- keymap("n", "<leader>1", "<cmd>diffget<CR>", opts)
-
--- Misc
--- Behave like Vims other bindings (C, D etc.)
-keymap("n", "Y", "y$", opts)
-
--- Telescope
-keymap("n", "<C-f>", ":Telescope find_files<CR>", opts)
-keymap("n", "<C-e>", ":Telescope live_grep<CR>", opts)
-keymap("n", "§", ":Telescope buffers<CR>", opts)
-keymap("n", "<C-n>", ":Telescope command_history<CR>", opts)
-keymap("n", "z", ":Telescope oldfiles<CR>", opts)
-keymap("n", "<C-q>", ":Telescope diagnostics<CR>", opts)
-
--- todo
-keymap("n", "<leader>d", "<cmd>:e ~/.todo.txt<CR>", opts)
-
--- Markdown
-keymap("n", "<leader>md", ":MarkdownPreviewToggle<CR>", opts)
-
-local function format()
-	local filepath = vim.api.nvim_buf_get_name(0)
-	if not (filepath == "") then
-		vim.cmd([[ FormatWrite]])
-	else
-		vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<CR>", true, false, true), "n", true)
-	end
+vim.keymap.set("n", "<leader>eg", ":ConjureEval (user/reset)<CR>", opts)
+vim.keymap.set("n", "<leader>et", "<cmd>ConjureCljRunCurrentTest<CR>", opts)
+vim.keymap.set("n", "<leader>ea", ":ConjureEval (user/run-all-tests)<CR>", opts)
+vim.keymap.set("n", "<leader>eu", ":ConjureEval (user/unmap-defs)<CR>", opts)
+local function _2_()
+  vim.cmd("mark T")
+  return print("Mark set")
 end
-
-keymap("n", "<CR>", format, opts)
-
--- music
--- keymap("n", "<tab>", ":LilyPlayer<CR>", opts)
-
--- in terminal mode map esc <C-\><C-n> to exit terminal mode
-keymap("t", "<Esc>", "<C-\\><C-n>", opts)
-
--- Neotest
-keymap("n", "<leader>no", ":lua require('neotest').output.open({ enter = true })<CR>", opts)
-keymap("n", "<leader>nw", ":lua require('neotest').watch.toggle()<CR>", opts)
-keymap("n", "<leader>ns", ":lua require('neotest').summary.toggle()<CR>", opts)
-keymap("n", "<leader>np", ":lua require('neotest').output_panel.toggle()<CR>", opts)
-keymap("n", "<leader>nc", ":lua require('neotest').output_panel.clear()<CR>", opts)
-
--- Text objects for whitespace
-keymap("n", "da ", "F df ", opts)
-keymap("n", "di ", "T dt ", opts)
-keymap("n", "ca ", "F cf ", opts)
-keymap("n", "ci ", "T ct ", opts)
-
-keymap("n", "<leader>el", "<cmd>EslintFixAll<CR>", opts)
-
-keymap("n", "<leader>jq", "?%<CR>x:norm v%gJ<CR>V:!jq<CR>", opts)
-
--- copilot chat
--- keymap("n", "<leader>cc", "<cmd>CopilotChatToggle<CR>", opts)
--- keymap("n", "<M-c>", "<cmd>CopilotChatToggle<CR>", opts)
--- keymap("v", "<leader>cc", "<cmd>CopilotChatToggle<CR>", opts)
--- keymap("n", "<leader>ct", "<cmd>CopilotChatTests<CR>", opts)
--- keymap("v", "<leader>ct", "<cmd>CopilotChatTests<CR>", opts)
-
-keymap("n", "<leader>cc", "<cmd>AvanteAsk<CR>", opts)
-
-keymap("n", "<leader>cp", "<cmd>Copilot panel<CR>", opts)
-keymap("n", "<leader>cr", ":lua require('copilot.panel').refresh()<CR>", opts)
-
-vim.keymap.set("n", "<leader>ch", function()
-	vim.cmd("TSC")
-	vim.cmd("TSCOpen")
-end, opts)
-
-vim.keymap.set("n", "<leader>cl", function()
-	vim.cmd("silent! TSCStop")
-	vim.cmd("ccl")
-end, opts)
-
--- Substitute
-vim.keymap.set("n", "m", ":lua require('substitute').operator()<CR>", { noremap = true, silent = true })
-vim.keymap.set("n", "mm", ":lua require('substitute').line()<CR>", { noremap = true, silent = true })
-vim.keymap.set("n", "M", ":lua require('substitute').eol()<CR>", { noremap = true, silent = true })
-vim.keymap.set("x", "m", ":lua require('substitute').visual()<CR>", { noremap = true, silent = true })
-
+vim.keymap.set("n", "<leader>mt", _2_)
+local function _3_()
+  local eval = require("conjure.eval")
+  local marked_form = eval["marked-form"]
+  local function _4_()
+    return marked_form("T")
+  end
+  return vim.schedule(_4_)
+end
+vim.keymap.set("n", "<C-y>", _3_, opts)
+vim.keymap.set("n", "<leader>w", eval_on_save, opts)
+vim.keymap.set("n", "<leader>q", "<cmd>q<CR>", opts)
+vim.keymap.set("n", "<C-p>", "<cmd>Oil<CR>", opts)
+vim.keymap.set("n", "<leader><cr>", "<cmd>nohlsearch<CR>", opts)
+vim.keymap.set("i", "kj", "<ESC>", opts)
+vim.keymap.set("v", "<", "<gv", opts)
+vim.keymap.set("v", ">", ">gv", opts)
+vim.keymap.set("n", "\\", "<Plug>(comment_toggle_linewise_current)", opts)
+vim.keymap.set("n", "<leader>b", "<cmd>Git blame<CR>", opts)
+vim.keymap.set("n", "<leader>ll", "<cmd>diffget //3<CR>", opts)
+vim.keymap.set("n", "<leader>lh", "<cmd>diffget //2<CR>", opts)
+vim.keymap.set("n", "Y", "y$", opts)
+vim.keymap.set("n", "<C-f>", ":Telescope find_files<CR>", opts)
+vim.keymap.set("n", "<C-e>", ":Telescope live_grep<CR>", opts)
+vim.keymap.set("n", "\194\167", ":Telescope buffers<CR>", opts)
+vim.keymap.set("n", "<C-n>", ":Telescope command_history<CR>", opts)
+vim.keymap.set("n", "z", ":Telescope oldfiles<CR>", opts)
+vim.keymap.set("n", "<C-q>", ":Telescope diagnostics<CR>", opts)
+vim.keymap.set("n", "<leader>d", "<cmd>:e ~/.todo.txt<CR>", opts)
+vim.keymap.set("n", "<leader>md", ":MarkdownPreviewToggle<CR>", opts)
+local function _5_()
+  return vim.cmd("FormatWrite")
+end
+vim.keymap.set("n", "<CR>", _5_, opts)
+vim.keymap.set("t", "<Esc>", "<C-\\><C-n>", opts)
+vim.keymap.set("n", "<leader>el", "<cmd>EslintFixAll<CR>", opts)
+vim.keymap.set("n", "<leader>jq", "?%<CR>x:norm v%gJ<CR>V:!jq<CR>", opts)
+vim.keymap.set("n", "<leader>cc", "<cmd>AvanteAsk<CR>", opts)
+local function _6_()
+  vim.cmd("TSC")
+  return vim.cmd("TSCOpen")
+end
+vim.keymap.set("n", "<leader>ch", _6_, opts)
+local function _7_()
+  vim.cmd("silent! TSCStop")
+  return vim.cmd("ccl")
+end
+vim.keymap.set("n", "<leader>cl", _7_, opts)
+local function _8_()
+  local substitute = require("substitute")
+  return substitute.operator()
+end
+vim.keymap.set("n", "m", _8_, opts)
+local function _9_()
+  local substitute = require("substitute")
+  return substitute.line()
+end
+vim.keymap.set("n", "mm", _9_, opts)
+local function _10_()
+  local substitute = require("substitute")
+  return substitute.eol()
+end
+vim.keymap.set("n", "M", _10_, opts)
+local function _11_()
+  local substitute = require("substitute")
+  return substitute.visual()
+end
+vim.keymap.set("x", "m", _11_, opts)
 vim.keymap.set("n", "<leader>bb", "vip:!zsh<CR>", opts)
 vim.keymap.set("n", "<leader>bj", "vip:!zsh | jq<CR>", opts)
 vim.keymap.set("n", "<leader>jj", "vip:!jq<CR>", opts)
-
 vim.keymap.set("v", "v", "<Plug>(expand_region_expand)", {})
 vim.keymap.set("v", "<C-v>", "<Plug>(expand_region_shrink)", {})
-
 vim.keymap.set("n", "<leader>,", "A)<ESC><cmd>silent! ConjureEvalCurrentForm<CR><cmd>silent! normal! x0w<CR>", opts)
-
 local function eval_clojure_tests()
-	if not (vim.bo.filetype == "clojure") then
-		return
-	end
-	local file_name = vim.api.nvim_buf_get_name(0)
-
-	if string.find(file_name, "_test") then
-		return vim.cmd("ConjureCljRunCurrentNsTests")
-	end
-
-	vim.cmd("ConjureCljRunAlternateNsTest")
+  if (vim.bo.filetype == "clojure") then
+    local file_name = vim.api.nvim_buf_get_name(0)
+    if string.find(file_name, "_test") then
+      return vim.cmd("ConjureCljRunCurrentNsTests")
+    else
+      return vim.cmd("ConjureCljRunAlternateNsTest")
+    end
+  else
+    return nil
+  end
 end
-
-vim.keymap.set("n", "<C-t>", eval_clojure_tests, {})
-
+vim.keymap.set("n", "<C-t>", eval_clojure_tests, opts)
 vim.keymap.set("i", "<C-o>", "()<Esc>i", opts)
 vim.keymap.set("i", "<C-]>", "[]<Esc>i", opts)
 vim.keymap.set("i", "<C-y>", "{}<Esc>i", opts)
-vim.keymap.set("i", "<C-u>", '""<Esc>i', opts)
-
--- <LocalLeader>W                          *<Plug>(sexp_round_head_wrap_element)*
--- <LocalLeader>w                          *<Plug>(sexp_round_tail_wrap_element)*
+vim.keymap.set("i", "<C-u>", "\"\"<Esc>i", opts)
 vim.keymap.set("n", "<leader>:", "<Plug>(sexp_round_tail_wrap_element)", opts)
 vim.keymap.set("n", "<leader>;", "<Plug>(sexp_round_head_wrap_element)", opts)
-vim.keymap.set("n", "<leader>es", "<Plug>(sexp_move_to_prev_top_element) fna*<Esc><cmd>ConjureEvalRootForm<CR>x0", opts)
-
--- remove default nvim keymaps. These cause lag when using normal gr keybinding
-vim.keymap.del("n", "gri")
-vim.keymap.del("n", "grr")
-vim.keymap.del("n", "gra")
-vim.keymap.del("n", "grn")
+vim.keymap.set({"x"}, "af", "<Plug>(sexp_outer_list)", opts)
+vim.keymap.set({"o"}, "af", "<Plug>(sexp_outer_list)", opts)
+vim.keymap.set({"x"}, "if", "<Plug>(sexp_inner_list)", opts)
+vim.keymap.set({"o"}, "if", "<Plug>(sexp_inner_list)", opts)
+vim.keymap.set({"x"}, "aF", "<Plug>(sexp_outer_top_list)", opts)
+vim.keymap.set({"o"}, "aF", "<Plug>(sexp_outer_top_list)", opts)
+vim.keymap.set({"x"}, "iF", "<Plug>(sexp_inner_top_list)", opts)
+vim.keymap.set({"o"}, "iF", "<Plug>(sexp_inner_top_list)", opts)
+vim.keymap.set({"x"}, "al", "<Plug>(sexp_outer_string)", opts)
+vim.keymap.set({"o"}, "al", "<Plug>(sexp_outer_string)", opts)
+vim.keymap.set({"x"}, "il", "<Plug>(sexp_inner_string)", opts)
+vim.keymap.set({"o"}, "il", "<Plug>(sexp_inner_string)", opts)
+vim.keymap.set({"x"}, "ae", "<Plug>(sexp_outer_element)", opts)
+vim.keymap.set({"o"}, "ae", "<Plug>(sexp_outer_element)", opts)
+vim.keymap.set({"x"}, "ie", "<Plug>(sexp_inner_element)", opts)
+vim.keymap.set({"o"}, "ie", "<Plug>(sexp_inner_element)", opts)
+vim.keymap.set({"n", "x", "o"}, "(", "<Plug>(sexp_move_to_prev_bracket)", opts)
+vim.keymap.set({"n", "x", "o"}, ")", "<Plug>(sexp_move_to_next_bracket)", opts)
+vim.keymap.set({"n", "x", "o"}, "B", "<Plug>(sexp_move_to_prev_element_head)", opts)
+vim.keymap.set({"n", "x", "o"}, "W", "<Plug>(sexp_move_to_next_element_head)", opts)
+vim.keymap.set({"n", "x", "o"}, "gE", "<Plug>(sexp_move_to_prev_element_tail)", opts)
+vim.keymap.set({"n", "x", "o"}, "E", "<Plug>(sexp_move_to_next_element_tail)", opts)
+vim.keymap.set({"n", "x", "o"}, "[[", "<Plug>(sexp_move_to_prev_top_element)", opts)
+vim.keymap.set({"n", "x", "o"}, "]]", "<Plug>(sexp_move_to_next_top_element)", opts)
+vim.keymap.set({"n", "x"}, "<leader>i", "<Plug>(sexp_round_head_wrap_list)", opts)
+vim.keymap.set({"n", "x"}, "<leader>I", "<Plug>(sexp_round_tail_wrap_list)", opts)
+vim.keymap.set({"n", "x"}, "<leader>[", "<Plug>(sexp_square_head_wrap_list)", opts)
+vim.keymap.set({"n", "x"}, "<leader>]", "<Plug>(sexp_square_tail_wrap_list)", opts)
+vim.keymap.set({"n", "x"}, "<leader>{", "<Plug>(sexp_curly_head_wrap_list)", opts)
+vim.keymap.set({"n", "x"}, "<leader>}", "<Plug>(sexp_curly_tail_wrap_list)", opts)
+vim.keymap.set({"n", "x"}, "<leader>e[", "<Plug>(sexp_square_head_wrap_element)", opts)
+vim.keymap.set({"n", "x"}, "<leader>e]", "<Plug>(sexp_square_tail_wrap_element)", opts)
+vim.keymap.set({"n", "x"}, "<leader>e{", "<Plug>(sexp_curly_head_wrap_element)", opts)
+vim.keymap.set({"n", "x"}, "<leader>e}", "<Plug>(sexp_curly_tail_wrap_element)", opts)
+vim.keymap.set({"n"}, "<leader>h", "<Plug>(sexp_insert_at_list_head)", opts)
+vim.keymap.set({"n"}, "<leader>l", "<Plug>(sexp_insert_at_list_tail)", opts)
+vim.keymap.set({"n"}, "<leader>@", "<Plug>(sexp_splice_list)", opts)
+vim.keymap.set({"n", "x"}, "<leader>o", "<Plug>(sexp_raise_list)", opts)
+vim.keymap.set({"n", "x"}, "<leader>O", "<Plug>(sexp_raise_element)", opts)
+vim.keymap.set({"n", "x"}, "[f", "<Plug>(sexp_swap_list_backward)", opts)
+vim.keymap.set({"n", "x"}, "]f", "<Plug>(sexp_swap_list_forward)", opts)
+vim.keymap.set({"n", "x"}, "[e", "<Plug>(sexp_swap_element_backward)", opts)
+vim.keymap.set({"x", "n"}, "]e", "<Plug>(sexp_swap_element_forward)", opts)
+vim.keymap.set("n", "<Left>", "<Plug>(sexp_emit_tail_element)", opts)
+vim.keymap.set("n", "<Right>", "<Plug>(sexp_capture_next_element)", opts)
+vim.keymap.set("n", "<S-Right>", "<Plug>(sexp_emit_head_element)", opts)
+return vim.keymap.set("n", "<S-Left>", "<Plug>(sexp_capture_prev_element)", opts)

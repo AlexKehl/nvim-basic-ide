@@ -137,12 +137,11 @@ require("lazy").setup({
 	{ "Olical/nfnl" },
 	{
 		"guns/vim-sexp",
-		-- init = function()
-		-- 	vim.cmd([[
-		--     " let g:sexp_filetypes = 'clojure,fennel'
-		--     " call s:vim_sexp_mappings()
-		--     ]])
-		-- end,
+		init = function()
+			vim.cmd([[
+		    let g:sexp_filetypes = ''
+		    ]])
+		end,
 	},
 	-- { "tpope/vim-sexp-mappings-for-regular-people" },
 	{ "HiPhish/rainbow-delimiters.nvim", ft = { "clojure", "fennel" } },
