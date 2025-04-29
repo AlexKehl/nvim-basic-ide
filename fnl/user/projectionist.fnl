@@ -1,15 +1,12 @@
+(local c (require :nfnl.core))
+(local fs (require :nfnl.fs))
+
 (fn log [val]
   (print (vim.inspect val))
   val)
 
-(fn path->filename [path]
-  (let [splitted (vim.split path "/")
-        last (. splitted (length splitted))
-        [filename ext] (vim.split last "%.")]
-    {: filename : ext}))
-
 (fn get-clojure-path [buf-path]
-  (let [{: filename : ext} (path->filename buf-path)]
+  (let [[filename ext] (vim.split (fs.filename buf-path) "%.")]
     (if (string.match buf-path :src/)
         (-> buf-path (string.gsub :src/ :test/)
             (string.gsub (.. filename "." ext) (.. filename :_test. ext)))
@@ -20,7 +17,7 @@
         (print "Could not match file"))))
 
 (fn get-ts-path [buf-path]
-  (let [filename (path->filename buf-path)]
+  (let [[filename _] (vim.split (fs.filename buf-path) "%.")]
     (if (vim.endswith buf-path :.test.ts)
         (string.gsub buf-path (.. filename :.test.ts) (.. filename :.ts))
         (vim.endswith buf-path :.ts)
@@ -34,8 +31,8 @@
     (case ft
       :clojure (get-clojure-path buf-path)
       :fennel (get-clojure-path buf-path)
-      :typescript (get-ts-path ft)
-      :javascript (get-ts-path ft))))
+      :typescript (get-ts-path buf-path)
+      :javascript (get-ts-path buf-path))))
 
 (fn open-projection []
   (vim.api.nvim_command (.. "edit " (get-alternate-file))))
@@ -46,7 +43,8 @@
   (vim.api.nvim_command :write))
 
 (fn setup []
+  (vim.keymap.set :n :<leader>en (fn [] (print :kek)))
   (vim.keymap.set :n :<leader>ej "<cmd>ConjureEval (refresh)<CR>")
   (vim.keymap.set :n :<leader>a open-projection))
 
-{: setup}
+{: setup : get-clojure-path : get-ts-path}

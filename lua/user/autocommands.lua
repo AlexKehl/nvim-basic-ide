@@ -60,9 +60,9 @@ vim.api.nvim_create_autocmd("FileType", {
 
 		vim.keymap.set("n", "<Tab>", "<cmd>ParinferToggle<CR>", keymap_opts)
 
-		vim.bo.indentexpr = ""
-		vim.opt.indentexpr = ""
-		vim.opt.autoindent = true
+		-- vim.bo.indentexpr = ""
+		-- vim.opt.indentexpr = ""
+		-- vim.opt.autoindent = true
 		-- vim.bo.cindent = false
 		-- vim.opt.smartindent = true
 

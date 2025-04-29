@@ -7,7 +7,7 @@ local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
 	local lazyrepo = "https://github.com/folke/lazy.nvim.git"
 	vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
-end 
+end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
@@ -125,7 +125,7 @@ require("lazy").setup({
 		},
 	},
 
-	"github/copilot.vim",
+	-- "zbirenbaum/copilot.lua",
 
 	{
 		"Olical/conjure",

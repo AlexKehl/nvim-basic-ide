@@ -9,7 +9,6 @@
   "cmp_luasnip": { "branch": "master", "commit": "98d9cb5c2c38532bd9bdb481067b20fea8f32e90" },
   "conjure": { "branch": "main", "commit": "980452d93fd6165d3f268f50a181ad7ca4c7b990" },
   "copilot.lua": { "branch": "master", "commit": "d521eaf2fab2bf2e49a4447235e82d8c74421c81" },
-  "copilot.vim": { "branch": "release", "commit": "7167958954532a0a1b83f2db2f591b43aebff44c" },
   "csvview.nvim": { "branch": "main", "commit": "4058ccbb3099c5aeebacb00e963b44b2a0bbd45e" },
   "debugprint.nvim": { "branch": "main", "commit": "196d33d4026436f7eddc67136e98515d62259947" },
   "dressing.nvim": { "branch": "master", "commit": "2d7c2db2507fa3c4956142ee607431ddb2828639" },
