@@ -16,7 +16,6 @@ require("lazy").setup({
 		name = "parinfer-rust",
 		ft = { "clojure", "fennel" },
 		build = "cargo build --release",
-		dependencies = { "guns/vim-sexp", "tpope/vim-sexp-mappings-for-regular-people" },
 		config = function()
 			require("parinfer-rust").setup()
 		end,
@@ -31,7 +30,6 @@ require("lazy").setup({
 	{ "kylechui/nvim-surround", opts = {} },
 	"mhartington/formatter.nvim",
 	"terryma/vim-expand-region",
-	"tpope/vim-projectionist",
 	"chrisbra/Colorizer",
 	"christoomey/vim-tmux-navigator",
 	{
@@ -143,7 +141,6 @@ require("lazy").setup({
 		    ]])
 		end,
 	},
-	-- { "tpope/vim-sexp-mappings-for-regular-people" },
 	{ "HiPhish/rainbow-delimiters.nvim", ft = { "clojure", "fennel" } },
 	-- { "eraserhd/parinfer-rust", build = "cargo build --release" },
 	{ "brianhuster/live-preview.nvim" },
