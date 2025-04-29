@@ -40,23 +40,23 @@ vim.api.nvim_create_autocmd("FileType", {
 	pattern = { "clojure", "scheme", "lisp", "racket", "fennel"},
 	desc = "Remove some keymaps from vim-sexp",
 	callback = function()
-		vim.cmd("nunmap <buffer> <LocalLeader>w")
-		vim.cmd("xunmap <buffer> <LocalLeader>w")
-		-- remove auto pairs
-		vim.cmd("iunmap <buffer> <BS>")
-		vim.cmd('iunmap <buffer> "')
-		vim.cmd("iunmap <buffer> (")
-		vim.cmd("iunmap <buffer> )")
-		vim.cmd("iunmap <buffer> [")
-		vim.cmd("iunmap <buffer> ]")
-		vim.cmd("iunmap <buffer> {")
-		vim.cmd("iunmap <buffer> }")
+		-- vim.cmd("nunmap <buffer> <LocalLeader>w")
+		-- vim.cmd("xunmap <buffer> <LocalLeader>w")
+		-- -- remove auto pairs
+		-- vim.cmd("iunmap <buffer> <BS>")
+		-- vim.cmd('iunmap <buffer> "')
+		-- vim.cmd("iunmap <buffer> (")
+		-- vim.cmd("iunmap <buffer> )")
+		-- vim.cmd("iunmap <buffer> [")
+		-- vim.cmd("iunmap <buffer> ]")
+		-- vim.cmd("iunmap <buffer> {")
+		-- vim.cmd("iunmap <buffer> }")
 
-		vim.keymap.set("n", "<Left>", "<Plug>(sexp_emit_tail_element)", keymap_opts)
-		vim.keymap.set("n", "<Right>", "<Plug>(sexp_capture_next_element)", keymap_opts)
-
-		vim.keymap.set("n", "<S-Right>", "<Plug>(sexp_emit_head_element)", keymap_opts)
-		vim.keymap.set("n", "<S-Left>", "<Plug>(sexp_capture_prev_element)", keymap_opts)
+		-- vim.keymap.set("n", "<Left>", "<Plug>(sexp_emit_tail_element)", keymap_opts)
+		-- vim.keymap.set("n", "<Right>", "<Plug>(sexp_capture_next_element)", keymap_opts)
+		--
+		-- vim.keymap.set("n", "<S-Right>", "<Plug>(sexp_emit_head_element)", keymap_opts)
+		-- vim.keymap.set("n", "<S-Left>", "<Plug>(sexp_capture_prev_element)", keymap_opts)
 
 		vim.keymap.set("n", "<Tab>", "<cmd>ParinferToggle<CR>", keymap_opts)
 
