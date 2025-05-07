@@ -1,3 +1,4 @@
+;;(local ts-utils (require :nvim-treesitter.ts_utils))
 (local opts {:silent true})
 
 ;; Remap space as leader key
@@ -25,7 +26,7 @@
 (vim.keymap.set :n :<leader>7 "<cmd>tabn 7<CR>" opts)
 (vim.keymap.set :n :<leader>8 "<cmd>tabn 8<CR>" opts)
 (vim.keymap.set :n :<leader>9 "<cmd>tabn 9<CR>" opts)
-(vim.keymap.set :n :<leader>t "<cmd>tabn t<CR>" opts)
+(vim.keymap.set :n :<leader>t "<cmd>tabnew<CR>" opts)
 
 (fn eval-on-save []
   (if (or (= vim.bo.filetype :clojure) (= vim.bo.filetype :fennel))
@@ -38,6 +39,9 @@
 (vim.keymap.set :n :<leader>et :<cmd>ConjureCljRunCurrentTest<CR> opts)
 (vim.keymap.set :n :<leader>ea ":ConjureEval (user/run-all-tests)<CR>" opts)
 (vim.keymap.set :n :<leader>eu ":ConjureEval (user/unmap-defs)<CR>" opts)
+(vim.keymap.set :n :<leader>es
+                "<Plug>(sexp_move_to_prev_top_element) fna*<Esc><cmd>ConjureEvalRootForm<CR>x0"
+                opts)
 
 (vim.keymap.set :n :<leader>mt (fn [] (vim.cmd "mark T") (print "Mark set")))
 
@@ -214,3 +218,12 @@
 (vim.keymap.set :n :<Right> "<Plug>(sexp_capture_next_element)" opts)
 (vim.keymap.set :n :<S-Right> "<Plug>(sexp_emit_head_element)" opts)
 (vim.keymap.set :n :<S-Left> "<Plug>(sexp_capture_prev_element)" opts)
+
+(vim.keymap.set [:n :v] :<leader>yf "<Plug>(sexp_clone_list)" opts)
+(vim.keymap.set [:n :v] :<leader>ye "<Plug>(sexp_clone_element_sl)" opts)
+
+(vim.keymap.set :n :<leader>fh
+                (fn []
+                  (let [ts-utils (require :nvim-treesitter.ts_utils)
+                        node (ts-utils.get_node_at_cursor)]
+                    (print (node:type)))) opts)

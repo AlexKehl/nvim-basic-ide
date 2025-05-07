@@ -124,7 +124,26 @@ require("lazy").setup({
 		},
 	},
 
-	-- "zbirenbaum/copilot.lua",
+	{
+		"zbirenbaum/copilot.lua",
+		opts = {
+			suggestion = {
+				enabled = true,
+				auto_trigger = true,
+				hide_during_completion = true,
+				debounce = 75,
+				trigger_on_accept = true,
+				keymap = {
+					accept = "<C-k>",
+					accept_word = false,
+					accept_line = false,
+					dismiss = false,
+				},
+			},
+		},
+		event = "InsertEnter",
+		cmd = "Copilot",
+	},
 
 	{
 		"Olical/conjure",
@@ -134,11 +153,13 @@ require("lazy").setup({
 	},
 	{ "Olical/nfnl" },
 	{
-		"guns/vim-sexp",
+		"bpstahlman/vim-sexp",
+		branch = "enhanced-sexp-objects",
 		init = function()
 			vim.cmd([[
-		    let g:sexp_filetypes = ''
-		    ]])
+      let g:sexp_filetypes = ''
+      " let g:sexp_clone_does_indent = 0
+    ]])
 		end,
 	},
 	{ "HiPhish/rainbow-delimiters.nvim", ft = { "clojure", "fennel" } },
@@ -265,14 +286,14 @@ require("lazy").setup({
 					},
 				},
 			},
-			{
-				-- Make sure to set this up properly if you have lazy=true
-				"MeanderingProgrammer/render-markdown.nvim",
-				opts = {
-					file_types = { "markdown", "Avante" },
-				},
-				ft = { "markdown", "Avante" },
-			},
+			-- {
+			-- 	-- Make sure to set this up properly if you have lazy=true
+			-- 	"MeanderingProgrammer/render-markdown.nvim",
+			-- 	opts = {
+			-- 		file_types = { "markdown", "Avante" },
+			-- 	},
+			-- 	ft = { "markdown", "Avante" },
+			-- },
 		},
 	},
 
