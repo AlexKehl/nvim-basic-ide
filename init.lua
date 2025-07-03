@@ -15,6 +15,7 @@ require("user.oil")
 require("user.dadbod")
 require("user.lilypond")
 require("user.projectionist").setup()
+require("user.dap")
 
 local substitute = require("substitute")
 
@@ -81,7 +82,7 @@ vim.cmd([[
   autocmd BufLeave *.json                                       normal! mS
   autocmd BufLeave */src/*.js,*/src/*.ts                        normal! mJ
   autocmd BufLeave *.test.js,*.test.ts,*.test.tsx,*_test.clj,*_test.cljs    normal! mT             
-  autocmd BufLeave */src/*.jsx,*/src/*.tsx                      normal! mX        
+  autocmd BufLeave *.jsx,*.tsx                      normal! mX        
   autocmd BufLeave *.html                                       normal! mH
   autocmd BufLeave */src/types/*.ts                             normal! mY
   autocmd BufLeave *.e2e.ts,*spec.ts,*spec.js                   normal! mE

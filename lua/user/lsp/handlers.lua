@@ -36,10 +36,28 @@ local function is_import_statement(node)
     return is_import_statement(node:parent())
   end
 end
-local function _4_()
+local function is_export_statement(node)
+  if c["nil?"](node) then
+    return false
+  elseif (node:type() == "export_clause") then
+    return true
+  else
+    return is_export_statement(node:parent())
+  end
+end
+local function is_jsx_closing_tag(node)
+  if c["nil?"](node) then
+    return false
+  elseif (node:type() == "jsx_closing_element") then
+    return true
+  else
+    return is_jsx_closing_tag(node:parent())
+  end
+end
+local function _6_()
   return get_parent_type(ts_utils.get_node_at_cursor())
 end
-vim.keymap.set("n", "<leader>fp", _4_)
+vim.keymap.set("n", "<leader>fp", _6_)
 local function is_current_node(buf, node)
   if (buf ~= vim.fn.bufnr()) then
     return false
@@ -47,44 +65,44 @@ local function is_current_node(buf, node)
     return (node:start() == ts_utils.get_node_at_cursor():start())
   end
 end
-local function check_reference(buf, reference)
-  vim.fn.bufload(buf)
+local function relevant_reference_3f(buf, reference)
+  if (0 == vim.fn.bufloaded(buf)) then
+    vim.fn.bufload(buf)
+  else
+  end
   local parser = vim.treesitter.get_parser(buf)
   local range = {reference.user_data.range.start.line, reference.user_data.range.start.character}
   local _ = parser:parse(range)
   local node = vim.treesitter.get_node({bufnr = buf, pos = range})
-  return not (is_current_node(buf, node) or is_import_statement(node))
+  return not (is_current_node(buf, node) or is_import_statement(node) or is_jsx_closing_tag(node) or is_export_statement(node))
 end
-local function filter_references_with_treesitter(references)
-  local function _6_(reference)
+local function filter_relevant_references(references)
+  local function _9_(reference)
     local escaped_path = vim.uri_to_fname(reference.user_data.uri)
     local buf = vim.fn.bufnr(escaped_path)
     if (buf == -1) then
       return false
     else
-      return check_reference(buf, reference)
+      return relevant_reference_3f(buf, reference)
     end
   end
-  return c.filter(_6_, references)
+  return c.filter(_9_, references)
 end
-local function custom_lsp_references_with_treesitter()
-  local function _8_(options)
-    local filtered_references = filter_references_with_treesitter(options.items)
-    if (#filtered_references == 0) then
-      vim.print("No references found")
-      return 
-    else
-    end
-    if (#filtered_references == 1) then
-      local reference = filtered_references[1]
-      vim.lsp.util.show_document({range = reference.user_data.range, uri = reference.user_data.uri}, "utf-8")
-      return 
-    else
-    end
-    options.items = filtered_references
-    return custom_references_picker(filtered_references)
+local function on_references(options)
+  local filtered_references = filter_relevant_references(options.items)
+  if (#filtered_references == 0) then
+    vim.print("No references found")
+    return 
+  else
   end
-  return vim.lsp.buf.references(nil, {on_list = _8_})
+  if (#filtered_references == 1) then
+    local reference = filtered_references[1]
+    vim.lsp.util.show_document({range = reference.user_data.range, uri = reference.user_data.uri}, "utf-8")
+    return 
+  else
+  end
+  options.items = filtered_references
+  return custom_references_picker(filtered_references)
 end
 local function test_reference_pred(reference)
   local escaped_path = vim.uri_to_fname(reference.user_data.uri)
@@ -102,19 +120,15 @@ end
 local function filter_test_references(references)
   return c.filter(test_reference_pred, references)
 end
-local function go_to_test()
-  local function _13_(options)
-    local filtered_references = filter_test_references(options.items)
-    if (#filtered_references == 0) then
-      vim.print("No references found")
-      return 
-    else
-    end
-    local reference = filtered_references[1]
-    vim.lsp.util.show_document({range = reference.user_data.range, uri = reference.user_data.uri}, "utf-8")
-    return nil
+local function on_test_list(options)
+  local filtered_references = filter_test_references(options.items)
+  if (#filtered_references == 0) then
+    vim.print("No references found")
+    return 
+  else
   end
-  return vim.lsp.buf.references(nil, {on_list = _13_})
+  local reference = filtered_references[1]
+  return vim.lsp.util.show_document({range = reference.user_data.range, uri = reference.user_data.uri}, "utf-8")
 end
 local function code_action_filter(code_action)
   if (string.find(code_action.command.title, "Add") or string.find(code_action.command.title, "Update")) then
@@ -131,21 +145,27 @@ local function lsp_keymaps(bufnr)
   keymap(bufnr, "n", "gd", ":Telescope lsp_definitions show_line=false<CR>", opts)
   keymap(bufnr, "n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>", opts)
   keymap(bufnr, "n", "gi", ":Telescope lsp_implementations show_line=false<CR>", opts)
-  vim.keymap.set("n", "gr", custom_lsp_references_with_treesitter, opts)
+  local function _17_()
+    return vim.lsp.buf.references(nil, {on_list = on_references})
+  end
+  vim.keymap.set("n", "gr", _17_, opts)
   keymap(bufnr, "n", "gl", "<cmd>lua vim.diagnostic.open_float()<CR>", opts)
-  local function _16_()
+  local function _18_()
     if ((vim.bo.filetype == "typescript") or (vim.bo.filetype == "typescriptreact")) then
       return vim.lsp.buf.code_action({filter = code_action_filter})
     else
       return vim.lsp.buf.code_action()
     end
   end
-  vim.keymap.set("n", "<leader>f", _16_, opts)
+  vim.keymap.set("n", "<leader>f", _18_, opts)
   keymap(bufnr, "n", "<leader>F", "<cmd>lua vim.lsp.buf.code_action()<cr>", opts)
   keymap(bufnr, "n", "]g", "<cmd>lua vim.diagnostic.goto_next({buffer=0})<cr>", opts)
   keymap(bufnr, "n", "[g", "<cmd>lua vim.diagnostic.goto_prev({buffer=0})<cr>", opts)
   keymap(bufnr, "n", "<leader>rn", "<cmd>lua vim.lsp.buf.rename()<cr>", opts)
-  return vim.keymap.set("n", "gt", go_to_test, opts)
+  local function _20_()
+    return vim.lsp.buf.references(nil, {on_list = on_test_list})
+  end
+  return vim.keymap.set("n", "gt", _20_, opts)
 end
 local function on_attach(client, bufnr)
   if (client.name == "ts_ls") then

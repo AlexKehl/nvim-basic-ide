@@ -1,7 +1,8 @@
 return {
-	provider = "copilot",
-	copilot = {
-		model = "claude-3.5-sonnet",
+	providers = {
+		copilot = {
+			model = "claude-3.5-sonnet",
+		},
 	},
 	behaviour = {
 		auto_suggestions = false, -- Experimental stage

@@ -50,6 +50,16 @@
           (= (node:type) :named_imports)) true
       (is-import-statement (node:parent))))
 
+(fn is-export-statement [node]
+  (if (c.nil? node) false
+      (= (node:type) :export_clause) true
+      (is-export-statement (node:parent))))
+
+(fn is-jsx-closing-tag [node]
+  (if (c.nil? node) false
+      (= (node:type) :jsx_closing_element) true
+      (is-jsx-closing-tag (node:parent))))
+
 (vim.keymap.set :n :<leader>fp
                 (fn []
                   (get-parent-type (ts-utils.get_node_at_cursor))))
@@ -59,39 +69,37 @@
       false
       (= (node:start) (: (ts-utils.get_node_at_cursor) :start))))
 
-(fn check-reference [buf reference]
-  (vim.fn.bufload buf)
+(fn relevant-reference? [buf reference]
+  (when (= 0 (vim.fn.bufloaded buf)) (vim.fn.bufload buf))
   (let [parser (vim.treesitter.get_parser buf)
         range [(. reference :user_data :range :start :line)
                (. reference :user_data :range :start :character)]
-        _ (: parser :parse range)
+        _ (parser:parse range)
         node (vim.treesitter.get_node {:bufnr buf :pos range})]
-    (not (or (is-current-node buf node) (is-import-statement node)))))
+    (not (or (is-current-node buf node) (is-import-statement node)
+             (is-jsx-closing-tag node) (is-export-statement node)))))
 
-(fn filter-references-with-treesitter [references]
+(fn filter-relevant-references [references]
   (c.filter (fn [reference]
               (let [escaped-path (vim.uri_to_fname reference.user_data.uri)
                     buf (vim.fn.bufnr escaped-path)]
                 (if (= buf -1) false
-                    (check-reference buf reference)))) references))
+                    (relevant-reference? buf reference))))
+            references))
 
-(fn custom-lsp-references-with-treesitter []
-  (vim.lsp.buf.references nil
-                          {:on_list (fn [options]
-                                      (local filtered-references
-                                             (filter-references-with-treesitter options.items))
-                                      (when (= (length filtered-references) 0)
-                                        (vim.print "No references found")
-                                        (lua "return "))
-                                      (when (= (length filtered-references) 1)
-                                        (local reference
-                                               (. filtered-references 1))
-                                        (vim.lsp.util.show_document {:range reference.user_data.range
-                                                                     :uri reference.user_data.uri}
-                                                                    :utf-8)
-                                        (lua "return "))
-                                      (set options.items filtered-references)
-                                      (custom-references-picker filtered-references))}))
+(fn on-references [options]
+  (local filtered-references (filter-relevant-references options.items))
+  (when (= (length filtered-references) 0)
+    (vim.print "No references found")
+    (lua "return "))
+  (when (= (length filtered-references) 1)
+    (local reference (. filtered-references 1))
+    (vim.lsp.util.show_document {:range reference.user_data.range
+                                 :uri reference.user_data.uri}
+                                :utf-8)
+    (lua "return "))
+  (set options.items filtered-references)
+  (custom-references-picker filtered-references))
 
 (fn test-reference-pred [reference]
   (let [escaped-path (vim.uri_to_fname reference.user_data.uri)
@@ -102,20 +110,15 @@
 (fn filter-test-references [references]
   (c.filter test-reference-pred references))
 
-(fn go-to-test []
-  (vim.lsp.buf.references nil {:on_list (fn [options]
-                                          (local filtered-references
-                                                 (filter-test-references options.items))
-                                          (when (= (length filtered-references)
-                                                   0)
-                                            (vim.print "No references found")
-                                            (lua "return "))
-                                          (local reference
-                                                 (. filtered-references 1))
-                                          (vim.lsp.util.show_document {:range reference.user_data.range
-                                                                       :uri reference.user_data.uri}
-                                                                      :utf-8)
-                                          nil)}))
+(fn on-test-list [options]
+  (local filtered-references (filter-test-references options.items))
+  (when (= (length filtered-references) 0)
+    (vim.print "No references found")
+    (lua "return "))
+  (local reference (. filtered-references 1))
+  (vim.lsp.util.show_document {:range reference.user_data.range
+                               :uri reference.user_data.uri}
+                              :utf-8))
 
 (fn code-action-filter [code-action]
   (if (or (string.find code-action.command.title :Add)
@@ -134,7 +137,10 @@
   (keymap bufnr :n :K "<cmd>lua vim.lsp.buf.hover()<CR>" opts)
   (keymap bufnr :n :gi ":Telescope lsp_implementations show_line=false<CR>"
           opts)
-  (vim.keymap.set :n :gr custom-lsp-references-with-treesitter opts)
+  (vim.keymap.set :n :gr
+                  (fn []
+                    (vim.lsp.buf.references nil {:on_list on-references}))
+                  opts)
   (keymap bufnr :n :gl "<cmd>lua vim.diagnostic.open_float()<CR>" opts)
   (vim.keymap.set :n :<leader>f
                   (fn []
@@ -148,7 +154,9 @@
   (keymap bufnr :n "[g" "<cmd>lua vim.diagnostic.goto_prev({buffer=0})<cr>"
           opts)
   (keymap bufnr :n :<leader>rn "<cmd>lua vim.lsp.buf.rename()<cr>" opts)
-  (vim.keymap.set :n :gt go-to-test opts))
+  (vim.keymap.set :n :gt
+                  (fn [] (vim.lsp.buf.references nil {:on_list on-test-list}))
+                  opts))
 
 (fn on_attach [client bufnr]
   (when (= client.name :ts_ls)

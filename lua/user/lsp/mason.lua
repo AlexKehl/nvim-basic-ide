@@ -1,60 +1,49 @@
 local mason = require("mason")
 local mason_lspconfig = require("mason-lspconfig")
 local handlers = require("user.lsp.handlers")
+local lspconfig = require("lspconfig")
 
 mason.setup()
 mason_lspconfig.setup()
 
-local opts = {
+local base_opts = {
 	on_attach = handlers.on_attach,
 	capabilities = handlers.capabilities,
 }
 
-mason_lspconfig.setup_handlers({
-	function(server_name)
-		require("lspconfig")[server_name].setup({
-			on_attach = handlers.on_attach,
-			capabilities = handlers.capabilities,
-		})
-	end,
-	["jsonls"] = function()
-		local json_opts = require("user.lsp.settings.jsonls")
-		local extended_opts = vim.tbl_deep_extend("force", json_opts, opts)
-		require("lspconfig")["jsonls"].setup(extended_opts)
-	end,
-	["ts_ls"] = function()
-		local ts_opts = require("user.lsp.settings.ts_ls")
-		local extended_opts = vim.tbl_deep_extend("force", ts_opts, opts)
-		require("lspconfig")["ts_ls"].setup(extended_opts)
-	end,
-	["clojure_lsp"] = function()
-		local clojure_opts = require("user.lsp.settings.clojure_lsp")
-		local extended_opts = vim.tbl_deep_extend("force", clojure_opts, opts)
-		require("lspconfig")["clojure_lsp"].setup(extended_opts)
-	end,
-	["pyright"] = function()
-		local pyright_opts = require("user.lsp.settings.pyright")
-		local extended_opts = vim.tbl_deep_extend("force", pyright_opts, opts)
-		require("lspconfig")["pyright"].setup(extended_opts)
-	end,
-	["rust_analyzer"] = function()
-		local rust_opts = require("user.lsp.settings.rust")
-		local extended_opts = vim.tbl_deep_extend("force", rust_opts, opts)
-		require("lspconfig")["rust_analyzer"].setup(extended_opts)
-	end,
-	["elixirls"] = function()
-		local elixir_opts = {
-			cmd = { "elixir-ls" },
-			filetypes = { "elixir" },
-			root_dir = require("lspconfig.util").root_pattern("mix.exs", ".git"),
-			settings = {
-				elixirLS = {
-					dialyzerEnabled = true,
-					dialyzerFormat = "dialyxir_long",
-				},
-			},
-		}
-		local extended_opts = vim.tbl_deep_extend("force", elixir_opts, opts)
-		require("lspconfig")["elixirls"].setup(extended_opts)
-	end,
-})
+local function organize_imports()
+	vim.lsp.buf.execute_command({
+		command = "_typescript.organizeImports",
+		arguments = { vim.api.nvim_buf_get_name(0) },
+		title = "",
+	})
+end
+
+local ts_commands = {
+	OrganizeImports = {
+		organize_imports,
+		description = "Organize Imports",
+	},
+}
+local ts_filetypes = {
+	"javascript",
+	"javascriptreact",
+	"javascript.jsx",
+	"typescript",
+	"typescriptreact",
+	"typescript.tsx",
+}
+
+for _, server in ipairs(mason_lspconfig.get_installed_servers()) do
+	local opts = vim.tbl_deep_extend("force", {}, base_opts)
+
+	if server == "jsonls" then
+		-- pull in your per-server jsonls settings
+		opts = vim.tbl_deep_extend("force", require("user.lsp.settings.jsonls"), opts)
+	elseif server == "ts_ls" then
+		opts.commands = ts_commands
+		opts.filetypes = ts_filetypes
+	end
+	--
+	lspconfig[server].setup(opts)
+end
