@@ -3,6 +3,7 @@
 
 ;; Remap space as leader key
 (vim.keymap.set "" :<Space> :<Nop> opts)
+
 (set vim.g.mapleader " ")
 (set vim.g.maplocalleader " ")
 
@@ -26,7 +27,7 @@
 (vim.keymap.set :n :<leader>7 "<cmd>tabn 7<CR>" opts)
 (vim.keymap.set :n :<leader>8 "<cmd>tabn 8<CR>" opts)
 (vim.keymap.set :n :<leader>9 "<cmd>tabn 9<CR>" opts)
-(vim.keymap.set :n :<leader>t "<cmd>tabnew<CR>" opts)
+(vim.keymap.set :n :<leader>t :<cmd>tabnew<CR> opts)
 
 (fn eval-on-save []
   (if (or (= vim.bo.filetype :clojure) (= vim.bo.filetype :fennel))
@@ -90,8 +91,6 @@
 
 ;; Markdown
 (vim.keymap.set :n :<leader>md ":MarkdownPreviewToggle<CR>" opts)
-
-(vim.keymap.set :n :<CR> (fn [] (vim.cmd :FormatWrite)) opts)
 
 ;; terminal mode esc
 (vim.keymap.set :t :<Esc> "<C-\\><C-n>" opts)
@@ -220,7 +219,7 @@
 (vim.keymap.set :n :<S-Left> "<Plug>(sexp_capture_prev_element)" opts)
 
 (vim.keymap.set [:n :v] :<leader>yf "<Plug>(sexp_clone_list)" opts)
-(vim.keymap.set [:n :v] :<leader>ye "<Plug>(sexp_clone_element_sl)" opts)
+(vim.keymap.set [:n :v] :<leader>ye "1<Plug>(sexp_clone_element)" opts)
 
 (vim.keymap.set :n :<leader>fh
                 (fn []

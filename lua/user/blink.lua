@@ -1,10 +1,14 @@
-require("blink.cmp").setup({
+return {
 	keymap = {
 		preset = "default",
 		["<S-Tab>"] = { "select_prev", "fallback" },
 		["<Tab>"] = { "select_next", "fallback" },
 		["<CR>"] = { "accept", "fallback" },
 		["<C-e>"] = { "show", "fallback" },
+		["<C-y>"] = false,
+		["<C-j>"] = { "scroll_documentation_down", "fallback" },
+		["<C-k>"] = { "scroll_documentation_up", "fallback" },
+
 
 		-- optionally, define different keymaps for cmdline
 		-- cmdline = {
@@ -19,7 +23,7 @@ require("blink.cmp").setup({
 		menu = {
 			auto_show = function(ctx)
 				-- return ctx.mode ~= "cmdline" or not vim.tbl_contains({ "/", "?" }, vim.fn.getcmdtype())
-        return ctx.mode ~= "cmdline"
+				return ctx.mode ~= "cmdline"
 			end,
 		},
 		documentation = {
@@ -29,7 +33,7 @@ require("blink.cmp").setup({
 			auto_show_delay_ms = 0,
 			-- Delay before updating the documentation window when selecting a new item,
 			-- while an existing item is still visible
-			update_delay_ms = 0,
+			-- update_delay_ms = 0,
 			-- Whether to use treesitter highlighting, disable if you run into performance issues
 			treesitter_highlighting = true,
 			window = {
@@ -53,10 +57,6 @@ require("blink.cmp").setup({
 	},
 
 	appearance = {
-		-- Sets the fallback highlight groups to nvim-cmp's highlight groups
-		-- Useful for when your theme doesn't support blink.cmp
-		-- will be removed in a future release
-		use_nvim_cmp_as_default = true,
 		-- Set to 'mono' for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
 		-- Adjusts spacing to ensure icons are aligned
 		nerd_font_variant = "mono",
@@ -88,4 +88,4 @@ require("blink.cmp").setup({
 			},
 		},
 	},
-})
+}

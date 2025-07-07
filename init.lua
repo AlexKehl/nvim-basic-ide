@@ -15,7 +15,6 @@ require("user.oil")
 require("user.dadbod")
 require("user.lilypond")
 require("user.projectionist").setup()
-require("user.dap")
 
 local substitute = require("substitute")
 

@@ -4,16 +4,10 @@
 (local c (require :nfnl/core))
 (local ts-utils (require :nvim-treesitter.ts_utils))
 
-(local (status-cmp-ok cmp-nvim-lsp) (pcall require :cmp_nvim_lsp))
-
-(when (not status-cmp-ok) (lua "return "))
-
 (local client-capabilities (vim.lsp.protocol.make_client_capabilities))
 
 (set client-capabilities.textDocument.completion.completionItem.snippetSupport
      true)
-
-(local capabilities (cmp-nvim-lsp.default_capabilities client-capabilities))
 
 (fn setup []
   (vim.diagnostic.config {:float {:border :rounded
@@ -126,6 +120,15 @@
       true
       false))
 
+(fn organize-imports []
+  (vim.lsp.buf.execute_command {:command :_typescript.organizeImports
+                                :arguments [(vim.api.nvim_buf_get_name 0)]
+                                :title ""}))
+
+(fn custom-commands [bufnr]
+  (vim.api.nvim_buf_create_user_command bufnr :OrganizeImports organize-imports
+                                        {}))
+
 (local keymap vim.api.nvim_buf_set_keymap)
 (local opts {:noremap true :silent true})
 
@@ -160,24 +163,32 @@
 
 (fn on_attach [client bufnr]
   (when (= client.name :ts_ls)
-    (set client.server_capabilities.document_formatting false))
+    (set client.server_capabilities.document_formatting false)
+    (custom-commands bufnr))
   (when (= client.name :sumneko_lua)
     (set client.server_capabilities.document_formatting false))
   (when (= client.name :gleam)
     (set client.server_capabilities.documentFormattingProvider true))
   (lsp-keymaps bufnr))
 
-(local (lspconfig-status-ok lspconfig) (pcall require :lspconfig))
+(local lspconfig (require :lspconfig))
 
-(when (not lspconfig-status-ok) (lua "return "))
+; (lspconfig.gleam.setup {: capabilities
+;                         :cmd [:gleam :lsp]
+;                         :filetypes [:gleam]
+;                         : on_attach
+;                         :root_dir (lspconfig.util.root_pattern :gleam.toml
+;                                                                :.git)})
 
-(lspconfig.gleam.setup {: capabilities
-                        :cmd [:gleam :lsp]
-                        :filetypes [:gleam]
-                        : on_attach
-                        :root_dir (lspconfig.util.root_pattern :gleam.toml
-                                                               :.git)})
+; (lspconfig.fennel_ls.setup {: on_attach})
 
-(lspconfig.fennel_ls.setup {})
+(vim.lsp.enable :ts_ls)
+(vim.lsp.config :ts_ls {: on_attach})
+
+(vim.lsp.enable :clojure_lsp)
+(vim.lsp.config :clojure_lsp {: on_attach})
+
+(vim.lsp.enable :fennel_ls)
+(vim.lsp.config :fennel_ls {: on_attach})
 
 {: on_attach : setup}

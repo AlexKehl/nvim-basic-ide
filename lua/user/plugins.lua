@@ -2,6 +2,7 @@ local lsp_config = require("user.lsp")
 local conjure = require("user.conjure")
 local cmp_config = require("user.cmp")
 local avante_config = require("user.avante")
+local blink_opts = require("user.blink")
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
@@ -54,29 +55,28 @@ require("lazy").setup({
 	"lewis6991/gitsigns.nvim",
 	"tpope/vim-fugitive",
 
+	{
+		"mason-org/mason.nvim",
+		opts = {},
+	},
+
 	{ -- LSP Configuration & Plugins
 		"neovim/nvim-lspconfig",
 		dependencies = {
-			-- Automatically install LSPs and related tools to stdpath for Neovim
-			"williamboman/mason.nvim",
+			-- 	"williamboman/mason.nvim",
 			"williamboman/mason-lspconfig.nvim",
-			"WhoIsSethDaniel/mason-tool-installer.nvim",
+			-- 	"WhoIsSethDaniel/mason-tool-installer.nvim",
 		},
 		config = lsp_config,
 	},
 
 	"L3MON4D3/LuaSnip",
 
-	{ -- Autocompletion
-		"hrsh7th/nvim-cmp",
-		event = "InsertEnter",
-		config = cmp_config,
+	{
+		"saghen/blink.cmp",
+		version = "1.*",
+		opts = blink_opts,
 	},
-	"L3MON4D3/LuaSnip",
-	"saadparwaiz1/cmp_luasnip",
-	"hrsh7th/cmp-buffer",
-	"hrsh7th/cmp-nvim-lsp",
-	"hrsh7th/cmp-path",
 
 	-- Telescope
 	{
