@@ -1,8 +1,9 @@
 local lsp_config = require("user.lsp")
 local conjure = require("user.conjure")
 local cmp_config = require("user.cmp")
-local avante_config = require("user.avante")
 local blink_opts = require("user.blink")
+local debugprint_opts = require("user.debugprint")
+local lilypond_opts = require("user.lilypond")
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
@@ -12,19 +13,21 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
-	{
-		dir = "~/.config/nvim/lua/parinfer-rust",
-		name = "parinfer-rust",
-		ft = { "clojure", "fennel" },
-		build = "cargo build --release",
-		config = function()
-			require("parinfer-rust").setup()
-		end,
-	},
+	-- {
+	-- 	dir = "~/.config/nvim/lua/parinfer-rust",
+	-- 	name = "parinfer-rust",
+	-- 	ft = { "clojure", "fennel" },
+	-- 	build = "cargo build --release",
+	-- 	config = function()
+	-- 		require("parinfer-rust").setup()
+	-- 	end,
+	-- },
 	{
 		"nvim-lualine/lualine.nvim",
 		dependencies = { "nvim-tree/nvim-web-devicons" },
 	},
+	"tpope/vim-projectionist",
+	"samoshkin/vim-mergetool",
 	"sainnhe/gruvbox-material",
 	"nvim-lua/plenary.nvim",
 	-- "nvim-lualine/lualine.nvim",
@@ -111,13 +114,16 @@ require("lazy").setup({
 	"kristijanhusak/vim-dadbod-completion",
 
 	-- music
-	"martineausimon/nvim-lilypond-suite",
+	{ "martineausimon/nvim-lilypond-suite", opts = lilypond_opts },
 
 	{
 		"dmmulroy/tsc.nvim",
 		opts = {
 			auto_open_qflist = false,
-			flags = { watch = true, noEmit = true },
+			flags = {
+				watch = true,
+				noEmit = true,
+			},
 			enable_progress_notifications = true,
 			enable_error_notifications = true,
 			pretty_errors = false,
@@ -147,14 +153,13 @@ require("lazy").setup({
 
 	{
 		"Olical/conjure",
-		ft = { "clojure", "fennel" },
+		ft = { "clojure", "fennel", "javascript" },
 		lazy = true,
 		init = conjure,
 	},
 	{ "Olical/nfnl" },
 	{
 		"bpstahlman/vim-sexp",
-		branch = "enhanced-sexp-objects",
 		init = function()
 			vim.cmd([[
       let g:sexp_filetypes = ''
@@ -162,78 +167,45 @@ require("lazy").setup({
     ]])
 		end,
 	},
-	{ "HiPhish/rainbow-delimiters.nvim", ft = { "clojure", "fennel" } },
+	-- { "HiPhish/rainbow-delimiters.nvim", ft = { "clojure", "fennel" } },
 	-- { "eraserhd/parinfer-rust", build = "cargo build --release" },
 	{ "brianhuster/live-preview.nvim" },
 
-	{
-		"hat0uma/csvview.nvim",
-		---@module "csvview"
-		---@type CsvView.Options
-		opts = {
-			parser = {
-				comments = { "#", "//" },
-				delimiter = {
-					default = ";",
-					-- ft = {
-					--   tsv = "\t",
-					-- },
-				},
-			},
-			keymaps = {
-				-- Text objects for selecting fields
-				textobject_field_inner = { "if", mode = { "o", "x" } },
-				textobject_field_outer = { "af", mode = { "o", "x" } },
-				-- Excel-like navigation:
-				-- Use <Tab> and <S-Tab> to move horizontally between fields.
-				-- Use <Enter> and <S-Enter> to move vertically between rows and place the cursor at the end of the field.
-				-- Note: In terminals, you may need to enable CSI-u mode to use <S-Tab> and <S-Enter>.
-				jump_next_field_start = { "W", mode = { "n", "v" } },
-				jump_prev_field_start = { "B", mode = { "n", "v" } },
-				jump_next_field_end = { "<Tab>", mode = { "n", "v" } },
-				jump_prev_field_end = { "<S-Tab>", mode = { "n", "v" } },
-				jump_next_row = { "<Enter>", mode = { "n", "v" } },
-				jump_prev_row = { "<S-Enter>", mode = { "n", "v" } },
-			},
-		},
-		cmd = { "CsvViewEnable", "CsvViewDisable", "CsvViewToggle", "CsvViewDelimiter" },
-	},
-
+	-- {
+	-- 	"hat0uma/csvview.nvim",
+	-- 	---@module "csvview"
+	-- 	---@type CsvView.Options
+	-- 	opts = {
+	-- 		parser = {
+	-- 			comments = { "#", "//" },
+	-- 			delimiter = {
+	-- 				default = ";",
+	-- 				-- ft = {
+	-- 				--   tsv = "\t",
+	-- 				-- },
+	-- 			},
+	-- 		},
+	-- 		keymaps = {
+	-- 			-- Text objects for selecting fields
+	-- 			textobject_field_inner = { "if", mode = { "o", "x" } },
+	-- 			textobject_field_outer = { "af", mode = { "o", "x" } },
+	-- 			-- Excel-like navigation:
+	-- 			-- Use <Tab> and <S-Tab> to move horizontally between fields.
+	-- 			-- Use <Enter> and <S-Enter> to move vertically between rows and place the cursor at the end of the field.
+	-- 			-- Note: In terminals, you may need to enable CSI-u mode to use <S-Tab> and <S-Enter>.
+	-- 			jump_next_field_start = { "W", mode = { "n", "v" } },
+	-- 			jump_prev_field_start = { "B", mode = { "n", "v" } },
+	-- 			jump_next_field_end = { "<Tab>", mode = { "n", "v" } },
+	-- 			jump_prev_field_end = { "<S-Tab>", mode = { "n", "v" } },
+	-- 			jump_next_row = { "<Enter>", mode = { "n", "v" } },
+	-- 			jump_prev_row = { "<S-Enter>", mode = { "n", "v" } },
+	-- 		},
+	-- 	},
+	-- 	cmd = { "CsvViewEnable", "CsvViewDisable", "CsvViewToggle", "CsvViewDelimiter" },
+	-- },
 	{
 		"andrewferrier/debugprint.nvim",
-		opts = {
-			keymaps = {
-				normal = {
-					plain_below = "<leader>ej",
-					plain_above = "<leader>ek",
-					variable_below = "<leader>ew",
-					-- variable_above = "g?V",
-					variable_below_alwaysprompt = "",
-					variable_above_alwaysprompt = "",
-					textobj_below = "<leader>ee",
-					textobj_above = "g?O",
-					toggle_comment_debug_prints = "",
-					delete_debug_prints = "<leader>ed",
-				},
-				insert = {
-					plain = "<C-G>p",
-					variable = "<C-G>v",
-				},
-				visual = {
-					variable_below = "<leader>e",
-					variable_above = "g?V",
-				},
-			},
-			commands = {
-				toggle_comment_debug_prints = "ToggleCommentDebugPrints",
-				delete_debug_prints = "DeleteDebugPrints",
-				reset_debug_prints_counter = "ResetDebugPrintsCounter",
-			},
-			-- … Other options
-		},
-
-		-- opts = { … },
-
+		opts = debugprint_opts,
 		dependencies = {
 			"echasnovski/mini.nvim", -- Needed for :ToggleCommentDebugPrints(NeoVim 0.9 only)
 			-- and line highlighting (optional)
@@ -250,51 +222,6 @@ require("lazy").setup({
 		"nvim-treesitter/nvim-treesitter-textobjects",
 		dependencies = { "nvim-treesitter/nvim-treesitter" },
 		ft = { "typescript", "javascript", "typescriptreact", "javascriptreact" },
-	},
-
-	{
-		"yetone/avante.nvim",
-		event = "VeryLazy",
-		version = false,
-		opts = avante_config,
-		build = "make",
-		-- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
-		dependencies = {
-			"nvim-treesitter/nvim-treesitter",
-			"stevearc/dressing.nvim",
-			"nvim-lua/plenary.nvim",
-			"MunifTanjim/nui.nvim",
-			--- The below dependencies are optional,
-			-- "echasnovski/mini.pick", -- for file_selector provider mini.pick
-			"nvim-telescope/telescope.nvim", -- for file_selector provider telescope
-			"hrsh7th/nvim-cmp", -- autocompletion for avante commands and mentions
-			"zbirenbaum/copilot.lua", -- for providers='copilot'
-			{
-				-- support for image pasting
-				"HakonHarnes/img-clip.nvim",
-				event = "VeryLazy",
-				opts = {
-					-- recommended settings
-					default = {
-						embed_image_as_base64 = false,
-						prompt_for_file_name = false,
-						drag_and_drop = {
-							insert_mode = true,
-						},
-						-- required for Windows users
-						use_absolute_path = true,
-					},
-				},
-			},
-			-- {
-			-- 	-- Make sure to set this up properly if you have lazy=true
-			-- 	"MeanderingProgrammer/render-markdown.nvim",
-			-- 	opts = {
-			-- 		file_types = { "markdown", "Avante" },
-			-- 	},
-			-- 	ft = { "markdown", "Avante" },
-			-- },
-		},
 	},
 
 	-- Markdown

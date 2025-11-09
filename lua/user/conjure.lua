@@ -7,7 +7,7 @@ return function()
 
 	vim.g["conjure#mapping#eval_visual"] = "e"
 	vim.g["conjure#mapping#eval_current_form"] = "ee"
-	vim.g["conjure#mapping#eval_root_form"] = "er"
+	vim.g["conjure#mapping#eval_root_form"] = ""
 	vim.g["conjure#mapping#eval_word"] = "ew"
 	vim.g["conjure#mapping#eval_buf"] = "eb"
 	vim.g["conjure#mapping#eval_file"] = "ef"

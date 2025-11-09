@@ -7,19 +7,14 @@
                                                           keymap-opts))
                               :pattern [:typescript :typescriptreact]})
 
-(vim.api.nvim_create_autocmd :FileType
-                             {:callback (fn []
-                                          ((. (require :csvview) :enable))
-                                          (vim.opt_local.formatoptions:remove :t))
-                              :desc "Enable CSV View on .csv files"
-                              :pattern [:csv :tsv]})
-
-(vim.api.nvim_create_autocmd :FileType
-                             {:callback (fn []
-                                          (vim.keymap.set :n :<Tab>
-                                                          :<cmd>ParinferToggle<CR>
-                                                          keymap-opts))
-                              :pattern [:clojure :scheme :lisp :racket :fennel]})
+; (vim.api.nvim_create_autocmd :BufEnter
+;                              {:callback (fn []
+;                                           (if (or (= vim.bo.filetype :qf)
+;                                                   (= ":" (vim.fn.getcmdwintype)))
+;                                               (pcall vim.keymap.del :n :<CR>)
+;                                               (vim.keymap.set :n :<CR>
+;                                                               (fn []
+;                                                                 (vim.cmd :FormatWrite)))))})
 
 (vim.api.nvim_create_autocmd :BufEnter
                              {:callback (fn []
@@ -29,3 +24,8 @@
                                                                 (vim.cmd :FormatWrite))
                                                               opts)
                                               (vim.keymap.del :n :<CR>)))})
+
+
+(vim.api.nvim_create_autocmd :BufEnter
+                             {:command "syntax sync fromstart"
+                              :pattern ["*.ly" "*.ily" "*.tex"]})

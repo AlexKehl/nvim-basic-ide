@@ -13,7 +13,7 @@ require("user.luasnip")
 require("user.formatter")
 require("user.oil")
 require("user.dadbod")
-require("user.lilypond")
+-- require("user.lilypond")
 require("user.projectionist").setup()
 
 local substitute = require("substitute")
@@ -91,6 +91,8 @@ vim.cmd([[
 
   imap <silent><script><expr> <C-K> copilot#Accept("\<CR>")
   let g:copilot_no_tab_map = v:true
+
+  let g:mergetool_layout = 'bmr'
 
 " Disable <localleader>w mapping in vim-sexp
 let g:sexp_mappings = {

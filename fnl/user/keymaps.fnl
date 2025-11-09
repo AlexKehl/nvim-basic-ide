@@ -36,9 +36,16 @@
         (vim.cmd :ConjureEvalBuf))
       (vim.cmd :w)))
 
+(fn eval-and-reload []
+  (vim.cmd :ConjureEvalRootForm) ; (vim.cmd "ConjureEval (cljs-reframe-template.core/reload)")
+  )
+
 (vim.keymap.set :n :<leader>eg ":ConjureEval (user/reset)<CR>" opts)
 (vim.keymap.set :n :<leader>et :<cmd>ConjureCljRunCurrentTest<CR> opts)
 (vim.keymap.set :n :<leader>ea ":ConjureEval (user/run-all-tests)<CR>" opts)
+
+(vim.keymap.set :n :<leader>er eval-and-reload opts)
+
 (vim.keymap.set :n :<leader>eu ":ConjureEval (user/unmap-defs)<CR>" opts)
 (vim.keymap.set :n :<leader>es
                 "<Plug>(sexp_move_to_prev_top_element) fna*<Esc><cmd>ConjureEvalRootForm<CR>x0"
@@ -72,8 +79,8 @@
 ;; Plugins
 (vim.keymap.set :n "\\" "<Plug>(comment_toggle_linewise_current)" opts)
 (vim.keymap.set :n :<leader>b "<cmd>Git blame<CR>" opts)
-(vim.keymap.set :n :<leader>ll "<cmd>diffget //3<CR>" opts)
-(vim.keymap.set :n :<leader>lh "<cmd>diffget //2<CR>" opts)
+(vim.keymap.set :n :<leader>ll "<cmd>MergetoolDiffExchangeLeft<CR>" opts)
+(vim.keymap.set :n :<leader>lh "<cmd>MergetoolDiffExchangeRight<CR>" opts)
 
 ;; Misc
 (vim.keymap.set :n :Y :y$ opts)
@@ -83,8 +90,9 @@
 (vim.keymap.set :n :<C-e> ":Telescope live_grep<CR>" opts)
 (vim.keymap.set :n "§" ":Telescope buffers<CR>" opts)
 (vim.keymap.set :n :<C-n> ":Telescope command_history<CR>" opts)
-(vim.keymap.set :n :z ":Telescope oldfiles<CR>" opts)
+(vim.keymap.set :n :z ":Telescope lsp_document_symbols<CR>" opts)
 (vim.keymap.set :n :<C-q> ":Telescope diagnostics<CR>" opts)
+; (vim.keymap.set :n :<C-i> ":Telescope lsp_workspace_symbols<CR>" opts)
 
 ;; todo
 (vim.keymap.set :n :<leader>d "<cmd>:e ~/.todo.txt<CR>" opts)
@@ -220,9 +228,16 @@
 
 (vim.keymap.set [:n :v] :<leader>yf "<Plug>(sexp_clone_list)" opts)
 (vim.keymap.set [:n :v] :<leader>ye "1<Plug>(sexp_clone_element)" opts)
+(vim.keymap.set [:n] :<leader>yp
+                (fn []
+                  (let [keys (vim.api.nvim_replace_termcodes "vieE1<Plug>(sexp_clone_element)"
+                                                             true false true)]
+                    (vim.api.nvim_feedkeys keys :m false))) opts)
 
 (vim.keymap.set :n :<leader>fh
                 (fn []
                   (let [ts-utils (require :nvim-treesitter.ts_utils)
                         node (ts-utils.get_node_at_cursor)]
                     (print (node:type)))) opts)
+
+(vim.keymap.set :n :<leader>a :<cmd>A<CR> opts)

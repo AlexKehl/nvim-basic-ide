@@ -3,12 +3,20 @@ vim.api.nvim_create_autocmd("BufWritePost", {
 	pattern = "*.ly",
 })
 
--- vim.api.nvim_create_autocmd("BufEnter", {
--- 	command = "syntax sync fromstart",
--- 	pattern = { "*.ly", "*.ily", "*.tex" },
+vim.api.nvim_create_autocmd("BufEnter", {
+	command = "syntax sync fromstart",
+	pattern = { "*.ly", "*.ily", "*.tex" },
+})
+
+-- require("nvls").setup({
+-- 	lilypond = {
+-- 		highlights({
+-- 			lilyVar = { ctermfg = "blue" },
+-- 		}),
+-- 	},
 -- })
 
-require("nvls").setup({
+return {
 	lilypond = {
 		mappings = {
 			player = "<leader>p",
@@ -89,7 +97,15 @@ require("nvls").setup({
 			border_style = "single",
 			winhighlight = "Normal:Normal,FloatBorder:Normal",
 			midi_synth = "fluidsynth",
-			fluidsynth_flags = nil,
+			fluidsynth_flags = {
+				-- "-a",
+				-- "coreaudio",
+				-- "-m",
+				-- "coremidi",
+				-- "-g",
+				-- "1",
+				"/Users/alexanderkehl/Downloads/Nice-Steinway-Lite-v3.0.sf2",
+			},
 			timidity_flags = nil,
 			audio_format = nil,
 			mpv_flags = {
@@ -99,4 +115,4 @@ require("nvls").setup({
 			},
 		},
 	},
-})
+}

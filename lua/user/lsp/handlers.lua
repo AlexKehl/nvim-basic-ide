@@ -11,7 +11,7 @@ local function setup()
   return nil
 end
 local function log(message)
-  vim.fn.writefile({vim.inspect(message)}, (vim.fn.stdpath("cache") .. "/my_log.txt"), "a")
+  vim.fn.writefile({vim.inspect(message)}, (vim.fn.stdpath("cache") .. "my_log.txt"), "a")
   return message
 end
 local function get_parent_type(node)
@@ -134,8 +134,17 @@ end
 local function organize_imports()
   return vim.lsp.buf.execute_command({command = "_typescript.organizeImports", arguments = {vim.api.nvim_buf_get_name(0)}, title = ""})
 end
-local function custom_commands(bufnr)
+local function apply_eslint_fixes(bufnr)
+  return vim.lsp.buf.execute_command({command = "eslint.applyAllFixes", arguments = {{uri = vim.uri_from_bufnr(bufnr), version = vim.lsp.util.buf_versions[bufnr]}}, title = ""})
+end
+local function ts_custom_commands(bufnr)
   return vim.api.nvim_buf_create_user_command(bufnr, "OrganizeImports", organize_imports, {})
+end
+local function eslint_custom_commands(bufnr)
+  local function _16_()
+    return apply_eslint_fixes(bufnr)
+  end
+  return vim.api.nvim_buf_create_user_command(bufnr, "EslintFixAll", _16_, {})
 end
 local keymap = vim.api.nvim_buf_set_keymap
 local opts = {noremap = true, silent = true}
@@ -145,32 +154,36 @@ local function lsp_keymaps(bufnr)
   keymap(bufnr, "n", "gd", ":Telescope lsp_definitions show_line=false<CR>", opts)
   keymap(bufnr, "n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>", opts)
   keymap(bufnr, "n", "gi", ":Telescope lsp_implementations show_line=false<CR>", opts)
-  local function _16_()
+  local function _17_()
     return vim.lsp.buf.references(nil, {on_list = on_references})
   end
-  vim.keymap.set("n", "gr", _16_, opts)
+  vim.keymap.set("n", "gr", _17_, opts)
   keymap(bufnr, "n", "gl", "<cmd>lua vim.diagnostic.open_float()<CR>", opts)
-  local function _17_()
+  local function _18_()
     if ((vim.bo.filetype == "typescript") or (vim.bo.filetype == "typescriptreact")) then
       return vim.lsp.buf.code_action({filter = code_action_filter})
     else
       return vim.lsp.buf.code_action()
     end
   end
-  vim.keymap.set("n", "<leader>f", _17_, opts)
+  vim.keymap.set("n", "<leader>f", _18_, opts)
   keymap(bufnr, "n", "<leader>F", "<cmd>lua vim.lsp.buf.code_action()<cr>", opts)
   keymap(bufnr, "n", "]g", "<cmd>lua vim.diagnostic.goto_next({buffer=0})<cr>", opts)
   keymap(bufnr, "n", "[g", "<cmd>lua vim.diagnostic.goto_prev({buffer=0})<cr>", opts)
   keymap(bufnr, "n", "<leader>rn", "<cmd>lua vim.lsp.buf.rename()<cr>", opts)
-  local function _19_()
+  local function _20_()
     return vim.lsp.buf.references(nil, {on_list = on_test_list})
   end
-  return vim.keymap.set("n", "gt", _19_, opts)
+  return vim.keymap.set("n", "gt", _20_, opts)
+end
+local function log0(message)
+  vim.fn.writefile({vim.inspect(message)}, (vim.fn.stdpath("cache") .. "/my_log.txt"), "a")
+  return message
 end
 local function on_attach(client, bufnr)
   if (client.name == "ts_ls") then
     client.server_capabilities.document_formatting = false
-    custom_commands(bufnr)
+    ts_custom_commands(bufnr)
   else
   end
   if (client.name == "sumneko_lua") then
@@ -181,13 +194,20 @@ local function on_attach(client, bufnr)
     client.server_capabilities.documentFormattingProvider = true
   else
   end
+  if (client.name == "eslint") then
+    eslint_custom_commands(bufnr)
+  else
+  end
   return lsp_keymaps(bufnr)
 end
-local lspconfig = require("lspconfig")
 vim.lsp.enable("ts_ls")
 vim.lsp.config("ts_ls", {on_attach = on_attach})
 vim.lsp.enable("clojure_lsp")
 vim.lsp.config("clojure_lsp", {on_attach = on_attach})
+vim.lsp.enable("marksman")
+vim.lsp.config("marksman", {on_attach = on_attach})
+vim.lsp.enable("eslint")
+vim.lsp.config("eslint", {on_attach = on_attach})
 vim.lsp.enable("fennel_ls")
 vim.lsp.config("fennel_ls", {on_attach = on_attach})
 return {on_attach = on_attach, setup = setup}

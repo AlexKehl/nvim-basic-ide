@@ -31,7 +31,7 @@
 
 (fn log [message]
   (vim.fn.writefile [(vim.inspect message)]
-                    (.. (vim.fn.stdpath :cache) :/my_log.txt) :a)
+                    (.. (vim.fn.stdpath :cache) :my_log.txt) :a)
   message)
 
 (fn get-parent-type [node]
@@ -125,9 +125,20 @@
                                 :arguments [(vim.api.nvim_buf_get_name 0)]
                                 :title ""}))
 
-(fn custom-commands [bufnr]
+(fn apply-eslint-fixes [bufnr]
+  (vim.lsp.buf.execute_command {:command :eslint.applyAllFixes
+                                :arguments [{:uri (vim.uri_from_bufnr bufnr)
+                                             :version (. vim.lsp.util.buf_versions
+                                                         bufnr)}]
+                                :title ""}))
+
+(fn ts-custom-commands [bufnr]
   (vim.api.nvim_buf_create_user_command bufnr :OrganizeImports organize-imports
                                         {}))
+
+(fn eslint-custom-commands [bufnr]
+  (vim.api.nvim_buf_create_user_command bufnr :EslintFixAll
+                                        (fn [] (apply-eslint-fixes bufnr)) {}))
 
 (local keymap vim.api.nvim_buf_set_keymap)
 (local opts {:noremap true :silent true})
@@ -161,17 +172,24 @@
                   (fn [] (vim.lsp.buf.references nil {:on_list on-test-list}))
                   opts))
 
+(fn log [message]
+  (vim.fn.writefile [(vim.inspect message)]
+                    (.. (vim.fn.stdpath :cache) :/my_log.txt) :a)
+  message)
+
 (fn on_attach [client bufnr]
   (when (= client.name :ts_ls)
     (set client.server_capabilities.document_formatting false)
-    (custom-commands bufnr))
+    (ts-custom-commands bufnr))
   (when (= client.name :sumneko_lua)
     (set client.server_capabilities.document_formatting false))
   (when (= client.name :gleam)
     (set client.server_capabilities.documentFormattingProvider true))
+  (when (= client.name :eslint)
+    (eslint-custom-commands bufnr))
   (lsp-keymaps bufnr))
 
-(local lspconfig (require :lspconfig))
+; (local lspconfig (require :lspconfig))
 
 ; (lspconfig.gleam.setup {: capabilities
 ;                         :cmd [:gleam :lsp]
@@ -187,6 +205,12 @@
 
 (vim.lsp.enable :clojure_lsp)
 (vim.lsp.config :clojure_lsp {: on_attach})
+
+(vim.lsp.enable :marksman)
+(vim.lsp.config :marksman {: on_attach})
+
+(vim.lsp.enable :eslint)
+(vim.lsp.config :eslint {: on_attach})
 
 (vim.lsp.enable :fennel_ls)
 (vim.lsp.config :fennel_ls {: on_attach})

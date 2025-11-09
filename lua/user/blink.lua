@@ -6,8 +6,8 @@ return {
 		["<CR>"] = { "accept", "fallback" },
 		["<C-e>"] = { "show", "fallback" },
 		["<C-y>"] = false,
-		["<C-j>"] = { "scroll_documentation_down", "fallback" },
-		["<C-k>"] = { "scroll_documentation_up", "fallback" },
+		["<C-l>"] = { "scroll_documentation_down", "fallback" },
+		["<C-h>"] = { "scroll_documentation_up", "fallback" },
 
 
 		-- optionally, define different keymaps for cmdline

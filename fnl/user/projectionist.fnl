@@ -43,8 +43,7 @@
   (vim.api.nvim_command :write))
 
 (fn setup []
-  (vim.keymap.set :n :<leader>en (fn [] (print :kek)))
-  (vim.keymap.set :n :<leader>ej "<cmd>ConjureEval (refresh)<CR>")
-  (vim.keymap.set :n :<leader>a open-projection))
+  ; (vim.keymap.set :n :<leader>a open-projection)
+  )
 
 {: setup : get-clojure-path : get-ts-path}

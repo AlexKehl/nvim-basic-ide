@@ -59,11 +59,5 @@ local function refresh()
   return vim.api.nvim_command("write")
 end
 local function setup()
-  local function _6_()
-    return print("kek")
-  end
-  vim.keymap.set("n", "<leader>en", _6_)
-  vim.keymap.set("n", "<leader>ej", "<cmd>ConjureEval (refresh)<CR>")
-  return vim.keymap.set("n", "<leader>a", open_projection)
 end
 return {setup = setup, ["get-clojure-path"] = get_clojure_path, ["get-ts-path"] = get_ts_path}
