@@ -33,7 +33,6 @@ require("lazy").setup({
 	-- "nvim-lualine/lualine.nvim",
 	{ "kylechui/nvim-surround", opts = {} },
 	"mhartington/formatter.nvim",
-	"terryma/vim-expand-region",
 	"chrisbra/Colorizer",
 	"christoomey/vim-tmux-navigator",
 	{
@@ -77,7 +76,7 @@ require("lazy").setup({
 
 	{
 		"saghen/blink.cmp",
-		version = "1.*",
+		version = "1.8.0",
 		opts = blink_opts,
 	},
 
@@ -163,7 +162,6 @@ require("lazy").setup({
 		init = function()
 			vim.cmd([[
       let g:sexp_filetypes = ''
-      " let g:sexp_clone_does_indent = 0
     ]])
 		end,
 	},

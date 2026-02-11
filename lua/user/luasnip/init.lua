@@ -1,32 +1,35 @@
+-- [nfnl] fnl/user/luasnip/init.fnl
 local has_luasnip, ls = pcall(require, "luasnip")
 if not has_luasnip then
-	return
+  return 
+else
 end
-
-ls.config.set_config({
-	history = true,
-	updateevents = "TextChanged,TextChangedI",
-	enable_autosnippets = true,
-})
-vim.keymap.set({ "i", "s" }, "<c-j>", function()
-	if ls.expand_or_jumpable() then
-		ls.expand_or_jump()
-	end
-end)
-
-vim.keymap.set({ "i", "s" }, "<c-k>", function()
-	if ls.jumpable(-1) then
-		ls.jump(-1)
-	end
-end)
-
-vim.keymap.set("i", "<c-l>", function()
-	if ls.choice_active() then
-		ls.change_choice(1)
-	end
-end)
-
+ls.config.set_config({enable_autosnippets = true, history = true, updateevents = "TextChanged,TextChangedI"})
+local function _2_()
+  if ls.expand_or_jumpable() then
+    return ls.expand_or_jump()
+  else
+    return nil
+  end
+end
+vim.keymap.set({"i", "s"}, "<c-j>", _2_)
+local function _4_()
+  if ls.jumpable(( - 1)) then
+    return ls.jump(( - 1))
+  else
+    return nil
+  end
+end
+vim.keymap.set({"i", "s"}, "<c-k>", _4_)
+local function _6_()
+  if ls.choice_active() then
+    return ls.change_choice(1)
+  else
+    return nil
+  end
+end
+vim.keymap.set("i", "<c-l>", _6_)
 require("user.luasnip.snippets.gleam")
 require("user.luasnip.snippets.global")
 require("user.luasnip.snippets.typescript")
-require("user.luasnip.snippets.clojure")
+return require("user.luasnip.snippets.clojure")

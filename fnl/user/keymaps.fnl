@@ -36,19 +36,22 @@
         (vim.cmd :ConjureEvalBuf))
       (vim.cmd :w)))
 
-(fn eval-and-reload []
-  (vim.cmd :ConjureEvalRootForm) ; (vim.cmd "ConjureEval (cljs-reframe-template.core/reload)")
-  )
-
 (vim.keymap.set :n :<leader>eg ":ConjureEval (user/reset)<CR>" opts)
+; (vim.keymap.set :n :<leader>eo ":ConjureEval (user/list-methods)<CR>" opts)
+(vim.keymap.set :n :<leader>eo
+                "<cmd>ConjureEval (user/list-methods <C-r>=conjure#extract#form()[0]<CR>)<CR>"
+                opts)
+
+(vim.keymap.set :n :<leader>R :<cmd>ConjureCljRefreshAll<CR> opts)
 (vim.keymap.set :n :<leader>et :<cmd>ConjureCljRunCurrentTest<CR> opts)
 (vim.keymap.set :n :<leader>ea ":ConjureEval (user/run-all-tests)<CR>" opts)
 
-(vim.keymap.set :n :<leader>er eval-and-reload opts)
+(vim.keymap.set :n :<leader>er
+                (fn []
+                  (vim.cmd :ConjureEvalRootForm)) opts)
 
-(vim.keymap.set :n :<leader>eu ":ConjureEval (user/unmap-defs)<CR>" opts)
 (vim.keymap.set :n :<leader>es
-                "<Plug>(sexp_move_to_prev_top_element) fna*<Esc><cmd>ConjureEvalRootForm<CR>x0"
+                "<Plug>(sexp_move_to_prev_top_element) f i*<Esc><cmd>ConjureEvalRootForm<CR>x0"
                 opts)
 
 (vim.keymap.set :n :<leader>mt (fn [] (vim.cmd "mark T") (print "Mark set")))
@@ -61,7 +64,11 @@
                 opts)
 
 ;; Quick file operations
-(vim.keymap.set :n :<leader>w eval-on-save opts)
+(vim.keymap.set :n :<leader>w
+                (fn []
+                  (eval-on-save)
+                  (vim.cmd :FormatWrite)) opts)
+
 (vim.keymap.set :n :<leader>q :<cmd>q<CR> opts)
 
 (vim.keymap.set :n :<C-p> :<cmd>Oil<CR> opts)
@@ -79,8 +86,8 @@
 ;; Plugins
 (vim.keymap.set :n "\\" "<Plug>(comment_toggle_linewise_current)" opts)
 (vim.keymap.set :n :<leader>b "<cmd>Git blame<CR>" opts)
-(vim.keymap.set :n :<leader>ll "<cmd>MergetoolDiffExchangeLeft<CR>" opts)
-(vim.keymap.set :n :<leader>lh "<cmd>MergetoolDiffExchangeRight<CR>" opts)
+(vim.keymap.set :n :<leader>ll :<cmd>MergetoolDiffExchangeLeft<CR> opts)
+(vim.keymap.set :n :<leader>lh :<cmd>MergetoolDiffExchangeRight<CR> opts)
 
 ;; Misc
 (vim.keymap.set :n :Y :y$ opts)
@@ -90,7 +97,8 @@
 (vim.keymap.set :n :<C-e> ":Telescope live_grep<CR>" opts)
 (vim.keymap.set :n "§" ":Telescope buffers<CR>" opts)
 (vim.keymap.set :n :<C-n> ":Telescope command_history<CR>" opts)
-(vim.keymap.set :n :z ":Telescope lsp_document_symbols<CR>" opts)
+(vim.keymap.set :n :z ":Telescope lsp_dynamic_workspace_symbols<CR>" opts)
+(vim.keymap.set :n :Z ":Telescope lsp_document_symbols<CR>" opts)
 (vim.keymap.set :n :<C-q> ":Telescope diagnostics<CR>" opts)
 ; (vim.keymap.set :n :<C-i> ":Telescope lsp_workspace_symbols<CR>" opts)
 
@@ -106,9 +114,6 @@
 (vim.keymap.set :n :<leader>el :<cmd>EslintFixAll<CR> opts)
 
 (vim.keymap.set :n :<leader>jq "?%<CR>x:norm v%gJ<CR>V:!jq<CR>" opts)
-
-;; Copilot Chat
-(vim.keymap.set :n :<leader>cc :<cmd>AvanteAsk<CR> opts)
 
 (vim.keymap.set :n :<leader>ch
                 (fn []
@@ -139,9 +144,6 @@
 (vim.keymap.set :n :<leader>bb "vip:!zsh<CR>" opts)
 (vim.keymap.set :n :<leader>bj "vip:!zsh | jq<CR>" opts)
 (vim.keymap.set :n :<leader>jj "vip:!jq<CR>" opts)
-
-(vim.keymap.set :v :v "<Plug>(expand_region_expand)" {})
-(vim.keymap.set :v :<C-v> "<Plug>(expand_region_shrink)" {})
 
 (vim.keymap.set :n "<leader>,"
                 "A)<ESC><cmd>silent! ConjureEvalCurrentForm<CR><cmd>silent! normal! x0w<CR>"
@@ -230,7 +232,7 @@
 (vim.keymap.set [:n :v] :<leader>ye "1<Plug>(sexp_clone_element)" opts)
 (vim.keymap.set [:n] :<leader>yp
                 (fn []
-                  (let [keys (vim.api.nvim_replace_termcodes "vieE1<Plug>(sexp_clone_element)"
+                  (let [keys (vim.api.nvim_replace_termcodes "vieE1<Plug>(sexp_clone_element)BB"
                                                              true false true)]
                     (vim.api.nvim_feedkeys keys :m false))) opts)
 
@@ -241,3 +243,5 @@
                     (print (node:type)))) opts)
 
 (vim.keymap.set :n :<leader>a :<cmd>A<CR> opts)
+
+(vim.keymap.set :n :<leader>fo (fn [] (vim.cmd :FormatWrite)) opts)

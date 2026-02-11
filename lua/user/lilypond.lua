@@ -8,6 +8,35 @@ vim.api.nvim_create_autocmd("BufEnter", {
 	pattern = { "*.ly", "*.ily", "*.tex" },
 })
 
+-- Lilypond highlight links (not defined by nvim-lilypond-suite)
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = "lilypond",
+	callback = function()
+		vim.cmd([[
+			hi link lilyComment       Comment
+			hi link lilyString        String
+			hi link lilyLyrics        String
+			hi link lilyNumber        Number
+			hi link lilyBoolean       Boolean
+			hi link lilySpecial       Special
+			hi link lilyPitch         Identifier
+			hi link lilyChord         Identifier
+			hi link lilyFunction      Function
+			hi link lilyMarkup        Function
+			hi link lilyArticulation  PreProc
+			hi link lilyContext       Type
+			hi link lilyGrob          Type
+			hi link lilyTranslator    Type
+			hi link lilyDynamic       Statement
+			hi link lilyScheme        PreProc
+			hi link lilyVar           Identifier
+			hi link lilyArgument      Constant
+			hi link lilyMatcher       Delimiter
+			hi link Error             Error
+		]])
+	end,
+})
+
 -- require("nvls").setup({
 -- 	lilypond = {
 -- 		highlights({
@@ -98,12 +127,12 @@ return {
 			winhighlight = "Normal:Normal,FloatBorder:Normal",
 			midi_synth = "fluidsynth",
 			fluidsynth_flags = {
-				-- "-a",
-				-- "coreaudio",
-				-- "-m",
-				-- "coremidi",
-				-- "-g",
-				-- "1",
+				"-a",
+				"coreaudio",
+				"-m",
+				"coremidi",
+				"-g",
+				"1",
 				"/Users/alexanderkehl/Downloads/Nice-Steinway-Lite-v3.0.sf2",
 			},
 			timidity_flags = nil,

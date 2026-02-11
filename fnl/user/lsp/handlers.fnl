@@ -4,6 +4,9 @@
 (local c (require :nfnl/core))
 (local ts-utils (require :nvim-treesitter.ts_utils))
 
+(local keymap vim.api.nvim_buf_set_keymap)
+(local opts {:noremap true :silent true})
+
 (local client-capabilities (vim.lsp.protocol.make_client_capabilities))
 
 (set client-capabilities.textDocument.completion.completionItem.snippetSupport
@@ -54,6 +57,9 @@
       (= (node:type) :jsx_closing_element) true
       (is-jsx-closing-tag (node:parent))))
 
+(fn is-test-file [filename]
+  (or (string.find filename :test.ts) (string.find filename :test.clj)))
+
 (vim.keymap.set :n :<leader>fp
                 (fn []
                   (get-parent-type (ts-utils.get_node_at_cursor))))
@@ -78,6 +84,7 @@
               (let [escaped-path (vim.uri_to_fname reference.user_data.uri)
                     buf (vim.fn.bufnr escaped-path)]
                 (if (= buf -1) false
+                    (is-test-file escaped-path) false
                     (relevant-reference? buf reference))))
             references))
 
@@ -125,6 +132,10 @@
                                 :arguments [(vim.api.nvim_buf_get_name 0)]
                                 :title ""}))
 
+(fn add-missing-imports []
+  (vim.lsp.buf.code_action {:apply true
+                            :context {:only [:source.addMissingImports.ts]}}))
+
 (fn apply-eslint-fixes [bufnr]
   (vim.lsp.buf.execute_command {:command :eslint.applyAllFixes
                                 :arguments [{:uri (vim.uri_from_bufnr bufnr)
@@ -134,14 +145,38 @@
 
 (fn ts-custom-commands [bufnr]
   (vim.api.nvim_buf_create_user_command bufnr :OrganizeImports organize-imports
-                                        {}))
+                                        {})
+  (vim.api.nvim_buf_create_user_command bufnr :AddMissingImports
+                                        add-missing-imports {}))
 
 (fn eslint-custom-commands [bufnr]
   (vim.api.nvim_buf_create_user_command bufnr :EslintFixAll
                                         (fn [] (apply-eslint-fixes bufnr)) {}))
 
-(local keymap vim.api.nvim_buf_set_keymap)
-(local opts {:noremap true :silent true})
+(fn clojure-custom-commands [bufnr]
+  (local uri (vim.uri_from_bufnr bufnr))
+  (local row (- (. (vim.fn.getpos ".") 2) 1))
+  (local col (- (. (vim.fn.getpos ".") 3) 1))
+  (vim.api.nvim_buf_create_user_command bufnr :CleanNs
+                                        (fn []
+                                          (vim.lsp.buf.execute_command {:command :clean-ns
+                                                                        :arguments [uri
+                                                                                    row
+                                                                                    col]}))
+                                        {})
+  (vim.api.nvim_buf_create_user_command bufnr :AddMissingLibspec
+                                        (fn []
+                                          (vim.lsp.buf.execute_command {:command :add-missing-libspec
+                                                                        :arguments [uri
+                                                                                    row
+                                                                                    col]}))
+                                        {})
+  (keymap bufnr :n :<leader>cn ":CleanNs<CR>" opts) ; (keymap bufnr :n :<leader>am ":AddMissingLibspec<CR>" opts)
+  )
+
+; {:file_uri (vim.uri_from_bufnr bufnr)
+;  :row (. (vim.fn.getpos ".") 2)
+;  :col (. (vim.fn.getpos ".") 3)}
 
 (fn lsp-keymaps [bufnr]
   (keymap bufnr :n :gD "<cmd>lua vim.lsp.buf.declaration()<CR>" opts)
@@ -178,6 +213,7 @@
   message)
 
 (fn on_attach [client bufnr]
+  (log (vim.inspect (vim.lsp.get_clients)))
   (when (= client.name :ts_ls)
     (set client.server_capabilities.document_formatting false)
     (ts-custom-commands bufnr))
@@ -187,6 +223,8 @@
     (set client.server_capabilities.documentFormattingProvider true))
   (when (= client.name :eslint)
     (eslint-custom-commands bufnr))
+  (when (= client.name :clojure_lsp)
+    (clojure-custom-commands bufnr))
   (lsp-keymaps bufnr))
 
 ; (local lspconfig (require :lspconfig))
