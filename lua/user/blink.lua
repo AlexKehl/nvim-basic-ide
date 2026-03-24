@@ -9,7 +9,6 @@ return {
 		["<C-l>"] = { "scroll_documentation_down", "fallback" },
 		["<C-h>"] = { "scroll_documentation_up", "fallback" },
 
-
 		-- optionally, define different keymaps for cmdline
 		-- cmdline = {
 		--   preset = 'super-tab'
@@ -23,7 +22,8 @@ return {
 		menu = {
 			auto_show = function(ctx)
 				-- return ctx.mode ~= "cmdline" or not vim.tbl_contains({ "/", "?" }, vim.fn.getcmdtype())
-				return ctx.mode ~= "cmdline"
+				-- return ctx.mode ~= "cmdline"
+				return true
 			end,
 		},
 		documentation = {
@@ -65,7 +65,7 @@ return {
 	-- default list of enabled providers defined so that you can extend it
 	-- elsewhere in your config, without redefining it, via `opts_extend`
 	sources = {
-		default = { "lsp", "path", "buffer", "dadbod" },
+		default = { "lsp", "path", "buffer", "dadbod", "clojure_keywords" },
 		providers = {
 			lsp = {
 				name = "LSP",
@@ -80,6 +80,10 @@ return {
 			buffer = {
 				name = "Buffer",
 				module = "blink.cmp.sources.buffer",
+			},
+			clojure_keywords = {
+				name = "Clojure Keywords",
+				module = "user.blink-clojure-keywords",
 			},
 			dadbod = {
 				name = "Dadbod",

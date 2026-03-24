@@ -80,6 +80,8 @@ require("lazy").setup({
 		opts = blink_opts,
 	},
 
+	{ "joryeugene/dadbod-grip.nvim", version = "*" },
+
 	-- Telescope
 	{
 		"nvim-telescope/telescope.nvim",
@@ -152,7 +154,7 @@ require("lazy").setup({
 
 	{
 		"Olical/conjure",
-		ft = { "clojure", "fennel", "javascript" },
+		ft = { "clojure", "fennel", "javascript", "lisp" },
 		lazy = true,
 		init = conjure,
 	},

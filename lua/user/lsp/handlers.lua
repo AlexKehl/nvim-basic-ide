@@ -24,6 +24,10 @@ local function get_parent_type(node)
   end
 end
 local function is_import_statement(node)
+  if not c["nil?"](node) then
+    vim.inspect(vim.print(node:type()))
+  else
+  end
   if c["nil?"](node) then
     return false
   elseif ((node:type() == "import_statement") or (node:type() == "import_declaration") or (node:type() == "import_clause") or (node:type() == "import_specifier") or (node:type() == "named_imports")) then
@@ -53,10 +57,10 @@ end
 local function is_test_file(filename)
   return (string.find(filename, "test.ts") or string.find(filename, "test.clj"))
 end
-local function _5_()
+local function _6_()
   return get_parent_type(ts_utils.get_node_at_cursor())
 end
-vim.keymap.set("n", "<leader>fp", _5_)
+vim.keymap.set("n", "<leader>fp", _6_)
 local function is_current_node(buf, node)
   if (buf ~= vim.fn.bufnr()) then
     return false
@@ -76,7 +80,7 @@ local function relevant_reference_3f(buf, reference)
   return not (is_current_node(buf, node) or is_import_statement(node) or is_jsx_closing_tag(node) or is_export_statement(node))
 end
 local function filter_relevant_references(references)
-  local function _8_(reference)
+  local function _9_(reference)
     local escaped_path = vim.uri_to_fname(reference.user_data.uri)
     local buf = vim.fn.bufnr(escaped_path)
     if (buf == -1) then
@@ -87,7 +91,7 @@ local function filter_relevant_references(references)
       return relevant_reference_3f(buf, reference)
     end
   end
-  return c.filter(_8_, references)
+  return c.filter(_9_, references)
 end
 local function on_references(options)
   local filtered_references = filter_relevant_references(options.items)
@@ -138,38 +142,64 @@ local function code_action_filter(code_action)
     return false
   end
 end
+local function get_lsp_client(name)
+  local clients = vim.lsp.get_clients({name = name})
+  return clients[1]
+end
 local function organize_imports()
-  return vim.lsp.buf.execute_command({command = "_typescript.organizeImports", arguments = {vim.api.nvim_buf_get_name(0)}, title = ""})
+  local client = get_lsp_client("ts_ls")
+  return client:exec_cmd({command = "_typescript.organizeImports", arguments = {vim.api.nvim_buf_get_name(0)}, title = ""})
 end
 local function add_missing_imports()
   return vim.lsp.buf.code_action({apply = true, context = {only = {"source.addMissingImports.ts"}}})
 end
 local function apply_eslint_fixes(bufnr)
-  return vim.lsp.buf.execute_command({command = "eslint.applyAllFixes", arguments = {{uri = vim.uri_from_bufnr(bufnr), version = vim.lsp.util.buf_versions[bufnr]}}, title = ""})
+  local client = get_lsp_client("ts_ls")
+  return client:exec_cmd({command = "eslint.applyAllFixes", arguments = {{uri = vim.uri_from_bufnr(bufnr), version = vim.lsp.util.buf_versions[bufnr]}}, title = ""})
 end
 local function ts_custom_commands(bufnr)
   vim.api.nvim_buf_create_user_command(bufnr, "OrganizeImports", organize_imports, {})
   return vim.api.nvim_buf_create_user_command(bufnr, "AddMissingImports", add_missing_imports, {})
 end
 local function eslint_custom_commands(bufnr)
-  local function _16_()
+  local function _17_()
     return apply_eslint_fixes(bufnr)
   end
-  return vim.api.nvim_buf_create_user_command(bufnr, "EslintFixAll", _16_, {})
+  return vim.api.nvim_buf_create_user_command(bufnr, "EslintFixAll", _17_, {})
 end
-local function clojure_custom_commands(bufnr)
+local function get_cursor_coords(bufnr)
   local uri = vim.uri_from_bufnr(bufnr)
   local row = (vim.fn.getpos(".")[2] - 1)
   local col = (vim.fn.getpos(".")[3] - 1)
-  local function _17_()
-    return vim.lsp.buf.execute_command({command = "clean-ns", arguments = {uri, row, col}})
-  end
-  vim.api.nvim_buf_create_user_command(bufnr, "CleanNs", _17_, {})
+  return {uri, row, col}
+end
+local function clojure_custom_commands(bufnr)
+  local client = get_lsp_client("clojure_lsp")
   local function _18_()
-    return vim.lsp.buf.execute_command({command = "add-missing-libspec", arguments = {uri, row, col}})
+    return client:exec_cmd({command = "clean-ns", arguments = get_cursor_coords(bufnr)})
   end
-  vim.api.nvim_buf_create_user_command(bufnr, "AddMissingLibspec", _18_, {})
-  return keymap(bufnr, "n", "<leader>cn", ":CleanNs<CR>", opts)
+  vim.api.nvim_buf_create_user_command(bufnr, "CleanNs", _18_, {})
+  local function _19_()
+    return client:exec_cmd({command = "add-missing-libspec", arguments = get_cursor_coords(bufnr)})
+  end
+  vim.api.nvim_buf_create_user_command(bufnr, "AddMissingLibspec", _19_, {})
+  local function _20_()
+    return client:exec_cmd({command = "drag-backward", arguments = get_cursor_coords(bufnr)})
+  end
+  vim.api.nvim_buf_create_user_command(bufnr, "DragBackward", _20_, {})
+  local function _21_()
+    return client:exec_cmd({command = "drag-forward", arguments = get_cursor_coords(bufnr)})
+  end
+  vim.api.nvim_buf_create_user_command(bufnr, "DragForward", _21_, {})
+  local function _22_()
+    return client:exec_cmd({command = "introduce-let", arguments = c.concat(get_cursor_coords(bufnr), {"tmp-name"})})
+  end
+  vim.api.nvim_buf_create_user_command(bufnr, "IntroduceLet", _22_, {})
+  keymap(bufnr, "n", "<leader>cn", ":CleanNs<CR>", opts)
+  keymap(bufnr, "n", "<leader>am", ":AddMissingLibspec<CR>", opts)
+  keymap(bufnr, "n", "<", ":DragBackward<CR>", opts)
+  keymap(bufnr, "n", ">", ":DragForward<CR>", opts)
+  return keymap(bufnr, "n", "<leader>ml", ":IntroduceLet<CR>", opts)
 end
 local function lsp_keymaps(bufnr)
   keymap(bufnr, "n", "gD", "<cmd>lua vim.lsp.buf.declaration()<CR>", opts)
@@ -177,27 +207,27 @@ local function lsp_keymaps(bufnr)
   keymap(bufnr, "n", "gd", ":Telescope lsp_definitions show_line=false<CR>", opts)
   keymap(bufnr, "n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>", opts)
   keymap(bufnr, "n", "gi", ":Telescope lsp_implementations show_line=false<CR>", opts)
-  local function _19_()
+  local function _23_()
     return vim.lsp.buf.references(nil, {on_list = on_references})
   end
-  vim.keymap.set("n", "gr", _19_, opts)
+  vim.keymap.set("n", "gr", _23_, opts)
   keymap(bufnr, "n", "gl", "<cmd>lua vim.diagnostic.open_float()<CR>", opts)
-  local function _20_()
+  local function _24_()
     if ((vim.bo.filetype == "typescript") or (vim.bo.filetype == "typescriptreact")) then
       return vim.lsp.buf.code_action({filter = code_action_filter})
     else
       return vim.lsp.buf.code_action()
     end
   end
-  vim.keymap.set("n", "<leader>f", _20_, opts)
+  vim.keymap.set("n", "<leader>f", _24_, opts)
   keymap(bufnr, "n", "<leader>F", "<cmd>lua vim.lsp.buf.code_action()<cr>", opts)
   keymap(bufnr, "n", "]g", "<cmd>lua vim.diagnostic.goto_next({buffer=0})<cr>", opts)
   keymap(bufnr, "n", "[g", "<cmd>lua vim.diagnostic.goto_prev({buffer=0})<cr>", opts)
   keymap(bufnr, "n", "<leader>rn", "<cmd>lua vim.lsp.buf.rename()<cr>", opts)
-  local function _22_()
+  local function _26_()
     return vim.lsp.buf.references(nil, {on_list = on_test_list})
   end
-  return vim.keymap.set("n", "gt", _22_, opts)
+  return vim.keymap.set("n", "gt", _26_, opts)
 end
 local function log0(message)
   vim.fn.writefile({vim.inspect(message)}, (vim.fn.stdpath("cache") .. "/my_log.txt"), "a")

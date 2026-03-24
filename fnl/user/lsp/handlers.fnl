@@ -41,6 +41,8 @@
   (if (node:parent) (get-parent-type (node:parent) (node:type))))
 
 (fn is-import-statement [node]
+  (when (not (c.nil? node))
+    (vim.inspect (vim.print (node:type))))
   (if (c.nil? node) false
       (or (= (node:type) :import_statement) (= (node:type) :import_declaration)
           (= (node:type) :import_clause) (= (node:type) :import_specifier)
@@ -127,21 +129,26 @@
       true
       false))
 
+(fn get-lsp-client [name]
+  (local clients (vim.lsp.get_clients {: name}))
+  (. clients 1))
+
 (fn organize-imports []
-  (vim.lsp.buf.execute_command {:command :_typescript.organizeImports
-                                :arguments [(vim.api.nvim_buf_get_name 0)]
-                                :title ""}))
+  (local client (get-lsp-client :ts_ls))
+  (client:exec_cmd {:command :_typescript.organizeImports
+                    :arguments [(vim.api.nvim_buf_get_name 0)]
+                    :title ""}))
 
 (fn add-missing-imports []
   (vim.lsp.buf.code_action {:apply true
                             :context {:only [:source.addMissingImports.ts]}}))
 
 (fn apply-eslint-fixes [bufnr]
-  (vim.lsp.buf.execute_command {:command :eslint.applyAllFixes
-                                :arguments [{:uri (vim.uri_from_bufnr bufnr)
-                                             :version (. vim.lsp.util.buf_versions
-                                                         bufnr)}]
-                                :title ""}))
+  (local client (get-lsp-client :ts_ls))
+  (client:exec_cmd {:command :eslint.applyAllFixes
+                    :arguments [{:uri (vim.uri_from_bufnr bufnr)
+                                 :version (. vim.lsp.util.buf_versions bufnr)}]
+                    :title ""}))
 
 (fn ts-custom-commands [bufnr]
   (vim.api.nvim_buf_create_user_command bufnr :OrganizeImports organize-imports
@@ -153,30 +160,45 @@
   (vim.api.nvim_buf_create_user_command bufnr :EslintFixAll
                                         (fn [] (apply-eslint-fixes bufnr)) {}))
 
-(fn clojure-custom-commands [bufnr]
+(fn get-cursor-coords [bufnr]
   (local uri (vim.uri_from_bufnr bufnr))
   (local row (- (. (vim.fn.getpos ".") 2) 1))
   (local col (- (. (vim.fn.getpos ".") 3) 1))
+  [uri row col])
+
+(fn clojure-custom-commands [bufnr]
+  (local client (get-lsp-client :clojure_lsp))
   (vim.api.nvim_buf_create_user_command bufnr :CleanNs
                                         (fn []
-                                          (vim.lsp.buf.execute_command {:command :clean-ns
-                                                                        :arguments [uri
-                                                                                    row
-                                                                                    col]}))
+                                          (client:exec_cmd {:command :clean-ns
+                                                            :arguments (get-cursor-coords bufnr)}))
                                         {})
   (vim.api.nvim_buf_create_user_command bufnr :AddMissingLibspec
                                         (fn []
-                                          (vim.lsp.buf.execute_command {:command :add-missing-libspec
-                                                                        :arguments [uri
-                                                                                    row
-                                                                                    col]}))
+                                          (client:exec_cmd {:command :add-missing-libspec
+                                                            :arguments (get-cursor-coords bufnr)}))
                                         {})
-  (keymap bufnr :n :<leader>cn ":CleanNs<CR>" opts) ; (keymap bufnr :n :<leader>am ":AddMissingLibspec<CR>" opts)
-  )
-
-; {:file_uri (vim.uri_from_bufnr bufnr)
-;  :row (. (vim.fn.getpos ".") 2)
-;  :col (. (vim.fn.getpos ".") 3)}
+  (vim.api.nvim_buf_create_user_command bufnr :DragBackward
+                                        (fn []
+                                          (client:exec_cmd {:command :drag-backward
+                                                            :arguments (get-cursor-coords bufnr)}))
+                                        {})
+  (vim.api.nvim_buf_create_user_command bufnr :DragForward
+                                        (fn []
+                                          (client:exec_cmd {:command :drag-forward
+                                                            :arguments (get-cursor-coords bufnr)}))
+                                        {})
+  (vim.api.nvim_buf_create_user_command bufnr :IntroduceLet
+                                        (fn []
+                                          (client:exec_cmd {:command :introduce-let
+                                                            :arguments (c.concat (get-cursor-coords bufnr)
+                                                                                 [:tmp-name])}))
+                                        {})
+  (keymap bufnr :n :<leader>cn ":CleanNs<CR>" opts)
+  (keymap bufnr :n :<leader>am ":AddMissingLibspec<CR>" opts)
+  (keymap bufnr :n "<" ":DragBackward<CR>" opts)
+  (keymap bufnr :n ">" ":DragForward<CR>" opts)
+  (keymap bufnr :n :<leader>ml ":IntroduceLet<CR>" opts))
 
 (fn lsp-keymaps [bufnr]
   (keymap bufnr :n :gD "<cmd>lua vim.lsp.buf.declaration()<CR>" opts)

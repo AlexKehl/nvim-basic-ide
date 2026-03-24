@@ -143,7 +143,9 @@
 
 (vim.keymap.set :n :<leader>bb "vip:!zsh<CR>" opts)
 (vim.keymap.set :n :<leader>bj "vip:!zsh | jq<CR>" opts)
-(vim.keymap.set :n :<leader>jj "vip:!jq<CR>" opts)
+(vim.keymap.set :n :<leader>jp "vip:!jq<CR>" opts)
+(vim.keymap.set :n :<leader>jj "V:!jq<CR>" opts)
+(vim.keymap.set :n :<leader>jk "99[{v%:!jq -c<CR>" opts)
 
 (vim.keymap.set :n "<leader>,"
                 "A)<ESC><cmd>silent! ConjureEvalCurrentForm<CR><cmd>silent! normal! x0w<CR>"
