@@ -188,14 +188,4 @@ local function _15_()
   return vim.api.nvim_feedkeys(keys, "m", false)
 end
 vim.keymap.set({"n"}, "<leader>yp", _15_, opts)
-local function _16_()
-  local ts_utils = require("nvim-treesitter.ts_utils")
-  local node = ts_utils.get_node_at_cursor()
-  return print(node:type())
-end
-vim.keymap.set("n", "<leader>fh", _16_, opts)
-vim.keymap.set("n", "<leader>a", "<cmd>A<CR>", opts)
-local function _17_()
-  return vim.cmd("FormatWrite")
-end
-return vim.keymap.set("n", "<leader>fo", _17_, opts)
+return vim.keymap.set("n", "<leader>a", "<cmd>A<CR>", opts)

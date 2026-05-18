@@ -238,12 +238,4 @@
                                                              true false true)]
                     (vim.api.nvim_feedkeys keys :m false))) opts)
 
-(vim.keymap.set :n :<leader>fh
-                (fn []
-                  (let [ts-utils (require :nvim-treesitter.ts_utils)
-                        node (ts-utils.get_node_at_cursor)]
-                    (print (node:type)))) opts)
-
 (vim.keymap.set :n :<leader>a :<cmd>A<CR> opts)
-
-(vim.keymap.set :n :<leader>fo (fn [] (vim.cmd :FormatWrite)) opts)

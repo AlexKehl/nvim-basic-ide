@@ -13,7 +13,7 @@ local function setup()
   return nil
 end
 local function log(message)
-  vim.fn.writefile({vim.inspect(message)}, (vim.fn.stdpath("cache") .. "my_log.txt"), "a")
+  vim.fn.writefile({vim.inspect(message)}, (vim.fn.stdpath("cache") .. "/" .. "my_log.txt"), "a")
   return message
 end
 local function get_parent_type(node)
@@ -57,10 +57,6 @@ end
 local function is_test_file(filename)
   return (string.find(filename, "test.ts") or string.find(filename, "test.clj"))
 end
-local function _6_()
-  return get_parent_type(ts_utils.get_node_at_cursor())
-end
-vim.keymap.set("n", "<leader>fp", _6_)
 local function is_current_node(buf, node)
   if (buf ~= vim.fn.bufnr()) then
     return false
@@ -80,7 +76,7 @@ local function relevant_reference_3f(buf, reference)
   return not (is_current_node(buf, node) or is_import_statement(node) or is_jsx_closing_tag(node) or is_export_statement(node))
 end
 local function filter_relevant_references(references)
-  local function _9_(reference)
+  local function _8_(reference)
     local escaped_path = vim.uri_to_fname(reference.user_data.uri)
     local buf = vim.fn.bufnr(escaped_path)
     if (buf == -1) then
@@ -91,7 +87,7 @@ local function filter_relevant_references(references)
       return relevant_reference_3f(buf, reference)
     end
   end
-  return c.filter(_9_, references)
+  return c.filter(_8_, references)
 end
 local function on_references(options)
   local filtered_references = filter_relevant_references(options.items)
@@ -136,7 +132,7 @@ local function on_test_list(options)
   return vim.lsp.util.show_document({range = reference.user_data.range, uri = reference.user_data.uri}, "utf-8")
 end
 local function code_action_filter(code_action)
-  if (string.find(code_action.command.title, "Add") or string.find(code_action.command.title, "Update")) then
+  if (string.find(code_action.title, "Add") or string.find(code_action.title, "Update")) then
     return true
   else
     return false
@@ -147,17 +143,21 @@ local function get_lsp_client(name)
   return clients[1]
 end
 local function organize_imports()
-  local client = get_lsp_client("ts_ls")
-  return client:exec_cmd({command = "_typescript.organizeImports", arguments = {vim.api.nvim_buf_get_name(0)}, title = ""})
+  return vim.lsp.buf.code_action({apply = true, context = {only = {"source.organizeImports"}}})
 end
 local function add_missing_imports()
-  return vim.lsp.buf.code_action({apply = true, context = {only = {"source.addMissingImports.ts"}}})
+  local function _16_(a)
+    return (a.title == "Add all missing imports")
+  end
+  return vim.lsp.buf.code_action({apply = true, filter = _16_})
 end
 local function apply_eslint_fixes(bufnr)
-  local client = get_lsp_client("ts_ls")
+  local client = get_lsp_client("tsgo")
   return client:exec_cmd({command = "eslint.applyAllFixes", arguments = {{uri = vim.uri_from_bufnr(bufnr), version = vim.lsp.util.buf_versions[bufnr]}}, title = ""})
 end
 local function ts_custom_commands(bufnr)
+  local client = get_lsp_client("tsgo")
+  log(vim.inspect(client))
   vim.api.nvim_buf_create_user_command(bufnr, "OrganizeImports", organize_imports, {})
   return vim.api.nvim_buf_create_user_command(bufnr, "AddMissingImports", add_missing_imports, {})
 end
@@ -196,7 +196,7 @@ local function clojure_custom_commands(bufnr)
   end
   vim.api.nvim_buf_create_user_command(bufnr, "IntroduceLet", _22_, {})
   keymap(bufnr, "n", "<leader>cn", ":CleanNs<CR>", opts)
-  keymap(bufnr, "n", "<leader>am", ":AddMissingLibspec<CR>", opts)
+  keymap(bufnr, "n", "<leader>fh", ":AddMissingLibspec<CR>", opts)
   keymap(bufnr, "n", "<", ":DragBackward<CR>", opts)
   keymap(bufnr, "n", ">", ":DragForward<CR>", opts)
   return keymap(bufnr, "n", "<leader>ml", ":IntroduceLet<CR>", opts)
@@ -234,8 +234,7 @@ local function log0(message)
   return message
 end
 local function on_attach(client, bufnr)
-  log0(vim.inspect(vim.lsp.get_clients()))
-  if (client.name == "ts_ls") then
+  if (client.name == "tsgo") then
     client.server_capabilities.document_formatting = false
     ts_custom_commands(bufnr)
   else
@@ -258,8 +257,8 @@ local function on_attach(client, bufnr)
   end
   return lsp_keymaps(bufnr)
 end
-vim.lsp.enable("ts_ls")
-vim.lsp.config("ts_ls", {on_attach = on_attach})
+vim.lsp.enable("tsgo")
+vim.lsp.config("tsgo", {on_attach = on_attach})
 vim.lsp.enable("clojure_lsp")
 vim.lsp.config("clojure_lsp", {on_attach = on_attach})
 vim.lsp.enable("marksman")

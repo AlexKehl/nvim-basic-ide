@@ -34,7 +34,7 @@
 
 (fn log [message]
   (vim.fn.writefile [(vim.inspect message)]
-                    (.. (vim.fn.stdpath :cache) :my_log.txt) :a)
+                    (.. (vim.fn.stdpath :cache) "/" :my_log.txt) :a)
   message)
 
 (fn get-parent-type [node]
@@ -61,10 +61,6 @@
 
 (fn is-test-file [filename]
   (or (string.find filename :test.ts) (string.find filename :test.clj)))
-
-(vim.keymap.set :n :<leader>fp
-                (fn []
-                  (get-parent-type (ts-utils.get_node_at_cursor))))
 
 (fn is-current-node [buf node]
   (if (not= buf (vim.fn.bufnr))
@@ -124,8 +120,8 @@
                               :utf-8))
 
 (fn code-action-filter [code-action]
-  (if (or (string.find code-action.command.title :Add)
-          (string.find code-action.command.title :Update))
+  (if (or (string.find code-action.title :Add)
+          (string.find code-action.title :Update))
       true
       false))
 
@@ -134,23 +130,24 @@
   (. clients 1))
 
 (fn organize-imports []
-  (local client (get-lsp-client :ts_ls))
-  (client:exec_cmd {:command :_typescript.organizeImports
-                    :arguments [(vim.api.nvim_buf_get_name 0)]
-                    :title ""}))
+  (vim.lsp.buf.code_action {:apply true
+                            :context {:only [:source.organizeImports]}}))
 
 (fn add-missing-imports []
   (vim.lsp.buf.code_action {:apply true
-                            :context {:only [:source.addMissingImports.ts]}}))
+                            :filter (fn [a]
+                                      (= a.title "Add all missing imports"))}))
 
 (fn apply-eslint-fixes [bufnr]
-  (local client (get-lsp-client :ts_ls))
+  (local client (get-lsp-client :tsgo))
   (client:exec_cmd {:command :eslint.applyAllFixes
                     :arguments [{:uri (vim.uri_from_bufnr bufnr)
                                  :version (. vim.lsp.util.buf_versions bufnr)}]
                     :title ""}))
 
 (fn ts-custom-commands [bufnr]
+  (local client (get-lsp-client :tsgo))
+  (log (vim.inspect client))
   (vim.api.nvim_buf_create_user_command bufnr :OrganizeImports organize-imports
                                         {})
   (vim.api.nvim_buf_create_user_command bufnr :AddMissingImports
@@ -195,7 +192,7 @@
                                                                                  [:tmp-name])}))
                                         {})
   (keymap bufnr :n :<leader>cn ":CleanNs<CR>" opts)
-  (keymap bufnr :n :<leader>am ":AddMissingLibspec<CR>" opts)
+  (keymap bufnr :n :<leader>fh ":AddMissingLibspec<CR>" opts)
   (keymap bufnr :n "<" ":DragBackward<CR>" opts)
   (keymap bufnr :n ">" ":DragForward<CR>" opts)
   (keymap bufnr :n :<leader>ml ":IntroduceLet<CR>" opts))
@@ -235,8 +232,7 @@
   message)
 
 (fn on_attach [client bufnr]
-  (log (vim.inspect (vim.lsp.get_clients)))
-  (when (= client.name :ts_ls)
+  (when (= client.name :tsgo)
     (set client.server_capabilities.document_formatting false)
     (ts-custom-commands bufnr))
   (when (= client.name :sumneko_lua)
@@ -260,8 +256,8 @@
 
 ; (lspconfig.fennel_ls.setup {: on_attach})
 
-(vim.lsp.enable :ts_ls)
-(vim.lsp.config :ts_ls {: on_attach})
+(vim.lsp.enable :tsgo)
+(vim.lsp.config :tsgo {: on_attach})
 
 (vim.lsp.enable :clojure_lsp)
 (vim.lsp.config :clojure_lsp {: on_attach})
