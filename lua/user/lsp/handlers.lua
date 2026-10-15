@@ -200,33 +200,106 @@ local function clojure_custom_commands(bufnr)
   keymap(bufnr, "n", ">", ":DragForward<CR>", opts)
   return keymap(bufnr, "n", "<leader>ml", ":IntroduceLet<CR>", opts)
 end
+local function completion_context(root, word)
+  if (root and root.range and word.range) then
+    local lines = vim.split(root.content, "\n")
+    local rs = root.range.start[1]
+    local rc = root.range.start[2]
+    local ws = word.range.start[1]
+    local wc = word.range.start[2]
+    local _ = word.range["end"][1]
+    local wec = word.range["end"][2]
+    local li = ((ws - rs) + 1)
+    local off
+    if (ws == rs) then
+      off = rc
+    else
+      off = 0
+    end
+    local line = lines[li]
+    lines[li] = (string.sub(line, 1, (wc - off)) .. "__prefix__" .. string.sub(line, (((wec + 1) - off) + 1)))
+    return table.concat(lines, "\n")
+  else
+    return nil
+  end
+end
+local function conjure_def_word()
+  local server = require("conjure.client.clojure.nrepl.server")
+  local action = require("conjure.client.clojure.nrepl.action")
+  local extract = require("conjure.extract")
+  local w = extract.word()
+  local word = w.content
+  local context = completion_context(extract.form({["root?"] = true}), w)
+  local ctx = (vim.b["conjure#context"] or extract.context() or "user")
+  local jump
+  local function _25_(_241)
+    return action["def-str"]({code = _241, context = ctx})
+  end
+  jump = _25_
+  if (word and (word ~= "")) then
+    local function _26_(conn)
+      local function _27_(msg)
+        if (msg.status and msg.status.done) then
+          local cands = (msg.candidates or (msg.info and msg.info.candidates))
+          if cands then
+            local function _28_(c0)
+              if c0 then
+                return jump((c0 .. "/" .. word))
+              else
+                return nil
+              end
+            end
+            return vim.ui.select(vim.tbl_keys(cands), {prompt = ("Definition of " .. word)}, _28_)
+          elseif (msg.class and msg.member) then
+            return jump((msg.class .. "/" .. word))
+          else
+            return jump(word)
+          end
+        else
+          return nil
+        end
+      end
+      return conn.send({op = "info", ns = ctx, symbol = word, context = context, session = conn.session, ["download-sources-jar"] = 1}, _27_)
+    end
+    return server["with-conn-or-warn"](_26_)
+  else
+    return nil
+  end
+end
 local function lsp_keymaps(bufnr)
   keymap(bufnr, "n", "gD", "<cmd>lua vim.lsp.buf.declaration()<CR>", opts)
   keymap(bufnr, "n", "gy", ":Telescope lsp_type_definitions show_line=false<CR>", opts)
-  keymap(bufnr, "n", "gd", ":Telescope lsp_definitions show_line=false<CR>", opts)
+  local function _33_()
+    if ((vim.bo.filetype == "clojure") and require("conjure.client.clojure.nrepl.server")["connected?"]()) then
+      return conjure_def_word()
+    else
+      return vim.cmd("Telescope lsp_definitions show_line=false")
+    end
+  end
+  vim.keymap.set("n", "gd", _33_, vim.tbl_extend("force", opts, {buffer = bufnr}))
   keymap(bufnr, "n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>", opts)
   keymap(bufnr, "n", "gi", ":Telescope lsp_implementations show_line=false<CR>", opts)
-  local function _23_()
+  local function _35_()
     return vim.lsp.buf.references(nil, {on_list = on_references})
   end
-  vim.keymap.set("n", "gr", _23_, opts)
+  vim.keymap.set("n", "gr", _35_, opts)
   keymap(bufnr, "n", "gl", "<cmd>lua vim.diagnostic.open_float()<CR>", opts)
-  local function _24_()
+  local function _36_()
     if ((vim.bo.filetype == "typescript") or (vim.bo.filetype == "typescriptreact")) then
       return vim.lsp.buf.code_action({filter = code_action_filter})
     else
       return vim.lsp.buf.code_action()
     end
   end
-  vim.keymap.set("n", "<leader>f", _24_, opts)
+  vim.keymap.set("n", "<leader>f", _36_, opts)
   keymap(bufnr, "n", "<leader>F", "<cmd>lua vim.lsp.buf.code_action()<cr>", opts)
   keymap(bufnr, "n", "]g", "<cmd>lua vim.diagnostic.goto_next({buffer=0})<cr>", opts)
   keymap(bufnr, "n", "[g", "<cmd>lua vim.diagnostic.goto_prev({buffer=0})<cr>", opts)
   keymap(bufnr, "n", "<leader>rn", "<cmd>lua vim.lsp.buf.rename()<cr>", opts)
-  local function _26_()
+  local function _38_()
     return vim.lsp.buf.references(nil, {on_list = on_test_list})
   end
-  return vim.keymap.set("n", "gt", _26_, opts)
+  return vim.keymap.set("n", "gt", _38_, opts)
 end
 local function log0(message)
   vim.fn.writefile({vim.inspect(message)}, (vim.fn.stdpath("cache") .. "/my_log.txt"), "a")
@@ -266,4 +339,13 @@ vim.lsp.enable("eslint")
 vim.lsp.config("eslint", {on_attach = on_attach})
 vim.lsp.enable("fennel_ls")
 vim.lsp.config("fennel_ls", {on_attach = on_attach})
+local function _44_(bufnr, on_dir)
+  local root = vim.fs.root(bufnr, {"build.gradle", "build.gradle.kts", "pom.xml"})
+  if root then
+    return on_dir(root)
+  else
+    return nil
+  end
+end
+vim.lsp.config("java_language_server", {root_dir = _44_})
 return {on_attach = on_attach, setup = setup}

@@ -19,6 +19,9 @@ return function()
 		"php",
 		"r",
 	}
+	-- send the surrounding form with completions so cider-nrepl can infer the receiver class of (.method ...)
+	vim.g["conjure#client#clojure#nrepl#completion#with_context"] = true
+
 	vim.g["conjure#mapping#def_word"] = ""
 	vim.g["conjure#mapping#doc_word"] = ""
 

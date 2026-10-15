@@ -196,11 +196,69 @@
   (keymap bufnr :n ">" ":DragForward<CR>" opts)
   (keymap bufnr :n :<leader>ml ":IntroduceLet<CR>" opts))
 
+;; Root form text with `__prefix__` spliced over the word under the cursor:
+;; cider-nrepl's info op infers the receiver class of `.method` from it.
+(fn completion-context [root word]
+  (when (and root root.range word.range)
+    (let [lines (vim.split root.content "\n")
+          [rs rc] root.range.start
+          [ws wc] word.range.start
+          [_ wec] word.range.end
+          li (+ (- ws rs) 1)
+          off (if (= ws rs) rc 0)
+          line (. lines li)]
+      (tset lines li (.. (string.sub line 1 (- wc off))
+                         "__prefix__"
+                         (string.sub line (+ (- (+ wec 1) off) 1))))
+      (table.concat lines "\n"))))
+
+;; Conjure's def-word only prints "Multiple candidates found" for bare Java
+;; members like .append. Ask orchard first; on candidates, pick one and jump.
+(fn conjure-def-word []
+  (let [server (require :conjure.client.clojure.nrepl.server)
+        action (require :conjure.client.clojure.nrepl.action)
+        extract (require :conjure.extract)
+        w (extract.word)
+        word w.content
+        context (completion-context (extract.form {:root? true}) w)
+        ctx (or vim.b.conjure#context (extract.context) "user")
+        jump #(action.def-str {:code $1 :context ctx})]
+    (when (and word (not= word ""))
+      (server.with-conn-or-warn
+        (fn [conn]
+          (conn.send {:op :info
+                      :ns ctx
+                      :symbol word
+                      :context context
+                      :session conn.session
+                      :download-sources-jar 1}
+                     (fn [msg]
+                       (when (and msg.status msg.status.done)
+                         (let [cands (or msg.candidates (and msg.info msg.info.candidates))]
+                           (if cands
+                               (vim.ui.select (vim.tbl_keys cands)
+                                              {:prompt (.. "Definition of " word)}
+                                              (fn [c]
+                                                (when c (jump (.. c "/" word)))))
+                               ;; class inferred from context: re-query qualified,
+                               ;; Conjure's own def-str sends no context
+                               (and msg.class msg.member)
+                               (jump (.. msg.class "/" word))
+                               (jump word)))))))))))
+
 (fn lsp-keymaps [bufnr]
   (keymap bufnr :n :gD "<cmd>lua vim.lsp.buf.declaration()<CR>" opts)
   (keymap bufnr :n :gy ":Telescope lsp_type_definitions show_line=false<CR>"
           opts)
-  (keymap bufnr :n :gd ":Telescope lsp_definitions show_line=false<CR>" opts)
+  ;; Clojure: Conjure (orchard) jumps into Java members, clojure-lsp only reaches the class
+  (vim.keymap.set :n :gd
+                  (fn []
+                    (if (and (= vim.bo.filetype :clojure)
+                             ((. (require :conjure.client.clojure.nrepl.server)
+                                 :connected?)))
+                        (conjure-def-word)
+                        (vim.cmd "Telescope lsp_definitions show_line=false")))
+                  (vim.tbl_extend :force opts {:buffer bufnr}))
   (keymap bufnr :n :K "<cmd>lua vim.lsp.buf.hover()<CR>" opts)
   (keymap bufnr :n :gi ":Telescope lsp_implementations show_line=false<CR>"
           opts)
@@ -269,5 +327,16 @@
 
 (vim.lsp.enable :fennel_ls)
 (vim.lsp.config :fennel_ls {: on_attach})
+
+;; mason-lspconfig auto-enables java-language-server; without a project root it
+;; crashes on JDK source buffers (zipfile:// from src.zip, clojure-lsp jdk cache).
+;; Only start it when a Java project root exists.
+(vim.lsp.config :java_language_server
+                {:root_dir (fn [bufnr on-dir]
+                             (let [root (vim.fs.root bufnr
+                                                     [:build.gradle
+                                                      :build.gradle.kts
+                                                      :pom.xml])]
+                               (when root (on-dir root))))})
 
 {: on_attach : setup}

@@ -17,6 +17,7 @@ This is a customized Neovim IDE configuration that prioritizes:
 ```
 .
 ├── init.lua                    # Entry point, requires all user modules
+├── docs/                       # Design notes for non-obvious setups
 ├── fnl/                        # Fennel source files (preferred)
 │   └── user/
 │       ├── autocommands.fnl    # Auto commands in Fennel
@@ -165,6 +166,7 @@ These may need to be migrated to Fennel or kept as-is.
 - FLS Project LSP is configured (`fnl/user/lsp/flsproject.fnl`)
 - Custom handlers in `fnl/user/lsp/handlers.fnl`
 - Mason manages LSP installations
+- Clojure Java interop (`gd` on Java members, `.method` completion via Conjure/cider-nrepl): see [docs/clojure-java-interop.md](docs/clojure-java-interop.md)
 
 ## Common Tasks
 
