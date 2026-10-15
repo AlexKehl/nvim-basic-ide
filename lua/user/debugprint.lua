@@ -10,7 +10,7 @@ return {
 	keymaps = {
 		normal = {
 			plain_below = "<leader>ej",
-			plain_above = "<leader>ek",
+			plain_above = "",
 			variable_below = "<leader>ew",
 			-- variable_above = "g?V",
 			variable_below_alwaysprompt = "",

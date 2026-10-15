@@ -80,7 +80,9 @@
                                :sql [(fn []
                                        {:exe (.. "cat "
                                                  (vim.fn.fnameescape (vim.api.nvim_buf_get_name 0))
-                                                 " | sql-formatter")
+                                                 " | sql-formatter -c "
+                                                 (vim.fn.stdpath :config)
+                                                 :/sql-formatter.json)
                                         :stdin true})]
                                :typescript [prettier]
                                :typescriptreact [prettier]

@@ -38,19 +38,19 @@ end
 vim.keymap.set("n", "<leader>er", _2_, opts)
 vim.keymap.set("n", "<leader>es", "<Plug>(sexp_move_to_prev_top_element) f i*<Esc><cmd>ConjureEvalRootForm<CR>x0", opts)
 local function _3_()
-  vim.cmd("mark T")
+  vim.cmd("mark L")
   return print("Mark set")
 end
 vim.keymap.set("n", "<leader>mt", _3_)
+vim.keymap.set("n", "<leader>ex", "<cmd>ConjureCljLastException<CR>", opts)
 local function _4_()
   local eval = require("conjure.eval")
-  local marked_form = eval["marked-form"]
   local function _5_()
-    return marked_form("T")
+    return eval["marked-form"]("L")
   end
   return vim.schedule(_5_)
 end
-vim.keymap.set("n", "<C-y>", _4_, opts)
+vim.keymap.set("n", "<leader>ek", _4_, opts)
 local function _6_()
   eval_on_save()
   return vim.cmd("FormatWrite")
@@ -188,4 +188,10 @@ local function _15_()
   return vim.api.nvim_feedkeys(keys, "m", false)
 end
 vim.keymap.set({"n"}, "<leader>yp", _15_, opts)
+local function _16_()
+  local path = vim.fn.expand("%:.")
+  vim.fn.setreg("+", path)
+  return print(("Copied: " .. path))
+end
+vim.keymap.set("n", "<leader>cc", _16_, opts)
 return vim.keymap.set("n", "<leader>a", "<cmd>A<CR>", opts)

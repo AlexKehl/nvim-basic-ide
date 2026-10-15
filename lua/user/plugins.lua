@@ -75,8 +75,16 @@ require("lazy").setup({
 	"L3MON4D3/LuaSnip",
 
 	{
+		"saghen/blink.compat",
+		version = "*",
+		lazy = true,
+		opts = { impersonate_nvim_cmp = true },
+	},
+
+	{
 		"saghen/blink.cmp",
 		version = "1.8.0",
+		dependencies = { "PaterJason/cmp-conjure" },
 		opts = blink_opts,
 	},
 
@@ -98,6 +106,22 @@ require("lazy").setup({
 			{ "nvim-telescope/telescope-ui-select.nvim" },
 			{ "nvim-tree/nvim-web-devicons", enabled = vim.g.have_nerd_font },
 		},
+	},
+	-- i18next translation keys: virtual text, hover, gd, gr (via existing LSP keymaps)
+	{
+		"nabekou29/js-i18n.nvim",
+		event = { "BufReadPre", "BufNewFile" },
+		config = function()
+			require("js-i18n").setup({})
+			-- plugin overwrites vim.lsp.config.js_i18n in setup, so merge afterwards.
+			-- Plugin default root_markers = { "package.json", ".git" } picks the nearest
+			-- package.json (apps/web in a monorepo), so the server misses the repo-level
+			-- .js-i18n.json and the locales in packages/shared. Prefer .js-i18n.json.
+			vim.lsp.config("js_i18n", {
+				root_markers = { ".js-i18n.json", ".git" },
+				on_attach = require("user.lsp.handlers").on_attach,
+			})
+		end,
 	},
 	{
 		"gbprod/substitute.nvim",

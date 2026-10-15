@@ -196,7 +196,6 @@ local function clojure_custom_commands(bufnr)
   end
   vim.api.nvim_buf_create_user_command(bufnr, "IntroduceLet", _22_, {})
   keymap(bufnr, "n", "<leader>cn", ":CleanNs<CR>", opts)
-  keymap(bufnr, "n", "<leader>fh", ":AddMissingLibspec<CR>", opts)
   keymap(bufnr, "n", "<", ":DragBackward<CR>", opts)
   keymap(bufnr, "n", ">", ":DragForward<CR>", opts)
   return keymap(bufnr, "n", "<leader>ml", ":IntroduceLet<CR>", opts)

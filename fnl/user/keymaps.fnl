@@ -54,13 +54,14 @@
                 "<Plug>(sexp_move_to_prev_top_element) f i*<Esc><cmd>ConjureEvalRootForm<CR>x0"
                 opts)
 
-(vim.keymap.set :n :<leader>mt (fn [] (vim.cmd "mark T") (print "Mark set")))
+(vim.keymap.set :n :<leader>mt (fn [] (vim.cmd "mark L") (print "Mark set")))
+(vim.keymap.set :n :<leader>ex :<cmd>ConjureCljLastException<CR> opts)
 
-(vim.keymap.set :n :<C-y>
+(vim.keymap.set :n :<leader>ek
                 (fn []
-                  (let [eval (require :conjure.eval)
-                        marked-form eval.marked-form]
-                    (vim.schedule (fn [] (marked-form :T)))))
+                  (let [eval (require :conjure.eval)]
+                    (vim.schedule (fn []
+                                    (eval.marked-form :L)))))
                 opts)
 
 ;; Quick file operations
@@ -237,5 +238,11 @@
                   (let [keys (vim.api.nvim_replace_termcodes "vieE1<Plug>(sexp_clone_element)BB"
                                                              true false true)]
                     (vim.api.nvim_feedkeys keys :m false))) opts)
+
+(vim.keymap.set :n :<leader>cc
+                (fn []
+                  (let [path (vim.fn.expand "%:.")]
+                    (vim.fn.setreg "+" path)
+                    (print (.. "Copied: " path)))) opts)
 
 (vim.keymap.set :n :<leader>a :<cmd>A<CR> opts)

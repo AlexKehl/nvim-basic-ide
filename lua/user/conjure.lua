@@ -1,7 +1,24 @@
 return function()
 	-- vim.g["conjure#mapping#enable_defaults"] = false
 	vim.g["conjure#mapping#prefix"] = " "
-	vim.g["conjure#filetype#sql"] = ""
+	vim.g["conjure#filetypes"] = {
+		"clojure",
+		"elixir",
+		"fennel",
+		"janet",
+		"javascript",
+		"hy",
+		"julia",
+		"racket",
+		"scheme",
+		"lua",
+		"lisp",
+		"python",
+		"ruby",
+		"rust",
+		"php",
+		"r",
+	}
 	vim.g["conjure#mapping#def_word"] = ""
 	vim.g["conjure#mapping#doc_word"] = ""
 
@@ -13,5 +30,4 @@ return function()
 	vim.g["conjure#mapping#eval_file"] = "ef"
 	vim.g["conjure#mapping#eval_marked_form"] = "em"
 	-- vim.g["conjure#mapping#log_vsplit"] = "lv"
-
 end

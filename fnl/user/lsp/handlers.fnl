@@ -192,7 +192,6 @@
                                                                                  [:tmp-name])}))
                                         {})
   (keymap bufnr :n :<leader>cn ":CleanNs<CR>" opts)
-  (keymap bufnr :n :<leader>fh ":AddMissingLibspec<CR>" opts)
   (keymap bufnr :n "<" ":DragBackward<CR>" opts)
   (keymap bufnr :n ">" ":DragForward<CR>" opts)
   (keymap bufnr :n :<leader>ml ":IntroduceLet<CR>" opts))

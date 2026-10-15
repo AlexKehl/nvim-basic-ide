@@ -53,7 +53,7 @@ if present then
     return {exe = ("cat " .. vim.fn.fnameescape(vim.api.nvim_buf_get_name(0)) .. " | black --quiet -"), stdin = true}
   end
   local function _3_()
-    return {exe = ("cat " .. vim.fn.fnameescape(vim.api.nvim_buf_get_name(0)) .. " | sql-formatter"), stdin = true}
+    return {exe = ("cat " .. vim.fn.fnameescape(vim.api.nvim_buf_get_name(0)) .. " | sql-formatter -c " .. vim.fn.stdpath("config") .. "/sql-formatter.json"), stdin = true}
   end
   local function _4_()
     return {args = {"--format", vim.fn.fnameescape(vim.api.nvim_buf_get_name(0))}, exe = "xmllint", stdin = true}

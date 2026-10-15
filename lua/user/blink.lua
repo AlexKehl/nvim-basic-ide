@@ -65,12 +65,13 @@ return {
 	-- default list of enabled providers defined so that you can extend it
 	-- elsewhere in your config, without redefining it, via `opts_extend`
 	sources = {
-		default = { "lsp", "path", "buffer", "dadbod", "clojure_keywords" },
+		default = { "lsp", "path", "buffer", "dadbod", "conjure_map_keys", "conjure" },
+		-- default = { "conjure_map_keys" },
 		providers = {
 			lsp = {
 				name = "LSP",
 				module = "blink.cmp.sources.lsp",
-				score_offset = 50, -- Boost/penalize the score of the items
+				score_offset = 60,
 			},
 			path = {
 				name = "Path",
@@ -81,9 +82,15 @@ return {
 				name = "Buffer",
 				module = "blink.cmp.sources.buffer",
 			},
-			clojure_keywords = {
-				name = "Clojure Keywords",
-				module = "user.blink-clojure-keywords",
+			conjure_map_keys = {
+				name = "Conjure Map Keys",
+				module = "user.blink-conjure-map-keys",
+				score_offset = 100,
+			},
+			conjure = {
+				name = "conjure",
+				module = "blink.compat.source",
+				score_offset = 50,
 			},
 			dadbod = {
 				name = "Dadbod",
