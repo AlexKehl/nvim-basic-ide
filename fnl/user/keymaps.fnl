@@ -77,9 +77,6 @@
 ;; Clear highlights
 (vim.keymap.set :n :<leader><cr> :<cmd>nohlsearch<CR> opts)
 
-;; Press kj fast to leave insert mode
-(vim.keymap.set :i :kj :<ESC> opts)
-
 ;; Stay in indent mode
 (vim.keymap.set :v "<" :<gv opts)
 (vim.keymap.set :v ">" :>gv opts)

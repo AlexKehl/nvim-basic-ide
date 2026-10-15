@@ -152,11 +152,11 @@ local function add_missing_imports()
   return vim.lsp.buf.code_action({apply = true, filter = _16_})
 end
 local function apply_eslint_fixes(bufnr)
-  local client = get_lsp_client("tsgo")
+  local client = get_lsp_client("tsc")
   return client:exec_cmd({command = "eslint.applyAllFixes", arguments = {{uri = vim.uri_from_bufnr(bufnr), version = vim.lsp.util.buf_versions[bufnr]}}, title = ""})
 end
 local function ts_custom_commands(bufnr)
-  local client = get_lsp_client("tsgo")
+  local client = get_lsp_client("tsc")
   log(vim.inspect(client))
   vim.api.nvim_buf_create_user_command(bufnr, "OrganizeImports", organize_imports, {})
   return vim.api.nvim_buf_create_user_command(bufnr, "AddMissingImports", add_missing_imports, {})
@@ -233,7 +233,7 @@ local function log0(message)
   return message
 end
 local function on_attach(client, bufnr)
-  if (client.name == "tsgo") then
+  if (client.name == "tsc") then
     client.server_capabilities.document_formatting = false
     ts_custom_commands(bufnr)
   else
@@ -256,8 +256,8 @@ local function on_attach(client, bufnr)
   end
   return lsp_keymaps(bufnr)
 end
-vim.lsp.enable("tsgo")
-vim.lsp.config("tsgo", {on_attach = on_attach})
+vim.lsp.enable("tsc")
+vim.lsp.config("tsc", {on_attach = on_attach})
 vim.lsp.enable("clojure_lsp")
 vim.lsp.config("clojure_lsp", {on_attach = on_attach})
 vim.lsp.enable("marksman")

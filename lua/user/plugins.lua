@@ -112,7 +112,9 @@ require("lazy").setup({
 		"nabekou29/js-i18n.nvim",
 		event = { "BufReadPre", "BufNewFile" },
 		config = function()
-			require("js-i18n").setup({})
+			-- Server-side opts (diagnostics etc.) are ignored by the server when a project
+			-- has a .js-i18n.json; put them there instead.
+			require("js-i18n").setup({ virt_text = { enabled = false } })
 			-- plugin overwrites vim.lsp.config.js_i18n in setup, so merge afterwards.
 			-- Plugin default root_markers = { "package.json", ".git" } picks the nearest
 			-- package.json (apps/web in a monorepo), so the server misses the repo-level

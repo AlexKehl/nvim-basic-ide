@@ -139,14 +139,14 @@
                                       (= a.title "Add all missing imports"))}))
 
 (fn apply-eslint-fixes [bufnr]
-  (local client (get-lsp-client :tsgo))
+  (local client (get-lsp-client :tsc))
   (client:exec_cmd {:command :eslint.applyAllFixes
                     :arguments [{:uri (vim.uri_from_bufnr bufnr)
                                  :version (. vim.lsp.util.buf_versions bufnr)}]
                     :title ""}))
 
 (fn ts-custom-commands [bufnr]
-  (local client (get-lsp-client :tsgo))
+  (local client (get-lsp-client :tsc))
   (log (vim.inspect client))
   (vim.api.nvim_buf_create_user_command bufnr :OrganizeImports organize-imports
                                         {})
@@ -231,7 +231,7 @@
   message)
 
 (fn on_attach [client bufnr]
-  (when (= client.name :tsgo)
+  (when (= client.name :tsc)
     (set client.server_capabilities.document_formatting false)
     (ts-custom-commands bufnr))
   (when (= client.name :sumneko_lua)
@@ -255,8 +255,8 @@
 
 ; (lspconfig.fennel_ls.setup {: on_attach})
 
-(vim.lsp.enable :tsgo)
-(vim.lsp.config :tsgo {: on_attach})
+(vim.lsp.enable :tsc)
+(vim.lsp.config :tsc {: on_attach})
 
 (vim.lsp.enable :clojure_lsp)
 (vim.lsp.config :clojure_lsp {: on_attach})
