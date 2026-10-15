@@ -184,7 +184,6 @@ require("lazy").setup({
 		lazy = true,
 		init = conjure,
 	},
-	{ "Olical/nfnl" },
 	{
 		"bpstahlman/vim-sexp",
 		init = function()

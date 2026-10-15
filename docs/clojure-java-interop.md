@@ -24,7 +24,7 @@ Constructor calls `(Foo.)`, static calls `(Foo/bar)` and chains are not handled.
 
 ### 1. `gd` goes through Conjure when a REPL is connected
 
-`fnl/user/lsp/handlers.fnl`, `lsp-keymaps`: `gd` is set in the LSP `on_attach`
+`lua/user/lsp/handlers.lua`, `lsp_keymaps`: `gd` is set in the LSP `on_attach`
 (it would override a FileType mapping). For `clojure` buffers with a live nREPL
 it calls `conjure-def-word`; otherwise it is the Telescope LSP jump as before.
 
@@ -55,7 +55,7 @@ Off by default; without it compliment only sees the bare prefix.
 
 ### 4. `java-language-server` only starts inside a Java project
 
-`fnl/user/lsp/handlers.fnl`, bottom: `vim.lsp.config :java_language_server` with
+`lua/user/lsp/handlers.lua`, bottom: `vim.lsp.config("java_language_server", ...)` with
 a `root_dir` that only calls back when a Gradle or Maven marker is found.
 mason-lspconfig auto-enables every installed server, so JDK source buffers
 (`zipfile://…src.zip` or `~/.cache/clojure-lsp/jdk/…`) used to start it rootless.
